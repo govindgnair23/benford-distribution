@@ -61,7 +61,7 @@ export function SimulationLab() {
     <section className="lab-page" aria-labelledby="lab-title">
       <div className="lab-header">
         <p className="eyebrow">Make Benford appear</p>
-        <h2 id="lab-title">Simulation Lab</h2>
+        <h2 id="lab-title">Simulations</h2>
         <p>
           Adjust log width and watch fractional logs move from bunched to flat,
           then compare first digits against Benford probabilities.

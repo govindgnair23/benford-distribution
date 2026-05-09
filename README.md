@@ -1,13 +1,14 @@
 # Benford Emergence Lab
 
-Interactive browser applet for understanding when Benford's Law appears and when it does not.
+Interactive browser applet for understanding what Benford's Law says, why it can appear, and when it does not.
 
-The app focuses on the causal chain:
+The app has three tabs:
 
-1. Multiplicative processes turn into sums in log space.
-2. `log10(X)` can become approximately Normal.
-3. Benford-like first digits appear when `{log10(X)}` becomes nearly uniform.
-4. Wide log distributions help, but the fractional-log histogram is the direct diagnostic.
+1. What is Benford's Law? Define the first-digit PMF, show the decreasing histogram, and calculate why `P(D = 1)` is about 30.1%.
+2. Why it Happens. Walk through the log-scale argument with LaTeX-rendered formulas: decomposition, fractional logs, products-to-sums, and wide Normal wrapping.
+3. Simulations. Adjust direct lognormal and multiplicative-growth models to see when fractional logs flatten and first digits become Benford-like.
+
+The core idea is that Benford-like first digits appear when `{log10(X)}` becomes nearly uniform. Wide log distributions help, but the fractional-log histogram is the direct diagnostic.
 
 ## Local Development
 

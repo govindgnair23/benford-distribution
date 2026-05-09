@@ -9,7 +9,7 @@ describe("SimulationLab", () => {
     render(<SimulationLab />);
 
     expect(
-      screen.getByRole("heading", { name: /simulation lab/i })
+      screen.getByRole("heading", { name: /simulations/i })
     ).toBeInTheDocument();
     expect(screen.getByLabelText(/mode/i)).toHaveValue("direct");
     expect(screen.getByLabelText(/sigma/i)).toHaveValue(0.08);

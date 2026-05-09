@@ -1,15 +1,33 @@
 import type { ReactNode } from "react";
+import { BlockMath } from "react-katex";
 
 interface FormulaBlockProps {
-  children: ReactNode;
+  accessibilityLabel?: string;
+  children?: ReactNode;
+  formula?: string;
   label?: string;
 }
 
-export function FormulaBlock({ children, label }: FormulaBlockProps) {
+export function FormulaBlock({
+  accessibilityLabel,
+  children,
+  formula,
+  label
+}: FormulaBlockProps) {
   return (
     <figure className="formula-block">
       {label ? <figcaption>{label}</figcaption> : null}
-      <code>{children}</code>
+      {formula ? (
+        <div
+          className="formula-math"
+          aria-label={accessibilityLabel ?? formula}
+          role="math"
+        >
+          <BlockMath math={formula} />
+        </div>
+      ) : (
+        <code>{children}</code>
+      )}
     </figure>
   );
 }

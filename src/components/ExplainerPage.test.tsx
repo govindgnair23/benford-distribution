@@ -12,6 +12,7 @@ describe("ExplainerPage", () => {
       .map((heading) => heading.textContent);
 
     expect(sectionTitles).toEqual([
+      "Prerequisites",
       "Split a number into scale and significand",
       "Turn first digits into log intervals",
       "Products become sums",
@@ -23,7 +24,16 @@ describe("ExplainerPage", () => {
   it("includes the wrapped-density explanation and real-data caveat", () => {
     render(<ExplainerPage />);
 
-    expect(screen.getByText(/f_\{z\}\(r\) = sum_k f_z\(k \+ r\)/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/wrapped density formula/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/0.497/i).length).toBeGreaterThan(0);
     expect(screen.getByText(/not a fraud detector/i)).toBeInTheDocument();
+  });
+
+  it("renders core formulas with LaTeX typography", () => {
+    render(<ExplainerPage />);
+
+    expect(screen.getByLabelText(/positive number decomposition formula/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/benford digit interval probability formula/i)).toBeInTheDocument();
+    expect(document.querySelectorAll(".katex-display").length).toBeGreaterThan(3);
   });
 });
