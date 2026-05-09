@@ -1,0 +1,425 @@
+:root {
+  color: #18211f;
+  background: #f6f1e8;
+  font-family:
+    "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-synthesis: none;
+  line-height: 1.5;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+button {
+  font: inherit;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid #d24b2a;
+  outline-offset: 3px;
+}
+
+.app-shell {
+  min-height: 100vh;
+  padding: 28px;
+}
+
+.topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  max-width: 1180px;
+  margin: 0 auto 32px;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2rem, 4vw, 4.5rem);
+  line-height: 0.98;
+  letter-spacing: 0;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: #8d3d25;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.page-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 4px;
+  border: 1px solid #cdbfa8;
+  background: #fffaf1;
+}
+
+.page-tabs button {
+  min-height: 40px;
+  border: 0;
+  padding: 0 14px;
+  background: transparent;
+  color: #3e4b47;
+  cursor: pointer;
+}
+
+.page-tabs button.active {
+  background: #1f3832;
+  color: #fffaf1;
+}
+
+.hero-panel {
+  max-width: 1180px;
+  min-height: 420px;
+  margin: 0 auto;
+  display: grid;
+  align-content: center;
+  border-top: 1px solid #cdbfa8;
+  border-bottom: 1px solid #cdbfa8;
+}
+
+.hero-panel h2 {
+  max-width: 760px;
+  margin: 0 0 20px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2.2rem, 5vw, 5.2rem);
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.hero-panel p:last-child {
+  max-width: 720px;
+  margin: 0;
+  color: #3f4d48;
+  font-size: clamp(1rem, 1.5vw, 1.3rem);
+}
+
+.explainer-page {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.intro-band {
+  min-height: 360px;
+  display: grid;
+  align-content: center;
+  border-top: 1px solid #cdbfa8;
+  border-bottom: 1px solid #cdbfa8;
+}
+
+.intro-band h2 {
+  max-width: 850px;
+  margin: 0 0 20px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2.4rem, 6vw, 6rem);
+  line-height: 0.98;
+  letter-spacing: 0;
+}
+
+.intro-band p:last-child {
+  max-width: 760px;
+  margin: 0;
+  color: #3f4d48;
+  font-size: clamp(1rem, 1.6vw, 1.35rem);
+}
+
+.math-step {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.75fr) minmax(0, 1.25fr);
+  gap: 28px;
+  padding: 34px 0;
+  border-bottom: 1px solid #d9cdb8;
+}
+
+.math-step h3 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.45rem, 2.5vw, 2.25rem);
+  line-height: 1.08;
+}
+
+.math-step p,
+.chart-summary {
+  margin: 0 0 16px;
+  color: #3f4d48;
+}
+
+.formula-block {
+  margin: 0 0 14px;
+  padding: 14px 16px;
+  border-left: 4px solid #d24b2a;
+  background: #fffaf1;
+  overflow-x: auto;
+}
+
+.formula-block figcaption {
+  margin-bottom: 6px;
+  color: #7b402b;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.formula-block code {
+  color: #17231f;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: clamp(0.92rem, 1.3vw, 1.08rem);
+}
+
+.interval-module {
+  grid-column: 1 / -1;
+  margin-top: 6px;
+}
+
+.interval-strip {
+  display: flex;
+  width: 100%;
+  min-height: 86px;
+  border: 1px solid #1f3832;
+  background: #fffaf1;
+}
+
+.interval-segment {
+  min-width: 28px;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 4px;
+  border-right: 1px solid rgba(31, 56, 50, 0.24);
+  background: linear-gradient(180deg, #f4d481, #e69d58);
+  color: #17231f;
+  text-align: center;
+}
+
+.interval-segment:last-child {
+  border-right: 0;
+}
+
+.interval-segment span {
+  font-weight: 800;
+}
+
+.interval-segment small {
+  font-size: 0.72rem;
+}
+
+.wrap-visual {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 18px 0;
+}
+
+.wrap-visual > div {
+  padding: 16px;
+  background: #fffaf1;
+  border: 1px solid #d9cdb8;
+}
+
+.wrap-visual h4 {
+  margin: 0 0 12px;
+}
+
+.curve {
+  height: 90px;
+  border-bottom: 2px solid #1f3832;
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: 100% 100%;
+}
+
+.curve.narrow {
+  background-image: radial-gradient(ellipse at center bottom, #d24b2a 0 8%, transparent 9%);
+}
+
+.curve.wide {
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(210, 75, 42, 0.18) 0 12%,
+    rgba(31, 56, 50, 0.12) 12% 24%
+  );
+}
+
+.lab-page {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.lab-header {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 24px;
+  padding: 28px 0;
+  border-top: 1px solid #cdbfa8;
+  border-bottom: 1px solid #cdbfa8;
+}
+
+.lab-header h2 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2.2rem, 5vw, 5rem);
+  line-height: 1;
+}
+
+.lab-header p:last-child {
+  max-width: 740px;
+  margin: 0;
+  color: #3f4d48;
+  font-size: 1.08rem;
+}
+
+.lab-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 330px) minmax(0, 1fr);
+  gap: 22px;
+  align-items: start;
+}
+
+.control-panel,
+.diagnostic-summary {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  background: #fffaf1;
+  border: 1px solid #d9cdb8;
+}
+
+.control-panel label {
+  display: grid;
+  gap: 5px;
+  color: #31423d;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.control-panel input,
+.control-panel select {
+  min-height: 40px;
+  width: 100%;
+  border: 1px solid #b9aa93;
+  border-radius: 0;
+  padding: 0 10px;
+  background: #fffdf8;
+  color: #17231f;
+  font: inherit;
+}
+
+.secondary-action {
+  min-height: 42px;
+  border: 0;
+  background: #d24b2a;
+  color: #fffaf1;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.diagnostic-summary {
+  grid-template-columns: repeat(4, minmax(120px, 1fr));
+}
+
+.diagnostic-summary div {
+  display: grid;
+  gap: 4px;
+}
+
+.diagnostic-summary span {
+  color: #65716c;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.diagnostic-summary strong {
+  font-size: 1.25rem;
+}
+
+.diagnostic-summary p {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #3f4d48;
+}
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  margin-top: 22px;
+}
+
+.chart-frame {
+  min-width: 0;
+  padding: 18px;
+  background: #fffaf1;
+  border: 1px solid #d9cdb8;
+}
+
+.chart-frame:last-child {
+  grid-column: 1 / -1;
+}
+
+.chart-heading {
+  margin-bottom: 12px;
+}
+
+.chart-heading h3 {
+  margin: 0 0 4px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.25rem;
+}
+
+.chart-heading p {
+  margin: 0;
+  color: #65716c;
+  font-size: 0.92rem;
+}
+
+.chart-canvas {
+  width: 100%;
+  min-height: 240px;
+}
+
+.sr-summary {
+  margin: 0;
+  color: #3f4d48;
+}
+
+@media (max-width: 760px) {
+  .app-shell {
+    padding: 18px;
+  }
+
+  .topbar {
+    display: block;
+  }
+
+  .page-tabs {
+    margin-top: 20px;
+  }
+
+  .math-step,
+  .wrap-visual,
+  .lab-layout,
+  .diagnostic-summary,
+  .chart-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-frame:last-child {
+    grid-column: auto;
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "name": "benford_distribution",
+  "version": "1.0.0",
+  "description": "Interactive Benford's Law emergence applet",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "test": "vitest run --config vitest.config.ts",
+    "test:watch": "vitest --config vitest.config.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "recharts": "^3.8.1"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "jsdom": "^27.0.1",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.11",
+    "vitest": "^3.2.4"
+  }
+}
