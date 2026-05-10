@@ -16,9 +16,17 @@ export function SimulationControls({
   onRerun
 }: SimulationControlsProps) {
   const active = config.mode === "direct" ? config.direct : config.multiplicative;
+  const lognormalPreset =
+    config.preset === "multiplicative" ? "narrow" : config.preset;
 
   function updateMode(event: ChangeEvent<HTMLSelectElement>) {
-    onChange({ ...config, mode: event.target.value as SimulationMode });
+    const mode = event.target.value as SimulationMode;
+    if (mode === "multiplicative") {
+      onPresetChange("multiplicative");
+      return;
+    }
+
+    onPresetChange(lognormalPreset);
   }
 
   function updateDirect(field: keyof LabConfig["direct"], value: number) {
@@ -41,25 +49,68 @@ export function SimulationControls({
   return (
     <form className="control-panel" aria-label="Simulation controls">
       <label>
-        Preset
-        <select
-          value={config.preset}
-          onChange={(event) => onPresetChange(event.target.value as PresetKey)}
-        >
-          <option value="narrow">Narrow lognormal</option>
-          <option value="transitional">Transitional lognormal</option>
-          <option value="wide">Wide lognormal</option>
-          <option value="multiplicative">Multiplicative growth</option>
+        Model
+        <select value={config.mode} onChange={updateMode}>
+          <option value="direct">Lognormal model</option>
+          <option value="multiplicative">Multiplicative growth model</option>
         </select>
       </label>
 
-      <label>
-        Mode
-        <select value={config.mode} onChange={updateMode}>
-          <option value="direct">Direct lognormal</option>
-          <option value="multiplicative">Multiplicative growth</option>
-        </select>
-      </label>
+      {config.mode === "direct" ? (
+        <>
+          <label>
+            Lognormal preset
+            <select
+              value={lognormalPreset}
+              onChange={(event) => onPresetChange(event.target.value as PresetKey)}
+            >
+              <option value="narrow">Narrow</option>
+              <option value="transitional">Transitional</option>
+              <option value="wide">Wide</option>
+            </select>
+          </label>
+          <section className="model-guidance" aria-label="Lognormal preset definitions">
+            <h3>Lognormal presets</h3>
+            <p>
+              <strong>Narrow:</strong> logs are concentrated in much less than
+              one order of magnitude, so fractional logs bunch up and Benford
+              usually does not appear.
+            </p>
+            <p>
+              <strong>Transitional:</strong> logs spread across roughly part of
+              an order or a few orders, so the first digits may move toward
+              Benford but still show structure.
+            </p>
+            <p>
+              <strong>Wide:</strong> logs span many orders of magnitude, making
+              fractional logs much closer to uniform and first digits more
+              Benford-like.
+            </p>
+          </section>
+        </>
+      ) : (
+        <section className="model-guidance" aria-label="Multiplicative growth model explanation">
+          <h3>Multiplicative growth model</h3>
+          <p>
+            Model: log10(X_final) = log10(X_start) + sum of random growth
+            increments.
+          </p>
+          <p>
+            <strong>Growth mean:</strong> the average log10 change added at each
+            step. Positive values drift upward, negative values drift downward,
+            and zero means no average drift.
+          </p>
+          <p>
+            <strong>Growth volatility:</strong> how much each step varies around
+            the mean. Higher volatility widens the final log distribution
+            faster.
+          </p>
+          <p>
+            <strong>Steps:</strong> more steps give more opportunities for log
+            increments to accumulate and widen the distribution.
+          </p>
+        </section>
+      )}
 
       <label>
         Sample size

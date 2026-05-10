@@ -1,0 +1,108 @@
+import { FormulaBlock } from "./FormulaBlock";
+import { BenfordPmfChart } from "./charts/BenfordPmfChart";
+
+const scenarios = [
+  {
+    title: "Populations and city sizes",
+    body: "Often span several orders of magnitude, so Benford-like first digits can appear."
+  },
+  {
+    title: "River lengths",
+    body: "Measurements across many scales can create the broad log spread Benford needs."
+  },
+  {
+    title: "Transaction and accounting amounts",
+    body: "Line items may be Benford-like when they mix many naturally scaled processes."
+  },
+  {
+    title: "Scientific measurements",
+    body: "Constants or measured quantities across scales can show the decreasing digit shape."
+  },
+  {
+    title: "Market and economic quantities",
+    body: "Company sizes, prices, and other broad-scale quantities can be plausible candidates."
+  }
+];
+
+export function WhatIsBenfordPage() {
+  return (
+    <section className="what-page" aria-labelledby="what-title">
+      <div className="intro-band">
+        <p className="eyebrow">First-digit law</p>
+        <h2 id="what-title">What is Benford's Law?</h2>
+        <p>
+          Benford's Law is a probability distribution over first digits. The
+          next sections define the distribution before explaining why it can
+          emerge from wide log-scale data.
+        </p>
+      </div>
+
+      <div className="what-grid">
+        <article className="definition-panel">
+          <p className="eyebrow">Probability mass function</p>
+          <h3>First digits are not evenly distributed</h3>
+          <p>
+            Benford's Law says the first digit D follows a decreasing
+            probability mass function. Digit 1 is most common, digit 9 is least
+            common, and the distribution is not uniform over digits.
+          </p>
+          <FormulaBlock
+            label="Benford PMF"
+            formula={String.raw`P(D=d)=\log_{10}\left(\frac{d+1}{d}\right),\quad d=1,\ldots,9`}
+            accessibilityLabel="Benford probability mass function formula"
+          />
+          <FormulaBlock
+            label="Digit one"
+            formula={String.raw`P(D=1)=\log_{10}(2)-\log_{10}(1)=\log_{10}(2)\approx0.301`}
+            accessibilityLabel="Probability of first digit one is log base ten of two, about 0.301"
+          />
+          <p className="stat-callout">
+            About <strong>30.1%</strong> of Benford values begin with 1.
+          </p>
+        </article>
+
+        <BenfordPmfChart />
+      </div>
+
+      <article className="comparison-band">
+        <div>
+          <h3>Uniform first-digit intuition</h3>
+          <p>
+            A tempting guess is that each digit from 1 through 9 should appear
+            about 11.1% of the time.
+          </p>
+        </div>
+        <div>
+          <h3>Benford shape</h3>
+          <p>
+            Benford's Law is tilted toward smaller leading digits. This
+            decreasing shape is the visual signature to compare against.
+          </p>
+        </div>
+      </article>
+
+      <article className="scenario-section">
+        <p className="eyebrow">Where it may show up</p>
+        <h3>Common real-world candidates</h3>
+        <p>
+          These are not guaranteed Benford datasets. They are contexts where
+          Benford-like behavior is often encountered when values span orders of
+          magnitude and are not heavily rounded, bounded, assigned, or filtered.
+        </p>
+        <div className="scenario-grid">
+          {scenarios.map((scenario) => (
+            <div className="scenario-card" key={scenario.title}>
+              <h4>{scenario.title}</h4>
+              <p>{scenario.body}</p>
+            </div>
+          ))}
+        </div>
+        <p className="caveat-note">
+          Benford is not expected for assigned identifiers, tightly bounded
+          ranges, policy-shaped prices, rounded or thresholded data, or samples
+          that do not span enough scale.
+        </p>
+      </article>
+    </section>
+  );
+}

@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { ExplainerPage } from "../components/ExplainerPage";
 import { SimulationLab } from "../components/SimulationLab";
+import { WhatIsBenfordPage } from "../components/WhatIsBenfordPage";
 
-type Page = "explainer" | "lab";
+type Page = "what" | "why" | "simulations";
 
 export function App() {
-  const [page, setPage] = useState<Page>("explainer");
+  const [page, setPage] = useState<Page>("what");
 
   return (
     <div className="app-shell">
@@ -17,25 +18,35 @@ export function App() {
         <nav className="page-tabs" aria-label="Primary pages">
           <button
             type="button"
-            className={page === "explainer" ? "active" : ""}
-            aria-pressed={page === "explainer"}
-            onClick={() => setPage("explainer")}
+            className={page === "what" ? "active" : ""}
+            aria-pressed={page === "what"}
+            onClick={() => setPage("what")}
           >
-            Why Benford Happens
+            What is Benford's Law?
           </button>
           <button
             type="button"
-            className={page === "lab" ? "active" : ""}
-            aria-pressed={page === "lab"}
-            onClick={() => setPage("lab")}
+            className={page === "why" ? "active" : ""}
+            aria-pressed={page === "why"}
+            onClick={() => setPage("why")}
           >
-            Simulation Lab
+            Why it Happens
+          </button>
+          <button
+            type="button"
+            className={page === "simulations" ? "active" : ""}
+            aria-pressed={page === "simulations"}
+            onClick={() => setPage("simulations")}
+          >
+            Simulations
           </button>
         </nav>
       </header>
 
       <main>
-        {page === "explainer" ? <ExplainerPage /> : <SimulationLab />}
+        {page === "what" ? <WhatIsBenfordPage /> : null}
+        {page === "why" ? <ExplainerPage /> : null}
+        {page === "simulations" ? <SimulationLab /> : null}
       </main>
     </div>
   );
