@@ -11,7 +11,7 @@ describe("SimulationLab", () => {
     expect(
       screen.getByRole("heading", { name: /simulations/i })
     ).toBeInTheDocument();
-    expect(screen.getByLabelText(/mode/i)).toHaveValue("direct");
+    expect(screen.getByLabelText(/model/i)).toHaveValue("direct");
     expect(screen.getByLabelText(/sigma/i)).toHaveValue(0.08);
     expect(screen.getByText(/not close to Benford/i)).toBeInTheDocument();
   });
@@ -20,7 +20,10 @@ describe("SimulationLab", () => {
     const user = userEvent.setup();
     render(<SimulationLab />);
 
-    await user.selectOptions(screen.getByLabelText(/preset/i), "wide");
+    await user.selectOptions(
+      screen.getByRole("combobox", { name: /lognormal preset/i }),
+      "wide"
+    );
 
     expect(screen.getByLabelText(/sigma/i)).toHaveValue(2);
     expect(screen.getByText(/close to uniform/i)).toBeInTheDocument();
@@ -30,11 +33,13 @@ describe("SimulationLab", () => {
     const user = userEvent.setup();
     render(<SimulationLab />);
 
-    await user.selectOptions(screen.getByLabelText(/mode/i), "multiplicative");
+    await user.selectOptions(screen.getByLabelText(/model/i), "multiplicative");
 
     expect(screen.getByLabelText(/starting log10 value/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/steps/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/growth mean/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/growth volatility/i)).toBeInTheDocument();
+    expect(screen.getByText(/average log10 change added at each step/i)).toBeInTheDocument();
   });
 
   it("reruns the same parameters with a new seed", async () => {

@@ -48,7 +48,7 @@ export function WhatIsBenfordPage() {
           </p>
           <FormulaBlock
             label="Benford PMF"
-            formula={String.raw`P(D=d)=\log_{10}\left(1+\frac{1}{d}\right),\quad d=1,\ldots,9`}
+            formula={String.raw`P(D=d)=\log_{10}\left(\frac{d+1}{d}\right),\quad d=1,\ldots,9`}
             accessibilityLabel="Benford probability mass function formula"
           />
           <FormulaBlock

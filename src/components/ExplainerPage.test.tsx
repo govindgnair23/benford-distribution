@@ -26,6 +26,16 @@ describe("ExplainerPage", () => {
 
     expect(screen.getByLabelText(/wrapped density formula/i)).toBeInTheDocument();
     expect(screen.getAllByText(/0.497/i).length).toBeGreaterThan(0);
+    expect(screen.queryByText(/bridge is the fractional part/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/condition that actually matters/i)).toBeInTheDocument();
+    expect(screen.getByText(/K = 3 and M = 3.14/i)).toBeInTheDocument();
+    expect(screen.getByText(/log10\(10\^3\) = 3/i)).toBeInTheDocument();
+    expect(screen.getByText(/If log10\(M\) is uniform/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/first digit three interval example/i)).toBeInTheDocument();
+    expect(screen.getByText(/For the running example, M = 3.14, so D = 3/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/key requirement is that log10\(M\), or equivalently \{log10\(X\)\}/i)
+    ).toBeInTheDocument();
     expect(screen.getByText(/not a fraud detector/i)).toBeInTheDocument();
   });
 
@@ -33,6 +43,9 @@ describe("ExplainerPage", () => {
     render(<ExplainerPage />);
 
     expect(screen.getByLabelText(/positive number decomposition formula/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/3140 equals ten cubed times 3.14/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/base ten log split into integer order and significand log/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/log base ten of 3140 equals 3 plus log base ten of 3.14/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/benford digit interval probability formula/i)).toBeInTheDocument();
     expect(document.querySelectorAll(".katex-display").length).toBeGreaterThan(3);
   });

@@ -12,6 +12,9 @@ describe("WhatIsBenfordPage", () => {
     ).toBeInTheDocument();
     expect(screen.getByLabelText(/benford probability mass function formula/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/probability of first digit one/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/P\(D=d\)=\\log_\{10\}\\left\(\\frac\{d\+1\}\{d\}\\right\)/i)
+    ).not.toBeNull();
     expect(screen.getAllByText(/30.1%/i).length).toBeGreaterThan(0);
   });
 
