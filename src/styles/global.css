@@ -272,6 +272,35 @@ select:focus-visible {
   margin-bottom: 0;
 }
 
+.log-interval-step h3,
+.log-interval-step .formula-explanation-pairs,
+.log-interval-step .log-interval-strip,
+.log-interval-step .key-requirement {
+  grid-column: 1 / -1;
+}
+
+.formula-explanation-pairs {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.75fr) minmax(0, 1.25fr);
+  gap: 28px;
+  align-items: start;
+  min-width: 0;
+}
+
+.formula-explanation-pairs .formula-block,
+.formula-explanation-pairs p {
+  margin-bottom: 0;
+}
+
+.key-requirement {
+  padding: 16px 18px;
+  border-left: 4px solid #1f3832;
+  background: #fffaf1;
+  color: #17231f;
+  font-size: clamp(1rem, 1.7vw, 1.28rem);
+  font-weight: 700;
+}
+
 .formula-math {
   min-width: max-content;
   color: #17231f;
@@ -324,40 +353,127 @@ select:focus-visible {
 }
 
 .wrap-visual {
+  grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
   margin: 18px 0;
 }
 
-.wrap-visual > div {
+.wrap-conclusion {
+  grid-column: 1 / -1;
+  max-width: 860px;
+}
+
+.wrap-visual-header,
+.wrap-density-panel {
   padding: 16px;
   background: #fffaf1;
   border: 1px solid #d9cdb8;
 }
 
-.wrap-visual h4 {
+.wrap-visual h4,
+.wrap-density-heading h5 {
   margin: 0 0 12px;
 }
 
-.curve {
-  height: 90px;
-  border-bottom: 2px solid #1f3832;
-  background-repeat: no-repeat;
-  background-position: center bottom;
-  background-size: 100% 100%;
+.wrap-visual-header p:last-child,
+.wrap-density-heading p,
+.wrap-density-summary,
+.wrap-density-points {
+  margin: 0;
+  color: #3f4d48;
 }
 
-.curve.narrow {
-  background-image: radial-gradient(ellipse at center bottom, #d24b2a 0 8%, transparent 9%);
+.wrap-density-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 12px;
+  color: #3f4d48;
+  font-size: 0.9rem;
 }
 
-.curve.wide {
-  background-image: repeating-linear-gradient(
-    90deg,
-    rgba(210, 75, 42, 0.18) 0 12%,
-    rgba(31, 56, 50, 0.12) 12% 24%
-  );
+.wrap-density-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-swatch {
+  width: 18px;
+  height: 3px;
+  display: inline-block;
+}
+
+.legend-swatch.point-two {
+  background: #238457;
+}
+
+.legend-swatch.point-seven {
+  background: #2f66b1;
+}
+
+.wrap-density-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.wrap-density-heading {
+  margin-bottom: 12px;
+}
+
+.wrap-density-heading h5 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.15rem;
+  letter-spacing: 0;
+}
+
+.wrap-density-summary {
+  min-height: 48px;
+  margin-top: 10px;
+}
+
+.wrap-density-points {
+  margin-top: 8px;
+  font-size: 0.9rem;
+}
+
+.wrap-density-values {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 14px 0 0;
+}
+
+.wrap-density-values div {
+  padding: 10px;
+  border-top: 3px solid #d24b2a;
+  background: #f8efe0;
+}
+
+.wrap-density-values dt {
+  color: #7b402b;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.wrap-density-values dd {
+  margin: 4px 0 0;
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.wrap-visual .sr-summary {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  border: 0;
 }
 
 .lab-page {
@@ -542,7 +658,8 @@ select:focus-visible {
   }
 
   .math-step,
-  .wrap-visual,
+  .formula-explanation-pairs,
+  .wrap-density-grid,
   .lab-layout,
   .diagnostic-summary,
   .chart-grid,
