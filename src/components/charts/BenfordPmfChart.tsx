@@ -9,6 +9,7 @@ import {
 } from "recharts";
 
 import { benfordProbability } from "../../lib/benford";
+import { editorialColors } from "../../styles/tokens";
 import { ChartFrame } from "./ChartFrame";
 
 export function BenfordPmfChart() {
@@ -31,7 +32,7 @@ export function BenfordPmfChart() {
           <XAxis dataKey="digit" tick={{ fontSize: 12 }} />
           <YAxis unit="%" width={44} />
           <Tooltip />
-          <Bar dataKey="probability" fill="#1f3832" radius={[3, 3, 0, 0]} />
+          <Bar dataKey="probability" fill={editorialColors.accentDeep} radius={[3, 3, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
       <ul

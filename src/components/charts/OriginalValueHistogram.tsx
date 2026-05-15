@@ -9,6 +9,7 @@ import {
 } from "recharts";
 
 import { histogram } from "../../lib/histograms";
+import { editorialColors } from "../../styles/tokens";
 import { ChartFrame } from "./ChartFrame";
 
 interface OriginalValueHistogramProps {
@@ -46,7 +47,7 @@ export function OriginalValueHistogram({ values }: OriginalValueHistogramProps) 
           />
           <YAxis allowDecimals={false} width={44} />
           <Tooltip />
-          <Bar dataKey="count" fill="#8d3d25" radius={[3, 3, 0, 0]} />
+          <Bar dataKey="count" fill={editorialColors.accentWarmDeep} radius={[3, 3, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </ChartFrame>

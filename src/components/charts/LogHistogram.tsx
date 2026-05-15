@@ -9,6 +9,7 @@ import {
 } from "recharts";
 
 import { histogram } from "../../lib/histograms";
+import { editorialColors } from "../../styles/tokens";
 import { ChartFrame } from "./ChartFrame";
 
 interface LogHistogramProps {
@@ -45,7 +46,7 @@ export function LogHistogram({ values }: LogHistogramProps) {
           />
           <YAxis allowDecimals={false} width={44} />
           <Tooltip />
-          <Bar dataKey="count" fill="#6b7f78" radius={[3, 3, 0, 0]} />
+          <Bar dataKey="count" fill={editorialColors.mutedBar} radius={[3, 3, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </ChartFrame>

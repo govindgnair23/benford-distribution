@@ -26,3 +26,17 @@ export const chartPalette = {
 } as const;
 
 export type ChartSeriesIndex = 0 | 1 | 2 | 3;
+
+// Editorial accents and muted greys used inside charts as semantic markers
+// (e.g. the canonical Benford reference, the warm "diagnostic" emphasis,
+// or a soft reference line). Values mirror the matching --accent-* and
+// muted-neutral tokens; consume these from TSX where CSS variables are
+// unavailable.
+export const editorialColors = {
+  accentWarm: "#d24b2a",
+  accentWarmDeep: "#8d3d25",
+  accentDeep: "#1f3832",
+  accentGold: "#e6b85a",
+  mutedBar: "#6b7f78",
+  inkSubtle: "#8a938e",
+} as const;

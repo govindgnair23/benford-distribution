@@ -11,6 +11,7 @@ import {
 
 import { benfordProbability } from "../../lib/benford";
 import { firstDigitFrequencies } from "../../lib/diagnostics";
+import { editorialColors } from "../../styles/tokens";
 import { ChartFrame } from "./ChartFrame";
 
 interface FirstDigitChartProps {
@@ -40,8 +41,8 @@ export function FirstDigitChart({ firstDigits }: FirstDigitChartProps) {
           <YAxis unit="%" width={44} />
           <Tooltip />
           <Legend />
-          <Bar dataKey="observed" fill="#1f3832" radius={[3, 3, 0, 0]} />
-          <Bar dataKey="benford" fill="#e6b85a" radius={[3, 3, 0, 0]} />
+          <Bar dataKey="observed" fill={editorialColors.accentDeep} radius={[3, 3, 0, 0]} />
+          <Bar dataKey="benford" fill={editorialColors.accentGold} radius={[3, 3, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
       <ul className="sr-summary" aria-label="First digit frequency summary">

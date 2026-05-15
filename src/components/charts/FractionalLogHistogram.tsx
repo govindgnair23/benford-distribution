@@ -9,6 +9,7 @@ import {
 } from "recharts";
 
 import { histogram } from "../../lib/histograms";
+import { editorialColors } from "../../styles/tokens";
 import { ChartFrame } from "./ChartFrame";
 
 interface FractionalLogHistogramProps {
@@ -38,7 +39,7 @@ export function FractionalLogHistogram({ values }: FractionalLogHistogramProps) 
           <XAxis dataKey="range" tick={{ fontSize: 11 }} />
           <YAxis allowDecimals={false} width={44} />
           <Tooltip />
-          <Bar dataKey="count" fill="#d24b2a" radius={[3, 3, 0, 0]} />
+          <Bar dataKey="count" fill={editorialColors.accentWarm} radius={[3, 3, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </ChartFrame>

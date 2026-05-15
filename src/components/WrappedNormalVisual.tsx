@@ -15,6 +15,7 @@ import {
   wrappedDensityProfile,
   wrappedDensitySum
 } from "../lib/wrappedNormal";
+import { chartPalette, editorialColors } from "../styles/tokens";
 
 interface NormalCase {
   key: string;
@@ -30,9 +31,12 @@ interface NormalCase {
   pointSummary: string;
 }
 
+// R=0.2 uses series[2] (bluish green) and R=0.7 uses series[0] (blue) so the
+// legend reads canonical-Okabe-Ito; CSS swatches in .legend-swatch.point-two
+// and .legend-swatch.point-seven mirror this assignment.
 const residues = [
-  { value: 0.2, label: "R = 0.2", color: "#238457" },
-  { value: 0.7, label: "R = 0.7", color: "#2f66b1" }
+  { value: 0.2, label: "R = 0.2", color: chartPalette.series[2] },
+  { value: 0.7, label: "R = 0.7", color: chartPalette.series[0] }
 ];
 
 const cases: NormalCase[] = [
@@ -177,7 +181,7 @@ export function WrappedNormalVisual() {
                     type="monotone"
                     dataKey="density"
                     dot={false}
-                    stroke="#1f3832"
+                    stroke={editorialColors.accentDeep}
                     strokeWidth={2}
                     isAnimationActive={false}
                   />
@@ -223,14 +227,14 @@ export function WrappedNormalVisual() {
                     <Tooltip />
                     <ReferenceLine
                       y={1}
-                      stroke="#8a938e"
+                      stroke={editorialColors.inkSubtle}
                       strokeDasharray="4 4"
                     />
                     <Line
                       type="monotone"
                       dataKey="density"
                       dot
-                      stroke="#8d3d25"
+                      stroke={editorialColors.accentWarmDeep}
                       strokeWidth={2}
                       isAnimationActive={false}
                     />

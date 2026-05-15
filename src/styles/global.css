@@ -39,10 +39,6 @@
   --chart-gridline: #d9cdb8;                       /* gridlines (matches --border-card) */
   --chart-label:    #65716c;                       /* in-chart text */
 
-  /* ─── Legacy chart series (migrated when chart components consume the palette) ─── */
-  --legacy-series-green: #238457;                  /* WrappedNormal "0.2" sample */
-  --legacy-series-blue:  #2f66b1;                  /* WrappedNormal "0.7" sample */
-
   /* ─── Layout ─── */
   --page-max:      1180px;
   --space-section: 28px;
@@ -550,11 +546,11 @@ select:focus-visible {
 }
 
 .legend-swatch.point-two {
-  background: var(--legacy-series-green);
+  background: var(--chart-series-3);
 }
 
 .legend-swatch.point-seven {
-  background: var(--legacy-series-blue);
+  background: var(--chart-series-1);
 }
 
 .wrap-density-grid {
