@@ -23,7 +23,7 @@ export function BenfordApplet() {
             aria-pressed={page === "what"}
             onClick={() => setPage("what")}
           >
-            What is Benford's Law?
+            What it is
           </button>
           <button
             type="button"
@@ -31,7 +31,7 @@ export function BenfordApplet() {
             aria-pressed={page === "why"}
             onClick={() => setPage("why")}
           >
-            Why it Happens
+            Why it happens
           </button>
           <button
             type="button"

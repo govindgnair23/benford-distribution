@@ -59,6 +59,13 @@ export function LogHistogram({ values }: LogHistogramProps) {
           <Bar dataKey="count" fill={chartPalette.neutrals.axis} radius={[3, 3, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
+      <ul className="visually-hidden" aria-label="log10(X) histogram bin counts">
+        {bins.map((bin) => (
+          <li key={bin.range}>
+            {bin.range}: {bin.count} value{bin.count === 1 ? "" : "s"}
+          </li>
+        ))}
+      </ul>
     </ChartFrame>
   );
 }

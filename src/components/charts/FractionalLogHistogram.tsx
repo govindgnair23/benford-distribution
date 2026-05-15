@@ -55,6 +55,13 @@ export function FractionalLogHistogram({ values }: FractionalLogHistogramProps) 
           <Bar dataKey="count" fill={editorialColors.accentWarm} radius={[3, 3, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
+      <ul className="visually-hidden" aria-label="Fractional-log histogram bin counts">
+        {bins.map((bin) => (
+          <li key={bin.range}>
+            {bin.range}: {bin.count} value{bin.count === 1 ? "" : "s"}
+          </li>
+        ))}
+      </ul>
     </ChartFrame>
   );
 }

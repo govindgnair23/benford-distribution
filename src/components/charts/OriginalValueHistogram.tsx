@@ -60,6 +60,13 @@ export function OriginalValueHistogram({ values }: OriginalValueHistogramProps) 
           <Bar dataKey="count" fill={editorialColors.accentWarmDeep} radius={[3, 3, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
+      <ul className="visually-hidden" aria-label="Original-value histogram bin counts">
+        {bins.map((bin) => (
+          <li key={bin.range}>
+            {bin.range}: {bin.count} value{bin.count === 1 ? "" : "s"}
+          </li>
+        ))}
+      </ul>
     </ChartFrame>
   );
 }

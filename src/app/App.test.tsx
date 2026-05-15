@@ -96,7 +96,7 @@ describe("App", () => {
 
     await user.tab();
     expect(
-      screen.getByRole("button", { name: /what is benford's law/i })
+      screen.getByRole("button", { name: /^what it is$/i })
     ).toHaveFocus();
 
     await user.tab();

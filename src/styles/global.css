@@ -761,6 +761,21 @@ select:focus-visible {
   transition: border-color 120ms ease;
 }
 
+.control-panel select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 32px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='%2331423d'><polygon points='2,4 6,8 10,4'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px 12px;
+}
+
+.control-panel input[type="number"]::-webkit-inner-spin-button,
+.control-panel input[type="number"]::-webkit-outer-spin-button {
+  opacity: 0.55;
+}
+
 .control-panel input:hover,
 .control-panel select:hover {
   border-color: var(--ink-label);
@@ -883,6 +898,33 @@ select:focus-visible {
   color: var(--ink-body);
 }
 
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  border: 0;
+}
+
+@media (max-width: 1024px) {
+  .catalog-intro {
+    min-height: 240px;
+  }
+
+  .control-row,
+  .control-row:first-child,
+  .guidance-columns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .diagnostic-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 760px) {
   .app-shell {
     padding: 18px;
@@ -916,12 +958,15 @@ select:focus-visible {
   .control-row,
   .control-row:first-child,
   .guidance-columns,
-  .diagnostic-summary,
   .chart-grid,
   .what-grid,
   .comparison-band,
   .scenario-grid {
     grid-template-columns: 1fr;
+  }
+
+  .diagnostic-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
 }
