@@ -12,6 +12,7 @@ The system is **light-only**, editorial in tone, and intentionally calm: warm cr
 ## 1. Principles
 
 - **Editorial, not dashboard.** Treat applets like magazine spreads: a clear headline, a single column of reasoning, math that breathes. Avoid card-stuffing and visual density.
+- **Restrained type scale.** Display headlines top out around 3rem (~48px), section titles around 2.5rem (~40px), the topbar around 2rem (~32px). The editorial weight comes from Georgia serif + air + hairline rules, not from oversized type. Don't introduce headings larger than `--type-display`.
 - **Hairlines over shadows.** Separation comes from 1px borders and surface contrast, never from drop shadows or elevation.
 - **Sharp corners.** `border-radius: 0` everywhere. The exception is bar charts, which use a small top-corner radius (`[3, 3, 0, 0]`) for legibility.
 - **Calm motion.** No animation on load, no parallax. Recharts components disable `isAnimationActive`. Respect `prefers-reduced-motion`.
@@ -97,9 +98,9 @@ Use these for *data series* — anything that varies across applets, parameters,
 | ---------------- | ----------------------------------------------- | --------------------------------------------- |
 | `--font-serif`   | `Georgia, "Times New Roman", serif`             | All headlines and editorial display           |
 | `--font-mono`    | `"SFMono-Regular", Consolas, ..., monospace`    | Inline formulas, code                         |
-| `--type-display` | `clamp(2.2rem, 4.4vw, 4.75rem)`                 | Catalog/applet/intro big headlines            |
-| `--type-section-title` | `clamp(2rem, 3.8vw, 4rem)`                | Tab/page section headlines                    |
-| `--type-topbar`  | `clamp(1.9rem, 3.2vw, 3.5rem)`                  | Topbar h1                                     |
+| `--type-display` | `clamp(1.85rem, 3.4vw, 3rem)`                   | Catalog/applet/intro big headlines (top ~48px) |
+| `--type-section-title` | `clamp(1.65rem, 2.8vw, 2.5rem)`           | Tab/page section headlines (top ~40px)        |
+| `--type-topbar`  | `clamp(1.4rem, 2.2vw, 2rem)`                    | Topbar h1 (top ~32px)                         |
 
 Body text is sans-serif (Avenir Next + system fallbacks, set on `:root`). Use `--type-display` only for top-level applet/catalog identity headlines, and use `--type-section-title` for tab/page titles such as lab headers.
 
