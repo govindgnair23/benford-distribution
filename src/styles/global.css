@@ -187,19 +187,6 @@ select:focus-visible {
   padding: 0 16px;
 }
 
-.applet-card.is-upcoming {
-  opacity: 0.65;
-}
-
-.applet-card .applet-status {
-  margin: 0;
-  color: var(--accent-warm-deep);
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
 .applet-area {
   color: var(--accent-warm-deep);
   font-size: 0.78rem;
