@@ -25,6 +25,7 @@ export function OriginalValueHistogram({ values }: OriginalValueHistogramProps) 
     min: min - padding,
     max: max + padding
   }).map((bin) => ({
+    label: formatValue((bin.start + bin.end) / 2),
     range: `${formatValue(bin.start)}-${formatValue(bin.end)}`,
     count: bin.count
   }));
@@ -35,9 +36,14 @@ export function OriginalValueHistogram({ values }: OriginalValueHistogramProps) 
       summary="This is the original-value distribution before taking logs."
     >
       <ResponsiveContainer width="100%" height={220}>
-        <BarChart data={bins} margin={{ top: 10, right: 10, bottom: 4, left: 0 }}>
+        <BarChart data={bins} margin={{ top: 10, right: 10, bottom: 22, left: 0 }}>
           <CartesianGrid strokeDasharray="3 3" vertical={false} />
-          <XAxis dataKey="range" hide />
+          <XAxis
+            dataKey="label"
+            interval={3}
+            minTickGap={10}
+            tick={{ fontSize: 11 }}
+          />
           <YAxis allowDecimals={false} width={44} />
           <Tooltip />
           <Bar dataKey="count" fill="#8d3d25" radius={[3, 3, 0, 0]} />

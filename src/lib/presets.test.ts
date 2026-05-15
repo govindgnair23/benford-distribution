@@ -3,18 +3,16 @@ import { describe, expect, it } from "vitest";
 import { presets } from "./presets";
 
 describe("presets", () => {
-  it("provides Normal-space guided scenarios with increasing width", () => {
+  it("provides lognormal guided scenarios with increasing log width", () => {
     expect(presets.narrow.mode).toBe("direct");
-    expect(presets.narrow.direct.standardDeviation).toBeLessThan(
-      presets.transitional.direct.standardDeviation
+    expect(presets.narrow.direct.sigma).toBeLessThan(
+      presets.transitional.direct.sigma
     );
-    expect(presets.transitional.direct.standardDeviation).toBeLessThan(
-      presets.wide.direct.standardDeviation
+    expect(presets.transitional.direct.sigma).toBeLessThan(
+      presets.wide.direct.sigma
     );
-    expect(presets.narrow.direct.mean).toBeGreaterThan(0);
-    expect(presets.wide.direct.standardDeviation).toBeGreaterThan(
-      presets.wide.direct.mean
-    );
+    expect(presets.narrow.direct.mu).toBe(3.2);
+    expect(presets.wide.direct.sigma).toBeGreaterThan(1);
   });
 
   it("provides multiplicative presets with regular-space factor inputs", () => {

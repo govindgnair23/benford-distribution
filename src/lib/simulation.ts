@@ -9,9 +9,9 @@ export interface SimulatedSample {
   logWidth: number;
 }
 
-export interface OriginalNormalConfig {
-  mean: number;
-  standardDeviation: number;
+export interface DirectLognormalConfig {
+  mu: number;
+  sigma: number;
   sampleSize: number;
   seed: number;
 }
@@ -25,21 +25,18 @@ export interface MultiplicativeGrowthConfig {
   seed: number;
 }
 
-export function simulateOriginalNormal(
-  config: OriginalNormalConfig
+export function simulateDirectLognormal(
+  config: DirectLognormalConfig
 ): SimulatedSample {
   validateSampleSize(config.sampleSize);
-  validatePositive(config.mean, "mean");
-  validateNonNegative(config.standardDeviation, "standardDeviation");
+  validateNonNegative(config.sigma, "sigma");
 
   const random = createSeededRandom(config.seed);
-  const values = positiveNormalSamples({
-    mean: config.mean,
-    standardDeviation: config.standardDeviation,
-    sampleSize: config.sampleSize,
-    random
-  });
-  const logSamples = values.map((value) => Math.log10(value));
+  const logSamples = Array.from(
+    { length: config.sampleSize },
+    () => config.mu + config.sigma * normalRandom(random)
+  );
+  const values = logSamples.map(valueFromLog10);
 
   return summarizeSamples(values, logSamples);
 }

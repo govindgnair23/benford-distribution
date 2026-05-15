@@ -6,7 +6,7 @@ import { SimulationControls } from "./SimulationControls";
 import { presets } from "../lib/presets";
 
 describe("SimulationControls", () => {
-  it("presents original Normal model presets with learner definitions", () => {
+  it("presents lognormal model presets with learner definitions", () => {
     render(
       <SimulationControls
         config={presets.narrow}
@@ -18,7 +18,7 @@ describe("SimulationControls", () => {
 
     expect(screen.getByLabelText(/model/i)).toHaveValue("direct");
     expect(
-      screen.getByRole("option", { name: /normal original-values model/i })
+      screen.getByRole("option", { name: /lognormal model/i })
     ).toBeInTheDocument();
     expect(
       screen.getByRole("option", { name: /multiplicative growth model/i })
@@ -26,11 +26,11 @@ describe("SimulationControls", () => {
     expect(screen.getByRole("option", { name: /^narrow$/i })).toBeInTheDocument();
     expect(screen.getByRole("option", { name: /^transitional$/i })).toBeInTheDocument();
     expect(screen.getByRole("option", { name: /^wide$/i })).toBeInTheDocument();
-    expect(screen.getByLabelText(/mean/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/standard deviation/i)).toBeInTheDocument();
-    expect(screen.getByText(/values cluster tightly around the mean/i)).toBeInTheDocument();
-    expect(screen.getByText(/first digits start shifting/i)).toBeInTheDocument();
-    expect(screen.getByText(/values span multiple orders of magnitude/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^mu$/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^sigma$/i)).toBeInTheDocument();
+    expect(screen.getByText(/log10\(X\) values cluster tightly/i)).toBeInTheDocument();
+    expect(screen.getByText(/log10\(X\) starts spreading/i)).toBeInTheDocument();
+    expect(screen.getByText(/log10\(X\) spans many orders/i)).toBeInTheDocument();
   });
 
   it("switches to the multiplicative preset when the multiplicative model is selected", async () => {

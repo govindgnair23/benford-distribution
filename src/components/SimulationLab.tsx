@@ -8,7 +8,7 @@ import {
   type PresetKey
 } from "../lib/presets";
 import {
-  simulateOriginalNormal,
+  simulateDirectLognormal,
   simulateMultiplicativeGrowth
 } from "../lib/simulation";
 import { DiagnosticSummary } from "./DiagnosticSummary";
@@ -23,7 +23,7 @@ export function SimulationLab() {
 
   const sample = useMemo(() => {
     if (config.mode === "direct") {
-      return simulateOriginalNormal(config.direct);
+      return simulateDirectLognormal(config.direct);
     }
     return simulateMultiplicativeGrowth(config.multiplicative);
   }, [config]);

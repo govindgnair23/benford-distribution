@@ -1,38 +1,29 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  simulateOriginalNormal,
+  simulateDirectLognormal,
   simulateMultiplicativeGrowth
 } from "./simulation";
 
 describe("simulation", () => {
-  it("returns positive original Normal samples and matching log samples", () => {
-    const result = simulateOriginalNormal({
-      mean: 1000,
-      standardDeviation: 100,
+  it("samples log10(X) directly and derives X by exponentiating", () => {
+    const result = simulateDirectLognormal({
+      mu: 3.2,
+      sigma: 0.1,
       sampleSize: 3,
       seed: 12
     });
 
     expect(result.values).toHaveLength(3);
     expect(result.values.every((value) => value > 0)).toBe(true);
-    expect(result.logSamples).toEqual(
-      result.values.map((value) => expect.closeTo(Math.log10(value), 12))
+    expect(result.logSamples).toEqual([
+      expect.closeTo(3.340256, 5),
+      expect.closeTo(3.297347, 5),
+      expect.closeTo(3.393129, 5)
+    ]);
+    expect(result.values).toEqual(
+      result.logSamples.map((logValue) => expect.closeTo(10 ** logValue, 8))
     );
-    expect(result.fractionalLogs).toHaveLength(3);
-    expect(result.firstDigits).toHaveLength(3);
-  });
-
-  it("rejects nonpositive Normal samples until the requested sample size is reached", () => {
-    const result = simulateOriginalNormal({
-      mean: 1,
-      standardDeviation: 10,
-      sampleSize: 100,
-      seed: 3
-    });
-
-    expect(result.values).toHaveLength(100);
-    expect(result.values.every((value) => value > 0)).toBe(true);
   });
 
   it("widens multiplicative growth as steps and volatility increase", () => {

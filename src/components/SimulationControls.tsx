@@ -16,7 +16,7 @@ export function SimulationControls({
   onRerun
 }: SimulationControlsProps) {
   const active = config.mode === "direct" ? config.direct : config.multiplicative;
-  const normalPreset =
+  const lognormalPreset =
     config.preset === "multiplicative" ? "narrow" : config.preset;
 
   function updateMode(event: ChangeEvent<HTMLSelectElement>) {
@@ -26,7 +26,7 @@ export function SimulationControls({
       return;
     }
 
-    onPresetChange(normalPreset);
+    onPresetChange(lognormalPreset);
   }
 
   function updateDirect(field: keyof LabConfig["direct"], value: number) {
@@ -52,16 +52,16 @@ export function SimulationControls({
         <label>
           Model
           <select value={config.mode} onChange={updateMode}>
-            <option value="direct">Normal original-values model</option>
+            <option value="direct">Lognormal model</option>
             <option value="multiplicative">Multiplicative growth model</option>
           </select>
         </label>
 
         {config.mode === "direct" ? (
           <label>
-            Normal preset
+            Lognormal preset
             <select
-              value={normalPreset}
+              value={lognormalPreset}
               onChange={(event) => onPresetChange(event.target.value as PresetKey)}
             >
               <option value="narrow">Narrow</option>
@@ -75,20 +75,21 @@ export function SimulationControls({
       </div>
 
       {config.mode === "direct" ? (
-        <section className="model-guidance" aria-label="Normal preset definitions">
-          <h3>Normal presets</h3>
+        <section className="model-guidance" aria-label="Lognormal preset definitions">
+          <h3>Lognormal presets</h3>
           <div className="guidance-columns">
             <p>
-              <strong>Narrow:</strong> values cluster tightly around the mean,
-              so log(X) is narrow and Benford usually does not appear.
+              <strong>Narrow:</strong> log10(X) values cluster tightly, so the
+              X values stay within a small scale range and Benford usually does
+              not appear.
             </p>
             <p>
-              <strong>Transitional:</strong> values spread enough that first
-              digits start shifting, but fractional logs still show structure.
+              <strong>Transitional:</strong> log10(X) starts spreading across
+              more of the log scale, but fractional logs still show structure.
             </p>
             <p>
-              <strong>Wide:</strong> positive values span multiple orders of
-              magnitude, so fractional logs can become closer to uniform.
+              <strong>Wide:</strong> log10(X) spans many orders of magnitude,
+              so fractional logs can become closer to uniform.
             </p>
           </div>
         </section>
@@ -137,26 +138,26 @@ export function SimulationControls({
         {config.mode === "direct" ? (
           <>
             <label>
-              Mean
+              Mu
               <input
                 type="number"
-                min="0.01"
-                step="10"
-                value={config.direct.mean}
+                step="0.1"
+                value={config.direct.mu}
                 onChange={(event) =>
-                  updateDirect("mean", Number(event.target.value))
+                  updateDirect("mu", Number(event.target.value))
                 }
               />
             </label>
             <label>
-              Standard deviation
+              Sigma
               <input
                 type="number"
                 min="0"
-                step="10"
-                value={config.direct.standardDeviation}
+                max="5"
+                step="0.01"
+                value={config.direct.sigma}
                 onChange={(event) =>
-                  updateDirect("standardDeviation", Number(event.target.value))
+                  updateDirect("sigma", Number(event.target.value))
                 }
               />
             </label>
