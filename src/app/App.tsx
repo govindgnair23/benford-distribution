@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 
-import { availableApplets } from "./applets";
+import { availableApplets, upcomingApplets } from "./applets";
 
 export function App() {
   const [selectedAppletId, setSelectedAppletId] = useState<string | null>(null);
@@ -58,6 +58,18 @@ export function App() {
                   >
                     Open {applet.title}
                   </button>
+                </article>
+              ))}
+              {upcomingApplets.map((applet) => (
+                <article
+                  className="applet-card is-upcoming"
+                  key={applet.id}
+                  aria-disabled="true"
+                >
+                  <p className="applet-area">{applet.conceptArea}</p>
+                  <h3>{applet.title}</h3>
+                  <p>{applet.subtitle}</p>
+                  <p className="applet-status">Coming soon</p>
                 </article>
               ))}
             </div>

@@ -7,13 +7,15 @@ interface SimulationControlsProps {
   onChange: (config: LabConfig) => void;
   onPresetChange: (preset: PresetKey) => void;
   onRerun: () => void;
+  isRegenerating?: boolean;
 }
 
 export function SimulationControls({
   config,
   onChange,
   onPresetChange,
-  onRerun
+  onRerun,
+  isRegenerating = false
 }: SimulationControlsProps) {
   const active = config.mode === "direct" ? config.direct : config.multiplicative;
   const lognormalPreset =
@@ -222,7 +224,12 @@ export function SimulationControls({
           </>
         )}
 
-        <button type="button" className="secondary-action" onClick={onRerun}>
+        <button
+          type="button"
+          className="secondary-action"
+          onClick={onRerun}
+          disabled={isRegenerating}
+        >
           Rerun sample
         </button>
       </div>

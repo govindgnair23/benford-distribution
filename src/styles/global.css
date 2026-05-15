@@ -187,6 +187,19 @@ select:focus-visible {
   padding: 0 16px;
 }
 
+.applet-card.is-upcoming {
+  opacity: 0.65;
+}
+
+.applet-card .applet-status {
+  margin: 0;
+  color: var(--accent-warm-deep);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .applet-area {
   color: var(--accent-warm-deep);
   font-size: 0.78rem;
@@ -195,10 +208,9 @@ select:focus-visible {
 }
 
 .applet-heading {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 24px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
   margin-bottom: 32px;
 }
 
@@ -219,6 +231,12 @@ select:focus-visible {
   background: transparent;
   color: var(--ink-body);
   cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.page-tabs button:hover {
+  background: var(--surface-sunken);
+  color: var(--ink-strong);
 }
 
 .page-tabs button.active {
@@ -740,6 +758,17 @@ select:focus-visible {
   background: var(--surface-input);
   color: var(--ink-strong);
   font: inherit;
+  transition: border-color 120ms ease;
+}
+
+.control-panel input:hover,
+.control-panel select:hover {
+  border-color: var(--ink-label);
+}
+
+.control-panel input:focus,
+.control-panel select:focus {
+  border-color: var(--accent-warm);
 }
 
 .secondary-action {
@@ -749,6 +778,13 @@ select:focus-visible {
   color: var(--ink-on-accent);
   cursor: pointer;
   font-weight: 800;
+  transition: opacity 120ms ease;
+}
+
+.secondary-action:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .control-row .secondary-action {
@@ -779,6 +815,32 @@ select:focus-visible {
   grid-column: 1 / -1;
   margin: 0;
   color: var(--ink-body);
+}
+
+.diagnostic-summary .seed-readout {
+  margin-left: 8px;
+  padding-left: 10px;
+  border-left: 1px solid var(--border-card);
+  color: var(--ink-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.diagnostic-summary .seed-readout strong {
+  margin-left: 4px;
+  color: var(--ink-strong);
+  font-size: 0.95rem;
+}
+
+.diagnostic-summary strong small {
+  margin-left: 4px;
+  color: var(--ink-muted);
+  font-size: 0.7em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .chart-grid {

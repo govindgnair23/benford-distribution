@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
 
 import { evaluateSample } from "../lib/diagnostics";
 import {
@@ -20,6 +20,7 @@ import { OriginalValueHistogram } from "./charts/OriginalValueHistogram";
 
 export function SimulationLab() {
   const [config, setConfig] = useState<LabConfig>(() => clonePreset("narrow"));
+  const [isRegenerating, startRegen] = useTransition();
 
   const sample = useMemo(() => {
     if (config.mode === "direct") {
@@ -37,24 +38,26 @@ export function SimulationLab() {
   }
 
   function handleRerun() {
-    setConfig((current) => {
-      if (current.mode === "direct") {
+    startRegen(() => {
+      setConfig((current) => {
+        if (current.mode === "direct") {
+          return {
+            ...current,
+            direct: {
+              ...current.direct,
+              seed: nextSeed(current.direct.seed)
+            }
+          };
+        }
+
         return {
           ...current,
-          direct: {
-            ...current.direct,
-            seed: nextSeed(current.direct.seed)
+          multiplicative: {
+            ...current.multiplicative,
+            seed: nextSeed(current.multiplicative.seed)
           }
         };
-      }
-
-      return {
-        ...current,
-        multiplicative: {
-          ...current.multiplicative,
-          seed: nextSeed(current.multiplicative.seed)
-        }
-      };
+      });
     });
   }
 
@@ -75,6 +78,7 @@ export function SimulationLab() {
           onChange={setConfig}
           onPresetChange={handlePresetChange}
           onRerun={handleRerun}
+          isRegenerating={isRegenerating}
         />
         <DiagnosticSummary
           diagnostics={diagnostics}
