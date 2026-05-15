@@ -1,0 +1,28 @@
+// Mirrors the chart subset of `:root` in src/styles/global.css. Keep in sync.
+// CSS variables remain the visual source of truth for stylesheet rules;
+// this module exposes typed string constants for Recharts components, which
+// consume colors as JS string props.
+
+export const chartPalette = {
+  // Okabe-Ito ordered series — distinguishable under deuteranopia, protanopia,
+  // and tritanopia. See https://jfly.uni-koeln.de/color/ and the design system doc.
+  series: ["#0072b2", "#d55e00", "#009e73", "#cc79a7"] as const,
+
+  regionFill: {
+    cool: "rgba(31, 56, 50, 0.14)",
+    warm: "rgba(210, 75, 42, 0.14)",
+  },
+
+  diverging: {
+    positive: "#0072b2",
+    negative: "#d55e00",
+  },
+
+  neutrals: {
+    axis: "#65716c",
+    gridline: "#d9cdb8",
+    label: "#65716c",
+  },
+} as const;
+
+export type ChartSeriesIndex = 0 | 1 | 2 | 3;

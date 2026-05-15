@@ -26,7 +26,20 @@
   --border-card:     #d9cdb8;                      /* card borders */
   --border-input:    #b9aa93;                      /* form input borders */
 
-  /* ─── Legacy chart series (migrated when chart palette lands) ─── */
+  /* ─── Chart palette (Okabe-Ito ordered series, color-blind-safe) ─── */
+  --chart-series-1: #0072b2;                       /* primary / posterior / sample */
+  --chart-series-2: #d55e00;                       /* secondary / likelihood / population */
+  --chart-series-3: #009e73;                       /* tertiary / prior / reference */
+  --chart-series-4: #cc79a7;                       /* quaternary / additional overlay */
+  --chart-region-cool: rgba(31, 56, 50, 0.14);     /* CI bands, selected regions */
+  --chart-region-warm: rgba(210, 75, 42, 0.14);    /* rejection regions, highlights */
+  --chart-diverging-positive: #0072b2;             /* mirrors --chart-series-1 */
+  --chart-diverging-negative: #d55e00;             /* mirrors --chart-series-2 */
+  --chart-axis:     #65716c;                       /* axis lines, tick labels */
+  --chart-gridline: #d9cdb8;                       /* gridlines (matches --border-card) */
+  --chart-label:    #65716c;                       /* in-chart text */
+
+  /* ─── Legacy chart series (migrated when chart components consume the palette) ─── */
   --legacy-series-green: #238457;                  /* WrappedNormal "0.2" sample */
   --legacy-series-blue:  #2f66b1;                  /* WrappedNormal "0.7" sample */
 
