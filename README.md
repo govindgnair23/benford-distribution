@@ -1,8 +1,10 @@
-# Benford Emergence Lab
+# StatQuest
 
-Interactive browser applet for understanding what Benford's Law says, why it can appear, and when it does not.
+Interactive browser applet library for exploring statistics, probability, and data intuition.
 
-The app has three tabs:
+The first available applet is Benford Emergence Lab, an interactive browser applet for understanding what Benford's Law says, why it can appear, and when it does not.
+
+The Benford applet has three tabs:
 
 1. What is Benford's Law? Define the first-digit PMF, show the decreasing histogram, and calculate why `P(D = 1)` is about 30.1%.
 2. Why it Happens. Walk through the log-scale argument with LaTeX-rendered formulas: decomposition, fractional logs, products-to-sums, and wide Normal wrapping.

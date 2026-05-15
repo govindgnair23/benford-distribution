@@ -1,7 +1,7 @@
 {
-  "name": "benford_distribution",
+  "name": "statquest",
   "version": "1.0.0",
-  "description": "Interactive Benford's Law emergence applet",
+  "description": "Interactive statistics applet library",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",

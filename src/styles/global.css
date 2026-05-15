@@ -52,6 +52,13 @@ select:focus-visible {
   letter-spacing: 0;
 }
 
+.topbar-summary {
+  max-width: 620px;
+  margin: 12px 0 0;
+  color: #3f4d48;
+  font-size: 1.02rem;
+}
+
 .eyebrow {
   margin: 0 0 8px;
   color: #8d3d25;
@@ -59,6 +66,85 @@ select:focus-visible {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.applet-catalog,
+.applet-heading {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.catalog-intro {
+  min-height: 320px;
+  display: grid;
+  align-content: center;
+  border-top: 1px solid #cdbfa8;
+  border-bottom: 1px solid #cdbfa8;
+}
+
+.catalog-intro h2,
+.applet-heading h2 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2.4rem, 6vw, 6rem);
+  line-height: 0.98;
+  letter-spacing: 0;
+}
+
+.catalog-intro p:last-child {
+  max-width: 760px;
+  margin: 18px 0 0;
+  color: #3f4d48;
+  font-size: clamp(1rem, 1.6vw, 1.35rem);
+}
+
+.applet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+  margin-top: 22px;
+}
+
+.applet-card {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  padding: 22px;
+  background: #fffaf1;
+  border: 1px solid #d9cdb8;
+}
+
+.applet-card h3 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.5rem;
+  letter-spacing: 0;
+}
+
+.applet-card p {
+  margin: 0;
+  color: #3f4d48;
+}
+
+.applet-card .secondary-action {
+  justify-self: start;
+  margin-top: 8px;
+  padding: 0 16px;
+}
+
+.applet-area {
+  color: #8d3d25;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.applet-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 32px;
 }
 
 .page-tabs {
@@ -689,6 +775,14 @@ select:focus-visible {
   }
 
   .topbar {
+    display: block;
+  }
+
+  .topbar .secondary-action {
+    margin-top: 18px;
+  }
+
+  .applet-heading {
     display: block;
   }
 

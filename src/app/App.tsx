@@ -1,52 +1,68 @@
-import { useState } from "react";
-import { ExplainerPage } from "../components/ExplainerPage";
-import { SimulationLab } from "../components/SimulationLab";
-import { WhatIsBenfordPage } from "../components/WhatIsBenfordPage";
+import { useMemo, useState } from "react";
 
-type Page = "what" | "why" | "simulations";
+import { availableApplets } from "./applets";
 
 export function App() {
-  const [page, setPage] = useState<Page>("what");
+  const [selectedAppletId, setSelectedAppletId] = useState<string | null>(null);
+  const selectedApplet = useMemo(
+    () => availableApplets.find((applet) => applet.id === selectedAppletId),
+    [selectedAppletId]
+  );
+  const SelectedApplet = selectedApplet?.component;
 
   return (
     <div className="app-shell">
       <header className="topbar">
         <div>
-          <p className="eyebrow">Interactive probability applet</p>
-          <h1>Benford Emergence Lab</h1>
+          <p className="eyebrow">Interactive statistics applets</p>
+          <h1>StatQuest</h1>
+          <p className="topbar-summary">
+            A growing library of compact labs for exploring statistics,
+            probability, and data intuition.
+          </p>
         </div>
-        <nav className="page-tabs" aria-label="Primary pages">
+        {selectedApplet ? (
           <button
             type="button"
-            className={page === "what" ? "active" : ""}
-            aria-pressed={page === "what"}
-            onClick={() => setPage("what")}
+            className="secondary-action"
+            onClick={() => setSelectedAppletId(null)}
           >
-            What is Benford's Law?
+            Back to applet library
           </button>
-          <button
-            type="button"
-            className={page === "why" ? "active" : ""}
-            aria-pressed={page === "why"}
-            onClick={() => setPage("why")}
-          >
-            Why it Happens
-          </button>
-          <button
-            type="button"
-            className={page === "simulations" ? "active" : ""}
-            aria-pressed={page === "simulations"}
-            onClick={() => setPage("simulations")}
-          >
-            Simulations
-          </button>
-        </nav>
+        ) : null}
       </header>
 
       <main>
-        {page === "what" ? <WhatIsBenfordPage /> : null}
-        {page === "why" ? <ExplainerPage /> : null}
-        {page === "simulations" ? <SimulationLab /> : null}
+        {SelectedApplet ? (
+          <SelectedApplet />
+        ) : (
+          <section className="applet-catalog" aria-labelledby="catalog-title">
+            <div className="catalog-intro">
+              <p className="eyebrow">Choose an applet</p>
+              <h2 id="catalog-title">Applet Library</h2>
+              <p>
+                Each StatQuest applet is a focused workspace for one statistical
+                idea, with explanation, visuals, and direct experimentation.
+              </p>
+            </div>
+            <div className="applet-grid">
+              {availableApplets.map((applet) => (
+                <article className="applet-card" key={applet.id}>
+                  <p className="applet-area">{applet.conceptArea}</p>
+                  <h3>{applet.title}</h3>
+                  <p>{applet.subtitle}</p>
+                  <button
+                    type="button"
+                    className="secondary-action"
+                    onClick={() => setSelectedAppletId(applet.id)}
+                  >
+                    Open {applet.title}
+                  </button>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
       </main>
     </div>
   );

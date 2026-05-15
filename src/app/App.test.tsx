@@ -5,37 +5,54 @@ import { describe, expect, it } from "vitest";
 import { App } from "./App";
 
 describe("App", () => {
-  it("renders the shell with all three primary tabs", () => {
+  it("renders the StatQuest shell with the applet catalog", () => {
     render(<App />);
 
     expect(
-      screen.getByRole("heading", { name: /benford emergence lab/i })
+      screen.getByRole("heading", { name: /statquest/i })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: /what is benford's law/i })
+      screen.getByRole("heading", { name: /applet library/i })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: /why it happens/i })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: /simulations/i })
+      screen.getByRole("button", { name: /open benford emergence lab/i })
     ).toBeInTheDocument();
   });
 
-  it("starts on the definition tab before the mechanism", () => {
+  it("starts on the catalog instead of inside the Benford applet", () => {
     render(<App />);
+
+    expect(
+      screen.getByRole("heading", { name: /applet library/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: /what is benford's law/i })
+    ).not.toBeInTheDocument();
+  });
+
+  it("opens Benford as the first available applet", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(
+      screen.getByRole("button", { name: /open benford emergence lab/i })
+    );
 
     expect(
       screen.getByRole("heading", { name: /what is benford's law/i })
     ).toBeInTheDocument();
     expect(
-      screen.queryByRole("heading", { name: /why benford happens/i })
-    ).not.toBeInTheDocument();
+      screen.getByRole("button", { name: /back to applet library/i })
+    ).toBeInTheDocument();
   });
 
-  it("switches between the definition, explainer, and simulations without navigation", async () => {
+  it("preserves Benford's internal definition, explainer, and simulation tabs", async () => {
     const user = userEvent.setup();
     render(<App />);
+
+    await user.click(
+      screen.getByRole("button", { name: /open benford emergence lab/i })
+    );
 
     expect(
       screen.getByRole("heading", { name: /what is benford's law/i })
@@ -60,9 +77,22 @@ describe("App", () => {
     ).toBeInTheDocument();
   });
 
-  it("supports keyboard switching between pages", async () => {
+  it("supports keyboard use from the catalog into Benford tabs", async () => {
     const user = userEvent.setup();
     render(<App />);
+
+    await user.tab();
+    expect(screen.getByRole("button", { name: /open benford/i })).toHaveFocus();
+    await user.keyboard("{Enter}");
+
+    expect(
+      screen.getByRole("heading", { name: /what is benford's law/i })
+    ).toBeInTheDocument();
+
+    await user.tab();
+    expect(
+      screen.getByRole("button", { name: /back to applet library/i })
+    ).toHaveFocus();
 
     await user.tab();
     expect(
