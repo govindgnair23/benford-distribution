@@ -12,6 +12,10 @@ The Benford applet has three tabs:
 
 The core idea is that Benford-like first digits appear when `{log10(X)}` becomes nearly uniform. Wide log distributions help, but the fractional-log histogram is the direct diagnostic.
 
+## Design System
+
+The visual language for all StatQuest applets — tokens, patterns, chart palette, and the "How to add an applet" checklist — is documented in [`docs/design-system.md`](docs/design-system.md). Read it before adding or modifying an applet.
+
 ## Local Development
 
 Install dependencies:

@@ -20,6 +20,10 @@ Use TypeScript and React function components. Follow the existing style: two-spa
 
 Keep domain calculations in `src/lib/` rather than embedding them in components. Components should focus on rendering, interaction state, and wiring.
 
+## Design System
+
+When adding or modifying applets, read [`docs/design-system.md`](docs/design-system.md) first. Reuse the documented patterns (HeroBand, DefinitionPanel, MathStep, FormulaBlock, ChartFrame, ControlPanel, etc.) and the tokens defined on `:root` in `src/styles/global.css`. Chart components read colors from `src/styles/tokens.ts` — never inline hex literals. If you need a new color, spacing, or pattern, add a token and document the role before using it.
+
 ## Testing Guidelines
 
 Use Vitest with the jsdom environment and Testing Library for React behavior. Follow red-green TDD when implementing behavior or domain logic: write a failing test first, make the smallest change that passes, then refactor. UI edits, especially visual-only styling and layout changes, do not need red-green TDD. Name tests after the unit or component being exercised, for example `src/lib/simulation.test.ts` or `src/components/SimulationLab.test.tsx`.

@@ -44,7 +44,11 @@ React components that render and wire up the domain lib. Chart components live i
 
 ### Styling
 
-Single file: `src/styles/global.css`. No CSS modules or utility framework.
+Single file: `src/styles/global.css`. No CSS modules or utility framework. Every color, surface, border, spacing, and shared type value is a semantic CSS custom property on `:root` (`--surface-*`, `--ink-*`, `--accent-*`, `--border-*`, `--space-*`, `--type-*`, `--chart-*`). Chart components read colors from `src/styles/tokens.ts` (`chartPalette`, `editorialColors`) — never inline hex literals.
+
+### Design system
+
+**Read [`docs/design-system.md`](docs/design-system.md) before adding or modifying any applet.** It documents principles, the token reference, the pattern catalog (HeroBand, DefinitionPanel, MathStep, FormulaBlock, ChartFrame, ControlPanel, etc.), the chart palette (Okabe-Ito ordered series + region fills + diverging pair), the WCAG AA contrast audit, and a "How to add an applet" checklist. Propose new tokens there before inlining any literal.
 
 ## Testing
 
