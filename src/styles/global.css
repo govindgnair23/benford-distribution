@@ -1,6 +1,51 @@
 :root {
-  color: #18211f;
-  background: #f6f1e8;
+  /* ─── Surfaces ─── */
+  --surface-canvas: #f6f1e8;                       /* page background */
+  --surface-card:   #fffaf1;                       /* card/panel surface; also ink-on-accent */
+  --surface-sunken: #f8efe0;                       /* sub-card, scenario tile, density block */
+  --surface-input:  #fffdf8;                       /* form input background */
+
+  /* ─── Ink ─── */
+  --ink-strong:    #18211f;                        /* primary body & display text */
+  --ink-body:      #3f4d48;                        /* prose, paragraph copy */
+  --ink-label:     #31423d;                        /* form labels */
+  --ink-muted:     #65716c;                        /* chart captions, diagnostic labels */
+  --ink-on-accent: #fffaf1;                        /* text on dark/warm accent surfaces */
+
+  /* ─── Accents ─── */
+  --accent-warm:       #d24b2a;                    /* focus, primary action bg, formula border */
+  --accent-warm-deep:  #8d3d25;                    /* eyebrow, applet-area label */
+  --accent-warm-text:  #7b402b;                    /* warm caption text on light surfaces */
+  --accent-deep:       #1f3832;                    /* deep editorial accent, active tab bg */
+  --accent-deep-soft:  rgba(31, 56, 50, 0.24);     /* 24%-alpha deep, for inner dividers */
+  --accent-gold-light: #f4d481;                    /* gold-gradient start */
+  --accent-gold-deep:  #e69d58;                    /* gold-gradient end */
+
+  /* ─── Borders ─── */
+  --border-hairline: #cdbfa8;                      /* section dividers */
+  --border-card:     #d9cdb8;                      /* card borders */
+  --border-input:    #b9aa93;                      /* form input borders */
+
+  /* ─── Legacy chart series (migrated when chart palette lands) ─── */
+  --legacy-series-green: #238457;                  /* WrappedNormal "0.2" sample */
+  --legacy-series-blue:  #2f66b1;                  /* WrappedNormal "0.7" sample */
+
+  /* ─── Layout ─── */
+  --page-max:      1180px;
+  --space-section: 28px;
+  --space-card:    22px;
+  --space-panel:   18px;
+  --space-control: 14px;
+
+  /* ─── Type ─── */
+  --font-serif:   Georgia, "Times New Roman", serif;
+  --font-mono:    "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --type-display: clamp(2.4rem, 6vw, 6rem);        /* catalog/applet/intro big headlines */
+  --type-topbar:  clamp(2rem, 4vw, 4.5rem);        /* topbar h1 */
+
+  /* ─── Root inheritance ─── */
+  color: var(--ink-strong);
+  background: var(--surface-canvas);
   font-family:
     "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   font-synthesis: none;
@@ -26,13 +71,13 @@ button:focus-visible,
 a:focus-visible,
 input:focus-visible,
 select:focus-visible {
-  outline: 3px solid #d24b2a;
+  outline: 3px solid var(--accent-warm);
   outline-offset: 3px;
 }
 
 .app-shell {
   min-height: 100vh;
-  padding: 28px;
+  padding: var(--space-section);
 }
 
 .topbar {
@@ -40,14 +85,14 @@ select:focus-visible {
   align-items: flex-start;
   justify-content: space-between;
   gap: 24px;
-  max-width: 1180px;
+  max-width: var(--page-max);
   margin: 0 auto 32px;
 }
 
 .topbar h1 {
   margin: 0;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(2rem, 4vw, 4.5rem);
+  font-family: var(--font-serif);
+  font-size: var(--type-topbar);
   line-height: 0.98;
   letter-spacing: 0;
 }
@@ -55,13 +100,13 @@ select:focus-visible {
 .topbar-summary {
   max-width: 620px;
   margin: 12px 0 0;
-  color: #3f4d48;
+  color: var(--ink-body);
   font-size: 1.02rem;
 }
 
 .eyebrow {
   margin: 0 0 8px;
-  color: #8d3d25;
+  color: var(--accent-warm-deep);
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -70,7 +115,7 @@ select:focus-visible {
 
 .applet-catalog,
 .applet-heading {
-  max-width: 1180px;
+  max-width: var(--page-max);
   margin: 0 auto;
 }
 
@@ -78,15 +123,15 @@ select:focus-visible {
   min-height: 320px;
   display: grid;
   align-content: center;
-  border-top: 1px solid #cdbfa8;
-  border-bottom: 1px solid #cdbfa8;
+  border-top: 1px solid var(--border-hairline);
+  border-bottom: 1px solid var(--border-hairline);
 }
 
 .catalog-intro h2,
 .applet-heading h2 {
   margin: 0;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(2.4rem, 6vw, 6rem);
+  font-family: var(--font-serif);
+  font-size: var(--type-display);
   line-height: 0.98;
   letter-spacing: 0;
 }
@@ -94,7 +139,7 @@ select:focus-visible {
 .catalog-intro p:last-child {
   max-width: 760px;
   margin: 18px 0 0;
-  color: #3f4d48;
+  color: var(--ink-body);
   font-size: clamp(1rem, 1.6vw, 1.35rem);
 }
 
@@ -109,21 +154,21 @@ select:focus-visible {
   display: grid;
   gap: 12px;
   align-content: start;
-  padding: 22px;
-  background: #fffaf1;
-  border: 1px solid #d9cdb8;
+  padding: var(--space-card);
+  background: var(--surface-card);
+  border: 1px solid var(--border-card);
 }
 
 .applet-card h3 {
   margin: 0;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--font-serif);
   font-size: 1.5rem;
   letter-spacing: 0;
 }
 
 .applet-card p {
   margin: 0;
-  color: #3f4d48;
+  color: var(--ink-body);
 }
 
 .applet-card .secondary-action {
@@ -133,7 +178,7 @@ select:focus-visible {
 }
 
 .applet-area {
-  color: #8d3d25;
+  color: var(--accent-warm-deep);
   font-size: 0.78rem;
   font-weight: 800;
   text-transform: uppercase;
@@ -153,8 +198,8 @@ select:focus-visible {
   justify-content: flex-end;
   gap: 8px;
   padding: 4px;
-  border: 1px solid #cdbfa8;
-  background: #fffaf1;
+  border: 1px solid var(--border-hairline);
+  background: var(--surface-card);
 }
 
 .page-tabs button {
@@ -162,29 +207,29 @@ select:focus-visible {
   border: 0;
   padding: 0 14px;
   background: transparent;
-  color: #3e4b47;
+  color: var(--ink-body);
   cursor: pointer;
 }
 
 .page-tabs button.active {
-  background: #1f3832;
-  color: #fffaf1;
+  background: var(--accent-deep);
+  color: var(--ink-on-accent);
 }
 
 .hero-panel {
-  max-width: 1180px;
+  max-width: var(--page-max);
   min-height: 420px;
   margin: 0 auto;
   display: grid;
   align-content: center;
-  border-top: 1px solid #cdbfa8;
-  border-bottom: 1px solid #cdbfa8;
+  border-top: 1px solid var(--border-hairline);
+  border-bottom: 1px solid var(--border-hairline);
 }
 
 .hero-panel h2 {
   max-width: 760px;
   margin: 0 0 20px;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--font-serif);
   font-size: clamp(2.2rem, 5vw, 5.2rem);
   line-height: 1;
   letter-spacing: 0;
@@ -193,12 +238,12 @@ select:focus-visible {
 .hero-panel p:last-child {
   max-width: 720px;
   margin: 0;
-  color: #3f4d48;
+  color: var(--ink-body);
   font-size: clamp(1rem, 1.5vw, 1.3rem);
 }
 
 .explainer-page {
-  max-width: 1180px;
+  max-width: var(--page-max);
   margin: 0 auto;
 }
 
@@ -206,15 +251,15 @@ select:focus-visible {
   min-height: 360px;
   display: grid;
   align-content: center;
-  border-top: 1px solid #cdbfa8;
-  border-bottom: 1px solid #cdbfa8;
+  border-top: 1px solid var(--border-hairline);
+  border-bottom: 1px solid var(--border-hairline);
 }
 
 .intro-band h2 {
   max-width: 850px;
   margin: 0 0 20px;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(2.4rem, 6vw, 6rem);
+  font-family: var(--font-serif);
+  font-size: var(--type-display);
   line-height: 0.98;
   letter-spacing: 0;
 }
@@ -222,12 +267,12 @@ select:focus-visible {
 .intro-band p:last-child {
   max-width: 760px;
   margin: 0;
-  color: #3f4d48;
+  color: var(--ink-body);
   font-size: clamp(1rem, 1.6vw, 1.35rem);
 }
 
 .what-page {
-  max-width: 1180px;
+  max-width: var(--page-max);
   margin: 0 auto;
 }
 
@@ -247,9 +292,9 @@ select:focus-visible {
 .definition-panel,
 .comparison-band,
 .scenario-section {
-  padding: 22px;
-  background: #fffaf1;
-  border: 1px solid #d9cdb8;
+  padding: var(--space-card);
+  background: var(--surface-card);
+  border: 1px solid var(--border-card);
 }
 
 .definition-panel h3,
@@ -257,7 +302,7 @@ select:focus-visible {
 .scenario-section h3,
 .scenario-card h4 {
   margin: 0 0 12px;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--font-serif);
   letter-spacing: 0;
 }
 
@@ -266,7 +311,7 @@ select:focus-visible {
 .scenario-section p,
 .scenario-card p {
   margin: 0 0 16px;
-  color: #3f4d48;
+  color: var(--ink-body);
 }
 
 .stat-callout {
@@ -293,8 +338,8 @@ select:focus-visible {
 
 .scenario-card {
   padding: 14px;
-  border-top: 3px solid #1f3832;
-  background: #f8efe0;
+  border-top: 3px solid var(--accent-deep);
+  background: var(--surface-sunken);
 }
 
 .scenario-card h4 {
@@ -304,7 +349,7 @@ select:focus-visible {
 .caveat-note {
   margin-top: 18px;
   padding-top: 16px;
-  border-top: 1px solid #d9cdb8;
+  border-top: 1px solid var(--border-card);
 }
 
 .math-step {
@@ -312,12 +357,12 @@ select:focus-visible {
   grid-template-columns: minmax(220px, 0.75fr) minmax(0, 1.25fr);
   gap: 28px;
   padding: 34px 0;
-  border-bottom: 1px solid #d9cdb8;
+  border-bottom: 1px solid var(--border-card);
 }
 
 .math-step h3 {
   margin: 0;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--font-serif);
   font-size: clamp(1.45rem, 2.5vw, 2.25rem);
   line-height: 1.08;
 }
@@ -325,28 +370,28 @@ select:focus-visible {
 .math-step p,
 .chart-summary {
   margin: 0 0 16px;
-  color: #3f4d48;
+  color: var(--ink-body);
 }
 
 .formula-block {
   margin: 0 0 14px;
-  padding: 14px 16px;
-  border-left: 4px solid #d24b2a;
-  background: #fffaf1;
+  padding: var(--space-control) 16px;
+  border-left: 4px solid var(--accent-warm);
+  background: var(--surface-card);
   overflow-x: auto;
 }
 
 .formula-block figcaption {
   margin-bottom: 6px;
-  color: #7b402b;
+  color: var(--accent-warm-text);
   font-size: 0.78rem;
   font-weight: 700;
   text-transform: uppercase;
 }
 
 .formula-block code {
-  color: #17231f;
-  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  color: var(--ink-strong);
+  font-family: var(--font-mono);
   font-size: clamp(0.92rem, 1.3vw, 1.08rem);
 }
 
@@ -380,16 +425,16 @@ select:focus-visible {
 
 .key-requirement {
   padding: 16px 18px;
-  border-left: 4px solid #1f3832;
-  background: #fffaf1;
-  color: #17231f;
+  border-left: 4px solid var(--accent-deep);
+  background: var(--surface-card);
+  color: var(--ink-strong);
   font-size: clamp(1rem, 1.7vw, 1.28rem);
   font-weight: 700;
 }
 
 .formula-math {
   min-width: max-content;
-  color: #17231f;
+  color: var(--ink-strong);
 }
 
 .formula-math .katex {
@@ -410,8 +455,8 @@ select:focus-visible {
   display: flex;
   width: 100%;
   min-height: 86px;
-  border: 1px solid #1f3832;
-  background: #fffaf1;
+  border: 1px solid var(--accent-deep);
+  background: var(--surface-card);
 }
 
 .interval-segment {
@@ -420,9 +465,9 @@ select:focus-visible {
   align-content: center;
   justify-items: center;
   gap: 4px;
-  border-right: 1px solid rgba(31, 56, 50, 0.24);
-  background: linear-gradient(180deg, #f4d481, #e69d58);
-  color: #17231f;
+  border-right: 1px solid var(--accent-deep-soft);
+  background: linear-gradient(180deg, var(--accent-gold-light), var(--accent-gold-deep));
+  color: var(--ink-strong);
   text-align: center;
 }
 
@@ -453,8 +498,8 @@ select:focus-visible {
 .wrap-visual-header,
 .wrap-density-panel {
   padding: 16px;
-  background: #fffaf1;
-  border: 1px solid #d9cdb8;
+  background: var(--surface-card);
+  border: 1px solid var(--border-card);
 }
 
 .wrap-visual h4,
@@ -467,7 +512,7 @@ select:focus-visible {
 .wrap-density-summary,
 .wrap-density-points {
   margin: 0;
-  color: #3f4d48;
+  color: var(--ink-body);
 }
 
 .wrap-density-legend {
@@ -475,7 +520,7 @@ select:focus-visible {
   flex-wrap: wrap;
   gap: 12px;
   margin-top: 12px;
-  color: #3f4d48;
+  color: var(--ink-body);
   font-size: 0.9rem;
 }
 
@@ -492,11 +537,11 @@ select:focus-visible {
 }
 
 .legend-swatch.point-two {
-  background: #238457;
+  background: var(--legacy-series-green);
 }
 
 .legend-swatch.point-seven {
-  background: #2f66b1;
+  background: var(--legacy-series-blue);
 }
 
 .wrap-density-grid {
@@ -510,7 +555,7 @@ select:focus-visible {
 }
 
 .wrap-density-heading h5 {
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--font-serif);
   font-size: 1.15rem;
   letter-spacing: 0;
 }
@@ -518,7 +563,7 @@ select:focus-visible {
 .wrapped-profile-block {
   margin-top: 18px;
   padding-top: 14px;
-  border-top: 1px solid #d9cdb8;
+  border-top: 1px solid var(--border-card);
 }
 
 .wrapped-profile-block h6 {
@@ -528,7 +573,7 @@ select:focus-visible {
 
 .wrapped-profile-block p {
   margin: 0 0 10px;
-  color: #3f4d48;
+  color: var(--ink-body);
   font-size: 0.9rem;
 }
 
@@ -555,12 +600,12 @@ select:focus-visible {
 
 .wrap-density-values div {
   padding: 10px;
-  border-top: 3px solid #d24b2a;
-  background: #f8efe0;
+  border-top: 3px solid var(--accent-warm);
+  background: var(--surface-sunken);
 }
 
 .wrap-density-values dt {
-  color: #7b402b;
+  color: var(--accent-warm-text);
   font-size: 0.78rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -584,7 +629,7 @@ select:focus-visible {
 }
 
 .lab-page {
-  max-width: 1180px;
+  max-width: var(--page-max);
   margin: 0 auto;
 }
 
@@ -592,14 +637,14 @@ select:focus-visible {
   display: grid;
   gap: 10px;
   margin-bottom: 24px;
-  padding: 28px 0;
-  border-top: 1px solid #cdbfa8;
-  border-bottom: 1px solid #cdbfa8;
+  padding: var(--space-section) 0;
+  border-top: 1px solid var(--border-hairline);
+  border-bottom: 1px solid var(--border-hairline);
 }
 
 .lab-header h2 {
   margin: 0;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--font-serif);
   font-size: clamp(2.2rem, 5vw, 5rem);
   line-height: 1;
 }
@@ -607,7 +652,7 @@ select:focus-visible {
 .lab-header p:last-child {
   max-width: 740px;
   margin: 0;
-  color: #3f4d48;
+  color: var(--ink-body);
   font-size: 1.08rem;
 }
 
@@ -622,9 +667,9 @@ select:focus-visible {
 .diagnostic-summary {
   display: grid;
   gap: 14px;
-  padding: 18px;
-  background: #fffaf1;
-  border: 1px solid #d9cdb8;
+  padding: var(--space-panel);
+  background: var(--surface-card);
+  border: 1px solid var(--border-card);
 }
 
 .control-row {
@@ -647,7 +692,7 @@ select:focus-visible {
 .control-panel label {
   display: grid;
   gap: 5px;
-  color: #31423d;
+  color: var(--ink-label);
   font-size: 0.88rem;
   font-weight: 700;
 }
@@ -655,20 +700,20 @@ select:focus-visible {
 .model-guidance {
   display: grid;
   gap: 8px;
-  padding: 14px;
-  border: 1px solid #d9cdb8;
-  background: #f8efe0;
+  padding: var(--space-control);
+  border: 1px solid var(--border-card);
+  background: var(--surface-sunken);
 }
 
 .model-guidance h3 {
   margin: 0;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--font-serif);
   font-size: 1.05rem;
 }
 
 .model-guidance p {
   margin: 0;
-  color: #3f4d48;
+  color: var(--ink-body);
   font-size: 0.9rem;
 }
 
@@ -682,19 +727,19 @@ select:focus-visible {
 .control-panel select {
   min-height: 40px;
   width: 100%;
-  border: 1px solid #b9aa93;
+  border: 1px solid var(--border-input);
   border-radius: 0;
   padding: 0 10px;
-  background: #fffdf8;
-  color: #17231f;
+  background: var(--surface-input);
+  color: var(--ink-strong);
   font: inherit;
 }
 
 .secondary-action {
   min-height: 42px;
   border: 0;
-  background: #d24b2a;
-  color: #fffaf1;
+  background: var(--accent-warm);
+  color: var(--ink-on-accent);
   cursor: pointer;
   font-weight: 800;
 }
@@ -713,7 +758,7 @@ select:focus-visible {
 }
 
 .diagnostic-summary span {
-  color: #65716c;
+  color: var(--ink-muted);
   font-size: 0.78rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -726,7 +771,7 @@ select:focus-visible {
 .diagnostic-summary p {
   grid-column: 1 / -1;
   margin: 0;
-  color: #3f4d48;
+  color: var(--ink-body);
 }
 
 .chart-grid {
@@ -738,9 +783,9 @@ select:focus-visible {
 
 .chart-frame {
   min-width: 0;
-  padding: 18px;
-  background: #fffaf1;
-  border: 1px solid #d9cdb8;
+  padding: var(--space-panel);
+  background: var(--surface-card);
+  border: 1px solid var(--border-card);
 }
 
 .chart-heading {
@@ -749,13 +794,13 @@ select:focus-visible {
 
 .chart-heading h3 {
   margin: 0 0 4px;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--font-serif);
   font-size: 1.25rem;
 }
 
 .chart-heading p {
   margin: 0;
-  color: #65716c;
+  color: var(--ink-muted);
   font-size: 0.92rem;
 }
 
@@ -766,7 +811,7 @@ select:focus-visible {
 
 .sr-summary {
   margin: 0;
-  color: #3f4d48;
+  color: var(--ink-body);
 }
 
 @media (max-width: 760px) {
