@@ -7,9 +7,9 @@ describe("ExplainerPage", () => {
   it("presents the mathematical argument in the intended order", () => {
     render(<ExplainerPage />);
 
-    const sectionTitles = screen
-      .getAllByRole("heading", { level: 3 })
-      .map((heading) => heading.textContent);
+    const sectionTitles = Array.from(
+      document.querySelectorAll(".math-step > h3")
+    ).map((heading) => heading.textContent);
 
     expect(sectionTitles).toEqual([
       "Prerequisites",

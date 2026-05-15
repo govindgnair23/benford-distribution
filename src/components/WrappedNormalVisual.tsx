@@ -16,6 +16,7 @@ import {
   wrappedDensitySum
 } from "../lib/wrappedNormal";
 import { chartPalette, editorialColors } from "../styles/tokens";
+import { ChartFrame } from "./charts/ChartFrame";
 
 interface NormalCase {
   key: string;
@@ -162,40 +163,49 @@ export function WrappedNormalVisual() {
                 <h5>{normalCase.title}</h5>
                 <p>{normalCase.formula}</p>
               </div>
-              <ResponsiveContainer width="100%" height={230}>
-                <LineChart
-                  data={rows}
-                  margin={{ top: 8, right: 10, bottom: 6, left: 0 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                  <XAxis
-                    type="number"
-                    dataKey="x"
-                    domain={[normalCase.xMin, normalCase.xMax]}
-                    interval="preserveStartEnd"
-                    tick={{ fontSize: 11 }}
-                  />
-                  <YAxis hide domain={[0, "dataMax"]} />
-                  <Tooltip />
-                  <Line
-                    type="monotone"
-                    dataKey="density"
-                    dot={false}
-                    stroke={editorialColors.accentDeep}
-                    strokeWidth={2}
-                    isAnimationActive={false}
-                  />
-                  {lines.map((line) => (
-                    <ReferenceLine
-                      key={`${normalCase.key}-${line.residue}-${line.x}`}
-                      x={line.x}
-                      stroke={line.color}
-                      strokeOpacity={0.62}
+              <ChartFrame
+                title={`${normalCase.title} density`}
+                summary={normalCase.summary}
+              >
+                <ResponsiveContainer width="100%" height={230}>
+                  <LineChart
+                    data={rows}
+                    margin={{ top: 8, right: 10, bottom: 6, left: 0 }}
+                  >
+                    <CartesianGrid
+                      stroke={chartPalette.neutrals.gridline}
+                      strokeDasharray="3 3"
+                      vertical={false}
                     />
-                  ))}
-                </LineChart>
-              </ResponsiveContainer>
-              <p className="wrap-density-summary">{normalCase.summary}</p>
+                    <XAxis
+                      type="number"
+                      dataKey="x"
+                      domain={[normalCase.xMin, normalCase.xMax]}
+                      interval="preserveStartEnd"
+                      stroke={chartPalette.neutrals.axis}
+                      tick={{ fill: chartPalette.neutrals.label, fontSize: 11 }}
+                    />
+                    <YAxis hide domain={[0, "dataMax"]} />
+                    <Tooltip />
+                    <Line
+                      type="monotone"
+                      dataKey="density"
+                      dot={false}
+                      stroke={editorialColors.accentDeep}
+                      strokeWidth={2}
+                      isAnimationActive={false}
+                    />
+                    {lines.map((line) => (
+                      <ReferenceLine
+                        key={`${normalCase.key}-${line.residue}-${line.x}`}
+                        x={line.x}
+                        stroke={line.color}
+                        strokeOpacity={0.62}
+                      />
+                    ))}
+                  </LineChart>
+                </ResponsiveContainer>
+              </ChartFrame>
               <p className="wrap-density-points">{normalCase.pointSummary}</p>
               <dl className="wrap-density-values">
                 <div>
@@ -208,38 +218,46 @@ export function WrappedNormalVisual() {
                 </div>
               </dl>
               <div className="wrapped-profile-block">
-                <h6>Wrapped density across fractional positions</h6>
-                <p>Calculated at R = 0, 0.1, 0.2, ..., 1.</p>
-                <ResponsiveContainer width="100%" height={160}>
-                  <LineChart
-                    data={profile}
-                    margin={{ top: 8, right: 10, bottom: 6, left: 0 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis
-                      type="number"
-                      dataKey="residue"
-                      domain={[0, 1]}
-                      ticks={[0, 0.2, 0.4, 0.6, 0.8, 1]}
-                      tick={{ fontSize: 11 }}
-                    />
-                    <YAxis hide domain={[0, "dataMax"]} />
-                    <Tooltip />
-                    <ReferenceLine
-                      y={1}
-                      stroke={editorialColors.inkSubtle}
-                      strokeDasharray="4 4"
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="density"
-                      dot
-                      stroke={editorialColors.accentWarmDeep}
-                      strokeWidth={2}
-                      isAnimationActive={false}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
+                <ChartFrame
+                  title={`${normalCase.title} wrapped density`}
+                  summary="Wrapped density across fractional positions, calculated at R = 0, 0.1, 0.2, ..., 1."
+                >
+                  <ResponsiveContainer width="100%" height={160}>
+                    <LineChart
+                      data={profile}
+                      margin={{ top: 8, right: 10, bottom: 6, left: 0 }}
+                    >
+                      <CartesianGrid
+                        stroke={chartPalette.neutrals.gridline}
+                        strokeDasharray="3 3"
+                        vertical={false}
+                      />
+                      <XAxis
+                        type="number"
+                        dataKey="residue"
+                        domain={[0, 1]}
+                        ticks={[0, 0.2, 0.4, 0.6, 0.8, 1]}
+                        stroke={chartPalette.neutrals.axis}
+                        tick={{ fill: chartPalette.neutrals.label, fontSize: 11 }}
+                      />
+                      <YAxis hide domain={[0, "dataMax"]} />
+                      <Tooltip />
+                      <ReferenceLine
+                        y={1}
+                        stroke={chartPalette.neutrals.label}
+                        strokeDasharray="4 4"
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="density"
+                        dot
+                        stroke={editorialColors.accentWarmDeep}
+                        strokeWidth={2}
+                        isAnimationActive={false}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </ChartFrame>
                 <p className="wrapped-profile-summary">{profileSummary}</p>
               </div>
             </article>

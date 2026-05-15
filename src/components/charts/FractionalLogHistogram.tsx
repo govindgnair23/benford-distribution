@@ -9,7 +9,7 @@ import {
 } from "recharts";
 
 import { histogram } from "../../lib/histograms";
-import { editorialColors } from "../../styles/tokens";
+import { chartPalette, editorialColors } from "../../styles/tokens";
 import { ChartFrame } from "./ChartFrame";
 
 interface FractionalLogHistogramProps {
@@ -35,9 +35,22 @@ export function FractionalLogHistogram({ values }: FractionalLogHistogramProps) 
       </div>
       <ResponsiveContainer width="100%" height={240}>
         <BarChart data={bins} margin={{ top: 10, right: 10, bottom: 4, left: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} />
-          <XAxis dataKey="range" tick={{ fontSize: 11 }} />
-          <YAxis allowDecimals={false} width={44} />
+          <CartesianGrid
+            stroke={chartPalette.neutrals.gridline}
+            strokeDasharray="3 3"
+            vertical={false}
+          />
+          <XAxis
+            dataKey="range"
+            stroke={chartPalette.neutrals.axis}
+            tick={{ fill: chartPalette.neutrals.label, fontSize: 11 }}
+          />
+          <YAxis
+            allowDecimals={false}
+            width={44}
+            stroke={chartPalette.neutrals.axis}
+            tick={{ fill: chartPalette.neutrals.label }}
+          />
           <Tooltip />
           <Bar dataKey="count" fill={editorialColors.accentWarm} radius={[3, 3, 0, 0]} />
         </BarChart>

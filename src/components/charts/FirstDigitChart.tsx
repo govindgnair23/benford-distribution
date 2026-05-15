@@ -11,7 +11,7 @@ import {
 
 import { benfordProbability } from "../../lib/benford";
 import { firstDigitFrequencies } from "../../lib/diagnostics";
-import { editorialColors } from "../../styles/tokens";
+import { chartPalette, editorialColors } from "../../styles/tokens";
 import { ChartFrame } from "./ChartFrame";
 
 interface FirstDigitChartProps {
@@ -36,13 +36,26 @@ export function FirstDigitChart({ firstDigits }: FirstDigitChartProps) {
     >
       <ResponsiveContainer width="100%" height={260}>
         <BarChart data={rows} margin={{ top: 10, right: 10, bottom: 4, left: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} />
-          <XAxis dataKey="digit" tick={{ fontSize: 12 }} />
-          <YAxis unit="%" width={44} />
+          <CartesianGrid
+            stroke={chartPalette.neutrals.gridline}
+            strokeDasharray="3 3"
+            vertical={false}
+          />
+          <XAxis
+            dataKey="digit"
+            stroke={chartPalette.neutrals.axis}
+            tick={{ fill: chartPalette.neutrals.label, fontSize: 12 }}
+          />
+          <YAxis
+            unit="%"
+            width={44}
+            stroke={chartPalette.neutrals.axis}
+            tick={{ fill: chartPalette.neutrals.label }}
+          />
           <Tooltip />
           <Legend />
           <Bar dataKey="observed" fill={editorialColors.accentDeep} radius={[3, 3, 0, 0]} />
-          <Bar dataKey="benford" fill={editorialColors.accentGold} radius={[3, 3, 0, 0]} />
+          <Bar dataKey="benford" fill={editorialColors.accentWarm} radius={[3, 3, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
       <ul className="sr-summary" aria-label="First digit frequency summary">

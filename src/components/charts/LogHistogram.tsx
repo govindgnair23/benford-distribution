@@ -9,7 +9,7 @@ import {
 } from "recharts";
 
 import { histogram } from "../../lib/histograms";
-import { editorialColors } from "../../styles/tokens";
+import { chartPalette } from "../../styles/tokens";
 import { ChartFrame } from "./ChartFrame";
 
 interface LogHistogramProps {
@@ -37,16 +37,26 @@ export function LogHistogram({ values }: LogHistogramProps) {
     >
       <ResponsiveContainer width="100%" height={220}>
         <BarChart data={bins} margin={{ top: 10, right: 10, bottom: 22, left: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} />
+          <CartesianGrid
+            stroke={chartPalette.neutrals.gridline}
+            strokeDasharray="3 3"
+            vertical={false}
+          />
           <XAxis
             dataKey="label"
             interval={3}
             minTickGap={10}
-            tick={{ fontSize: 11 }}
+            stroke={chartPalette.neutrals.axis}
+            tick={{ fill: chartPalette.neutrals.label, fontSize: 11 }}
           />
-          <YAxis allowDecimals={false} width={44} />
+          <YAxis
+            allowDecimals={false}
+            width={44}
+            stroke={chartPalette.neutrals.axis}
+            tick={{ fill: chartPalette.neutrals.label }}
+          />
           <Tooltip />
-          <Bar dataKey="count" fill={editorialColors.mutedBar} radius={[3, 3, 0, 0]} />
+          <Bar dataKey="count" fill={chartPalette.neutrals.axis} radius={[3, 3, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </ChartFrame>

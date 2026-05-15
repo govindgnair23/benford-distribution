@@ -36,7 +36,4 @@ export const editorialColors = {
   accentWarm: "#d24b2a",
   accentWarmDeep: "#8d3d25",
   accentDeep: "#1f3832",
-  accentGold: "#e6b85a",
-  mutedBar: "#6b7f78",
-  inkSubtle: "#8a938e",
 } as const;

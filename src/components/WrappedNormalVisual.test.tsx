@@ -14,6 +14,23 @@ describe("WrappedNormalVisual", () => {
     expect(screen.getByText(/Normal\(3.2, 10\^2\)/i)).toBeInTheDocument();
   });
 
+  it("wraps every rendered chart in the design-system chart frame", () => {
+    render(<WrappedNormalVisual />);
+
+    expect(screen.getByLabelText("Narrow Normal density")).toHaveClass(
+      "chart-frame"
+    );
+    expect(screen.getByLabelText("Narrow Normal wrapped density")).toHaveClass(
+      "chart-frame"
+    );
+    expect(screen.getByLabelText("Wide Normal density")).toHaveClass(
+      "chart-frame"
+    );
+    expect(screen.getByLabelText("Wide Normal wrapped density")).toHaveClass(
+      "chart-frame"
+    );
+  });
+
   it("explains integer-shift contributions for r values", () => {
     render(<WrappedNormalVisual />);
 

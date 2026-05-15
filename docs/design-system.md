@@ -97,10 +97,11 @@ Use these for *data series* — anything that varies across applets, parameters,
 | ---------------- | ----------------------------------------------- | --------------------------------------------- |
 | `--font-serif`   | `Georgia, "Times New Roman", serif`             | All headlines and editorial display           |
 | `--font-mono`    | `"SFMono-Regular", Consolas, ..., monospace`    | Inline formulas, code                         |
-| `--type-display` | `clamp(2.4rem, 6vw, 6rem)`                      | Catalog/applet/intro big headlines            |
-| `--type-topbar`  | `clamp(2rem, 4vw, 4.5rem)`                      | Topbar h1                                     |
+| `--type-display` | `clamp(2.2rem, 4.4vw, 4.75rem)`                 | Catalog/applet/intro big headlines            |
+| `--type-section-title` | `clamp(2rem, 3.8vw, 4rem)`                | Tab/page section headlines                    |
+| `--type-topbar`  | `clamp(1.9rem, 3.2vw, 3.5rem)`                  | Topbar h1                                     |
 
-Body text is sans-serif (Avenir Next + system fallbacks, set on `:root`). Hero panel and lab header headlines use slightly smaller `clamp()` values defined inline in their rules.
+Body text is sans-serif (Avenir Next + system fallbacks, set on `:root`). Use `--type-display` only for top-level applet/catalog identity headlines, and use `--type-section-title` for tab/page titles such as lab headers.
 
 ## 3. Accessibility
 
@@ -148,7 +149,7 @@ Each pattern is described by the CSS class hook it ships with. Use the existing 
 ### HeroBand / IntroBand
 
 `.hero-panel` (applet hero), `.intro-band` (page hero on tabs), `.catalog-intro` (catalog landing).
-- Full-width hairline-bordered band with vertical centering and a `clamp()` display headline.
+- Full-width hairline-bordered band with vertical centering. Applet/catalog identity headlines use `--type-display`; tab/page section headlines use `--type-section-title`.
 - **Do:** one big headline + one summary paragraph. That is the entire pattern.
 - **Don't:** add CTAs, badges, or imagery.
 
