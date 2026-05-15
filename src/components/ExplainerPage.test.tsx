@@ -25,7 +25,9 @@ describe("ExplainerPage", () => {
     render(<ExplainerPage />);
 
     expect(screen.getByLabelText(/wrapped density formula/i)).toBeInTheDocument();
-    expect(screen.getByText(/sum is over all integers k/i)).toBeInTheDocument();
+    expect(screen.getByText(/sum is over all integer values of k/i)).toBeInTheDocument();
+    expect(screen.getByText(/fractional part means x - floor\(x\)/i)).toBeInTheDocument();
+    expect(screen.getByText(/fractional part of -2.8 is -2.8 - \(-3\) = 0.2/i)).toBeInTheDocument();
     expect(screen.getAllByText(/Normal\(3.2, 0.1\^2\)/i).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/Normal\(3.2, 10\^2\)/i).length).toBeGreaterThan(0);
     expect(

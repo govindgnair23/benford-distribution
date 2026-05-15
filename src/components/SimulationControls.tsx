@@ -16,7 +16,7 @@ export function SimulationControls({
   onRerun
 }: SimulationControlsProps) {
   const active = config.mode === "direct" ? config.direct : config.multiplicative;
-  const lognormalPreset =
+  const normalPreset =
     config.preset === "multiplicative" ? "narrow" : config.preset;
 
   function updateMode(event: ChangeEvent<HTMLSelectElement>) {
@@ -26,7 +26,7 @@ export function SimulationControls({
       return;
     }
 
-    onPresetChange(lognormalPreset);
+    onPresetChange(normalPreset);
   }
 
   function updateDirect(field: keyof LabConfig["direct"], value: number) {
@@ -48,20 +48,20 @@ export function SimulationControls({
 
   return (
     <form className="control-panel" aria-label="Simulation controls">
-      <label>
-        Model
-        <select value={config.mode} onChange={updateMode}>
-          <option value="direct">Lognormal model</option>
-          <option value="multiplicative">Multiplicative growth model</option>
-        </select>
-      </label>
+      <div className="control-row">
+        <label>
+          Model
+          <select value={config.mode} onChange={updateMode}>
+            <option value="direct">Normal original-values model</option>
+            <option value="multiplicative">Multiplicative growth model</option>
+          </select>
+        </label>
 
-      {config.mode === "direct" ? (
-        <>
+        {config.mode === "direct" ? (
           <label>
-            Lognormal preset
+            Normal preset
             <select
-              value={lognormalPreset}
+              value={normalPreset}
               onChange={(event) => onPresetChange(event.target.value as PresetKey)}
             >
               <option value="narrow">Narrow</option>
@@ -69,152 +69,162 @@ export function SimulationControls({
               <option value="wide">Wide</option>
             </select>
           </label>
-          <section className="model-guidance" aria-label="Lognormal preset definitions">
-            <h3>Lognormal presets</h3>
+        ) : (
+          <div className="control-row-spacer" aria-hidden="true" />
+        )}
+      </div>
+
+      {config.mode === "direct" ? (
+        <section className="model-guidance" aria-label="Normal preset definitions">
+          <h3>Normal presets</h3>
+          <div className="guidance-columns">
             <p>
-              <strong>Narrow:</strong> logs are concentrated in much less than
-              one order of magnitude, so fractional logs bunch up and Benford
-              usually does not appear.
+              <strong>Narrow:</strong> values cluster tightly around the mean,
+              so log(X) is narrow and Benford usually does not appear.
             </p>
             <p>
-              <strong>Transitional:</strong> logs spread across roughly part of
-              an order or a few orders, so the first digits may move toward
-              Benford but still show structure.
+              <strong>Transitional:</strong> values spread enough that first
+              digits start shifting, but fractional logs still show structure.
             </p>
             <p>
-              <strong>Wide:</strong> logs span many orders of magnitude, making
-              fractional logs much closer to uniform and first digits more
-              Benford-like.
+              <strong>Wide:</strong> positive values span multiple orders of
+              magnitude, so fractional logs can become closer to uniform.
             </p>
-          </section>
-        </>
+          </div>
+        </section>
       ) : (
         <section className="model-guidance" aria-label="Multiplicative growth model explanation">
           <h3>Multiplicative growth model</h3>
-          <p>
-            Model: log10(X_final) = log10(X_start) + sum of random growth
-            increments.
-          </p>
-          <p>
-            <strong>Growth mean:</strong> the average log10 change added at each
-            step. Positive values drift upward, negative values drift downward,
-            and zero means no average drift.
-          </p>
-          <p>
-            <strong>Growth volatility:</strong> how much each step varies around
-            the mean. Higher volatility widens the final log distribution
-            faster.
-          </p>
-          <p>
-            <strong>Steps:</strong> more steps give more opportunities for log
-            increments to accumulate and widen the distribution.
-          </p>
+          <div className="guidance-columns">
+            <p>Model: X_final = X_start * G_1 * G_2 * ... * G_n.</p>
+            <p>
+              <strong>Average growth factor:</strong> the typical multiplier per
+              step. For example, 1.02 means about 2% growth per step.
+            </p>
+            <p>
+              <strong>Growth factor volatility:</strong> how much multipliers
+              vary around the average. Higher values widen the final
+              distribution faster.
+            </p>
+            <p>
+              <strong>Steps:</strong> more multiplications give more
+              opportunities for growth factors to accumulate.
+            </p>
+          </div>
         </section>
       )}
 
-      <label>
-        Sample size
-        <input
-          type="number"
-          min="100"
-          max="50000"
-          step="100"
-          value={active.sampleSize}
-          onChange={(event) => {
-            const value = Number(event.target.value);
-            if (config.mode === "direct") {
-              updateDirect("sampleSize", value);
-            } else {
-              updateMultiplicative("sampleSize", value);
-            }
-          }}
-        />
-      </label>
+      <div className="control-row">
+        <label>
+          Sample size
+          <input
+            type="number"
+            min="100"
+            max="50000"
+            step="100"
+            value={active.sampleSize}
+            onChange={(event) => {
+              const value = Number(event.target.value);
+              if (config.mode === "direct") {
+                updateDirect("sampleSize", value);
+              } else {
+                updateMultiplicative("sampleSize", value);
+              }
+            }}
+          />
+        </label>
 
-      {config.mode === "direct" ? (
-        <>
-          <label>
-            Mu
-            <input
-              type="number"
-              step="0.1"
-              value={config.direct.mu}
-              onChange={(event) => updateDirect("mu", Number(event.target.value))}
-            />
-          </label>
-          <label>
-            Sigma
-            <input
-              type="number"
-              min="0"
-              max="5"
-              step="0.01"
-              value={config.direct.sigma}
-              onChange={(event) =>
-                updateDirect("sigma", Number(event.target.value))
-              }
-            />
-          </label>
-        </>
-      ) : (
-        <>
-          <label>
-            Starting log10 value
-            <input
-              type="number"
-              step="0.1"
-              value={config.multiplicative.log10Start}
-              onChange={(event) =>
-                updateMultiplicative("log10Start", Number(event.target.value))
-              }
-            />
-          </label>
-          <label>
-            Steps
-            <input
-              type="number"
-              min="0"
-              max="200"
-              step="1"
-              value={config.multiplicative.steps}
-              onChange={(event) =>
-                updateMultiplicative("steps", Number(event.target.value))
-              }
-            />
-          </label>
-          <label>
-            Growth mean
-            <input
-              type="number"
-              step="0.01"
-              value={config.multiplicative.growthMean}
-              onChange={(event) =>
-                updateMultiplicative("growthMean", Number(event.target.value))
-              }
-            />
-          </label>
-          <label>
-            Growth volatility
-            <input
-              type="number"
-              min="0"
-              max="1"
-              step="0.01"
-              value={config.multiplicative.growthVolatility}
-              onChange={(event) =>
-                updateMultiplicative(
-                  "growthVolatility",
-                  Number(event.target.value)
-                )
-              }
-            />
-          </label>
-        </>
-      )}
+        {config.mode === "direct" ? (
+          <>
+            <label>
+              Mean
+              <input
+                type="number"
+                min="0.01"
+                step="10"
+                value={config.direct.mean}
+                onChange={(event) =>
+                  updateDirect("mean", Number(event.target.value))
+                }
+              />
+            </label>
+            <label>
+              Standard deviation
+              <input
+                type="number"
+                min="0"
+                step="10"
+                value={config.direct.standardDeviation}
+                onChange={(event) =>
+                  updateDirect("standardDeviation", Number(event.target.value))
+                }
+              />
+            </label>
+          </>
+        ) : (
+          <>
+            <label>
+              Starting value
+              <input
+                type="number"
+                min="0.01"
+                step="10"
+                value={config.multiplicative.startValue}
+                onChange={(event) =>
+                  updateMultiplicative("startValue", Number(event.target.value))
+                }
+              />
+            </label>
+            <label>
+              Steps
+              <input
+                type="number"
+                min="0"
+                max="200"
+                step="1"
+                value={config.multiplicative.steps}
+                onChange={(event) =>
+                  updateMultiplicative("steps", Number(event.target.value))
+                }
+              />
+            </label>
+            <label>
+              Average growth factor
+              <input
+                type="number"
+                step="0.01"
+                min="0.01"
+                value={config.multiplicative.growthFactorMean}
+                onChange={(event) =>
+                  updateMultiplicative(
+                    "growthFactorMean",
+                    Number(event.target.value)
+                  )
+                }
+              />
+            </label>
+            <label>
+              Growth factor volatility
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                value={config.multiplicative.growthFactorVolatility}
+                onChange={(event) =>
+                  updateMultiplicative(
+                    "growthFactorVolatility",
+                    Number(event.target.value)
+                  )
+                }
+              />
+            </label>
+          </>
+        )}
 
-      <button type="button" className="secondary-action" onClick={onRerun}>
-        Rerun sample
-      </button>
+        <button type="button" className="secondary-action" onClick={onRerun}>
+          Rerun sample
+        </button>
+      </div>
     </form>
   );
 }

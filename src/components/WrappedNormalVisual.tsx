@@ -12,6 +12,7 @@ import {
 import {
   normalDensity,
   shiftedDensityContributions,
+  wrappedDensityProfile,
   wrappedDensitySum
 } from "../lib/wrappedNormal";
 
@@ -102,6 +103,19 @@ function summedDensity(normalCase: NormalCase, residue: number) {
   });
 }
 
+function profileRows(normalCase: NormalCase) {
+  return wrappedDensityProfile({
+    mean: normalCase.mean,
+    standardDeviation: normalCase.standardDeviation,
+    minShift: normalCase.minShift,
+    maxShift: normalCase.maxShift,
+    step: 0.1
+  }).map((point) => ({
+    residue: point.residue,
+    density: Number(point.density.toFixed(5))
+  }));
+}
+
 export function WrappedNormalVisual() {
   return (
     <section
@@ -129,9 +143,14 @@ export function WrappedNormalVisual() {
       <div className="wrap-density-grid">
         {cases.map((normalCase) => {
           const rows = densityRows(normalCase);
+          const profile = profileRows(normalCase);
           const lines = contributionLines(normalCase);
           const atPointTwo = summedDensity(normalCase, 0.2);
           const atPointSeven = summedDensity(normalCase, 0.7);
+          const profileSummary =
+            normalCase.key === "narrow"
+              ? "Narrow profile peaks near R = 0.2 instead of staying flat."
+              : "Wide profile is much flatter, so fractional positions have similar wrapped density.";
 
           return (
             <article className="wrap-density-panel" key={normalCase.key}>
@@ -184,6 +203,41 @@ export function WrappedNormalVisual() {
                   <dd>{atPointSeven.toFixed(3)}</dd>
                 </div>
               </dl>
+              <div className="wrapped-profile-block">
+                <h6>Wrapped density across fractional positions</h6>
+                <p>Calculated at R = 0, 0.1, 0.2, ..., 1.</p>
+                <ResponsiveContainer width="100%" height={160}>
+                  <LineChart
+                    data={profile}
+                    margin={{ top: 8, right: 10, bottom: 6, left: 0 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                    <XAxis
+                      type="number"
+                      dataKey="residue"
+                      domain={[0, 1]}
+                      ticks={[0, 0.2, 0.4, 0.6, 0.8, 1]}
+                      tick={{ fontSize: 11 }}
+                    />
+                    <YAxis hide domain={[0, "dataMax"]} />
+                    <Tooltip />
+                    <ReferenceLine
+                      y={1}
+                      stroke="#8a938e"
+                      strokeDasharray="4 4"
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="density"
+                      dot
+                      stroke="#8d3d25"
+                      strokeWidth={2}
+                      isAnimationActive={false}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+                <p className="wrapped-profile-summary">{profileSummary}</p>
+              </div>
             </article>
           );
         })}

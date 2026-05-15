@@ -429,6 +429,27 @@ select:focus-visible {
   letter-spacing: 0;
 }
 
+.wrapped-profile-block {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid #d9cdb8;
+}
+
+.wrapped-profile-block h6 {
+  margin: 0 0 4px;
+  font-size: 0.92rem;
+}
+
+.wrapped-profile-block p {
+  margin: 0 0 10px;
+  color: #3f4d48;
+  font-size: 0.9rem;
+}
+
+.wrapped-profile-summary {
+  margin-top: 8px;
+}
+
 .wrap-density-summary {
   min-height: 48px;
   margin-top: 10px;
@@ -506,8 +527,8 @@ select:focus-visible {
 
 .lab-layout {
   display: grid;
-  grid-template-columns: minmax(260px, 330px) minmax(0, 1fr);
-  gap: 22px;
+  grid-template-columns: 1fr;
+  gap: 16px;
   align-items: start;
 }
 
@@ -518,6 +539,23 @@ select:focus-visible {
   padding: 18px;
   background: #fffaf1;
   border: 1px solid #d9cdb8;
+}
+
+.control-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(150px, 1fr));
+  gap: 14px;
+  align-items: end;
+}
+
+.control-row:first-child {
+  grid-template-columns:
+    minmax(240px, 1.2fr) minmax(180px, 0.8fr)
+    repeat(2, minmax(120px, 1fr));
+}
+
+.control-row-spacer {
+  min-height: 1px;
 }
 
 .control-panel label {
@@ -548,6 +586,12 @@ select:focus-visible {
   font-size: 0.9rem;
 }
 
+.guidance-columns {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
 .control-panel input,
 .control-panel select {
   min-height: 40px;
@@ -567,6 +611,10 @@ select:focus-visible {
   color: #fffaf1;
   cursor: pointer;
   font-weight: 800;
+}
+
+.control-row .secondary-action {
+  align-self: end;
 }
 
 .diagnostic-summary {
@@ -607,10 +655,6 @@ select:focus-visible {
   padding: 18px;
   background: #fffaf1;
   border: 1px solid #d9cdb8;
-}
-
-.chart-grid > .chart-frame:last-child {
-  grid-column: 1 / -1;
 }
 
 .chart-heading {
@@ -661,6 +705,9 @@ select:focus-visible {
   .formula-explanation-pairs,
   .wrap-density-grid,
   .lab-layout,
+  .control-row,
+  .control-row:first-child,
+  .guidance-columns,
   .diagnostic-summary,
   .chart-grid,
   .what-grid,
@@ -669,7 +716,4 @@ select:focus-visible {
     grid-template-columns: 1fr;
   }
 
-  .chart-grid > .chart-frame:last-child {
-    grid-column: auto;
-  }
 }

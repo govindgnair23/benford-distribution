@@ -8,7 +8,7 @@ import {
   type PresetKey
 } from "../lib/presets";
 import {
-  simulateDirectLognormal,
+  simulateOriginalNormal,
   simulateMultiplicativeGrowth
 } from "../lib/simulation";
 import { DiagnosticSummary } from "./DiagnosticSummary";
@@ -16,13 +16,14 @@ import { SimulationControls } from "./SimulationControls";
 import { FirstDigitChart } from "./charts/FirstDigitChart";
 import { FractionalLogHistogram } from "./charts/FractionalLogHistogram";
 import { LogHistogram } from "./charts/LogHistogram";
+import { OriginalValueHistogram } from "./charts/OriginalValueHistogram";
 
 export function SimulationLab() {
   const [config, setConfig] = useState<LabConfig>(() => clonePreset("narrow"));
 
   const sample = useMemo(() => {
     if (config.mode === "direct") {
-      return simulateDirectLognormal(config.direct);
+      return simulateOriginalNormal(config.direct);
     }
     return simulateMultiplicativeGrowth(config.multiplicative);
   }, [config]);
@@ -82,9 +83,10 @@ export function SimulationLab() {
         />
       </div>
       <div className="chart-grid">
+        <OriginalValueHistogram values={sample.values} />
+        <LogHistogram values={sample.logSamples} />
         <FractionalLogHistogram values={sample.fractionalLogs} />
         <FirstDigitChart firstDigits={sample.firstDigits} />
-        <LogHistogram values={sample.logSamples} />
       </div>
     </section>
   );

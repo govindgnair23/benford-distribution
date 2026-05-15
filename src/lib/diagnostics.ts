@@ -29,7 +29,7 @@ export function classifyLogWidth(logWidth: number): WidthLabel {
   if (logWidth < 0.25) {
     return "narrow";
   }
-  if (logWidth < 0.6) {
+  if (logWidth < 0.45) {
     return "transitional";
   }
   return "wide";

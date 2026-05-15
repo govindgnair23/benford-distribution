@@ -4,6 +4,11 @@ export interface ShiftedDensityContribution {
   density: number;
 }
 
+export interface WrappedDensityPoint {
+  residue: number;
+  density: number;
+}
+
 interface WrappedDensityInput {
   mean: number;
   standardDeviation: number;
@@ -75,4 +80,32 @@ export function wrappedDensitySum(input: WrappedDensityInput): number {
     (sum, point) => sum + point.density,
     0
   );
+}
+
+interface WrappedDensityProfileInput
+  extends Omit<WrappedDensityInput, "residue"> {
+  step: number;
+}
+
+export function wrappedDensityProfile({
+  step,
+  ...input
+}: WrappedDensityProfileInput): WrappedDensityPoint[] {
+  assertFiniteNumber(step, "step");
+  if (step <= 0 || step > 1) {
+    throw new Error("Expected step to be in (0, 1]");
+  }
+
+  const pointCount = Math.round(1 / step);
+  return Array.from({ length: pointCount + 1 }, (_, index) => {
+    const residue = Number((index * step).toFixed(12));
+    const wrappedResidue = residue === 1 ? 0 : residue;
+    return {
+      residue,
+      density: wrappedDensitySum({
+        ...input,
+        residue: wrappedResidue
+      })
+    };
+  });
 }

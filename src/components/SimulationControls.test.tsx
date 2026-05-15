@@ -6,7 +6,7 @@ import { SimulationControls } from "./SimulationControls";
 import { presets } from "../lib/presets";
 
 describe("SimulationControls", () => {
-  it("presents lognormal model presets with learner definitions", () => {
+  it("presents original Normal model presets with learner definitions", () => {
     render(
       <SimulationControls
         config={presets.narrow}
@@ -17,16 +17,20 @@ describe("SimulationControls", () => {
     );
 
     expect(screen.getByLabelText(/model/i)).toHaveValue("direct");
-    expect(screen.getByRole("option", { name: /lognormal model/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("option", { name: /normal original-values model/i })
+    ).toBeInTheDocument();
     expect(
       screen.getByRole("option", { name: /multiplicative growth model/i })
     ).toBeInTheDocument();
     expect(screen.getByRole("option", { name: /^narrow$/i })).toBeInTheDocument();
     expect(screen.getByRole("option", { name: /^transitional$/i })).toBeInTheDocument();
     expect(screen.getByRole("option", { name: /^wide$/i })).toBeInTheDocument();
-    expect(screen.getByText(/less than one order of magnitude/i)).toBeInTheDocument();
-    expect(screen.getByText(/may move toward Benford but still show structure/i)).toBeInTheDocument();
-    expect(screen.getByText(/span many orders of magnitude/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/mean/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/standard deviation/i)).toBeInTheDocument();
+    expect(screen.getByText(/values cluster tightly around the mean/i)).toBeInTheDocument();
+    expect(screen.getByText(/first digits start shifting/i)).toBeInTheDocument();
+    expect(screen.getByText(/values span multiple orders of magnitude/i)).toBeInTheDocument();
   });
 
   it("switches to the multiplicative preset when the multiplicative model is selected", async () => {
@@ -58,11 +62,14 @@ describe("SimulationControls", () => {
     );
 
     expect(
-      screen.getByText(/log10\(X_final\) = log10\(X_start\) \+ sum of random growth increments/i)
+      screen.getByText(/X_final = X_start \* G_1 \* G_2 \* ... \* G_n/i)
     ).toBeInTheDocument();
-    expect(screen.getByText(/average log10 change added at each step/i)).toBeInTheDocument();
-    expect(screen.getByText(/higher volatility widens the final log distribution faster/i)).toBeInTheDocument();
-    expect(screen.getByText(/more opportunities for log increments to accumulate/i)).toBeInTheDocument();
+    expect(screen.getByText(/typical multiplier per step/i)).toBeInTheDocument();
+    expect(screen.getByText(/higher values widen the final distribution faster/i)).toBeInTheDocument();
+    expect(screen.getByText(/more multiplications give more opportunities/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/starting value/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/average growth factor/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/growth factor volatility/i)).toBeInTheDocument();
   });
 
   it("clamps sample size through input bounds", () => {

@@ -2,16 +2,16 @@ export type SimulationMode = "direct" | "multiplicative";
 export type PresetKey = "narrow" | "transitional" | "wide" | "multiplicative";
 
 export interface DirectConfig {
-  mu: number;
-  sigma: number;
+  mean: number;
+  standardDeviation: number;
   sampleSize: number;
   seed: number;
 }
 
 export interface MultiplicativeConfig {
-  log10Start: number;
-  growthMean: number;
-  growthVolatility: number;
+  startValue: number;
+  growthFactorMean: number;
+  growthFactorVolatility: number;
   steps: number;
   sampleSize: number;
   seed: number;
@@ -25,16 +25,16 @@ export interface LabConfig {
 }
 
 const baseDirect: DirectConfig = {
-  mu: 3.2,
-  sigma: 0.08,
+  mean: 1000,
+  standardDeviation: 80,
   sampleSize: 5000,
   seed: 22
 };
 
 const baseMultiplicative: MultiplicativeConfig = {
-  log10Start: 2,
-  growthMean: 0,
-  growthVolatility: 0.18,
+  startValue: 100,
+  growthFactorMean: 1,
+  growthFactorVolatility: 0.18,
   steps: 60,
   sampleSize: 5000,
   seed: 22
@@ -44,25 +44,25 @@ export const presets: Record<PresetKey, LabConfig> = {
   narrow: {
     mode: "direct",
     preset: "narrow",
-    direct: { ...baseDirect, sigma: 0.08 },
+    direct: { ...baseDirect, standardDeviation: 80 },
     multiplicative: { ...baseMultiplicative }
   },
   transitional: {
     mode: "direct",
     preset: "transitional",
-    direct: { ...baseDirect, sigma: 0.42 },
+    direct: { ...baseDirect, standardDeviation: 900 },
     multiplicative: { ...baseMultiplicative }
   },
   wide: {
     mode: "direct",
     preset: "wide",
-    direct: { ...baseDirect, sigma: 2 },
+    direct: { ...baseDirect, standardDeviation: 120000 },
     multiplicative: { ...baseMultiplicative }
   },
   multiplicative: {
     mode: "multiplicative",
     preset: "multiplicative",
-    direct: { ...baseDirect, sigma: 0.42 },
+    direct: { ...baseDirect, standardDeviation: 900 },
     multiplicative: { ...baseMultiplicative }
   }
 };

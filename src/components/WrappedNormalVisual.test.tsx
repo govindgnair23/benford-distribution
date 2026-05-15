@@ -43,4 +43,17 @@ describe("WrappedNormalVisual", () => {
       0
     );
   });
+
+  it("shows wrapped density profiles across fractional positions", () => {
+    render(<WrappedNormalVisual />);
+
+    expect(
+      screen.getAllByText(/wrapped density across fractional positions/i).length
+    ).toBeGreaterThan(0);
+    expect(screen.getAllByText(/0, 0.1, 0.2, ..., 1/i).length).toBeGreaterThan(
+      0
+    );
+    expect(screen.getByText(/Narrow profile peaks near R = 0.2/i)).toBeInTheDocument();
+    expect(screen.getByText(/Wide profile is much flatter/i)).toBeInTheDocument();
+  });
 });

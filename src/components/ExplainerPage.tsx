@@ -126,7 +126,13 @@ export function ExplainerPage() {
           formula={String.raw`f_{\{Z\}}(r)=\sum_{k\in\mathbb{Z}} f_Z(k+r)`}
           accessibilityLabel="Wrapped density formula"
         />
-        <p>The sum is over all integers k.</p>
+        <p>
+          The sum is over all integer values of k. To calculate the wrapped
+          density at 0.2, sum the densities at ..., -2.8, -1.8, -0.8, 0.2,
+          1.2, 2.2, 3.2, ... . These all have fractional part 0.2, where
+          fractional part means x - floor(x), so the fractional part of -2.8 is
+          -2.8 - (-3) = 0.2.
+        </p>
         <WrappedNormalVisual />
         <p className="wrap-conclusion">
           For the narrow Normal, the wrapped density at 0.2 and 0.7 looks very

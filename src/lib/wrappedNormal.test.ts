@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   normalDensity,
   shiftedDensityContributions,
+  wrappedDensityProfile,
   wrappedDensitySum
 } from "./wrappedNormal";
 
@@ -100,6 +101,22 @@ describe("wrapped normal density helpers", () => {
     expect(widePointTwo.at(-1)?.x).toBe(29.2);
     expect(widePointSeven[0].x).toBe(-26.3);
     expect(widePointSeven.at(-1)?.x).toBe(29.7);
+  });
+
+  it("builds a wrapped density profile from zero through one", () => {
+    const profile = wrappedDensityProfile({
+      mean: 3.2,
+      standardDeviation: 0.1,
+      minShift: 2,
+      maxShift: 4,
+      step: 0.1
+    });
+
+    expect(profile.map((point) => point.residue)).toEqual([
+      0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1
+    ]);
+    expect(profile[2].density).toBeGreaterThan(profile[7].density * 1000);
+    expect(profile.at(-1)?.density).toBeCloseTo(profile[0].density, 12);
   });
 
   it("rejects non-positive standard deviations", () => {
