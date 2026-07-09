@@ -16,22 +16,32 @@ export function ExplainerPage() {
       </div>
 
       <article className="math-step">
-        <h3>Prerequisites</h3>
+        <h3>Step 1 — Prerequisites</h3>
         <p>
           This argument only uses positive values. Start with scientific
-          notation: 3140 = 3.14 * 10^3. The power of ten, 10^3, is the order of
+          notation: 3140 = 3.14 × 10³. The power of ten, 10³, is the order of
           magnitude. The 3.14 is the significand, and its first digit is 3.
-          Since log10(10^3) = 3, base-10 logs turn powers of ten into ordinary
+          Since log₁₀(10³) = 3, base-10 logs turn powers of ten into ordinary
           exponents.
         </p>
         <FormulaBlock
           formula={String.raw`3140=3.14\times10^3`}
           accessibilityLabel="Scientific notation example, 3140 equals 3.14 times ten cubed"
         />
+        <p>
+          One piece of notation recurs below: curly braces denote the fractional
+          part of a number, {"{x}"} = x − ⌊x⌋, the part left after subtracting
+          the integer floor ⌊x⌋.
+        </p>
+        <FormulaBlock
+          label="Fractional part"
+          formula={String.raw`\{x\}=x-\lfloor x\rfloor`}
+          accessibilityLabel="Fractional part definition, curly x equals x minus floor of x"
+        />
       </article>
 
       <article className="math-step">
-        <h3>Split a number into scale and significand</h3>
+        <h3>Step 2 — Split a number into scale and significand</h3>
         <p>
           For any positive number, separate its order of magnitude from its
           significand. For X = 3140, K = 3 and M = 3.14.
@@ -60,21 +70,18 @@ export function ExplainerPage() {
             accessibilityLabel="Log base ten of 3140 equals 3 plus log base ten of 3.14"
           />
         </div>
-        <p>
-          X = 3140, K = 3 and M = 3.14.
-        </p>
       </article>
 
       <article className="math-step log-interval-step">
-        <h3>Turn first digits into log intervals</h3>
+        <h3>Step 3 — Turn first digits into log intervals</h3>
         <div className="formula-explanation-pairs">
           <FormulaBlock
             formula={String.raw`P(D=k)=\log_{10}(k+1)-\log_{10}(k)=\log_{10}\left(\frac{k+1}{k}\right)`}
             accessibilityLabel="Benford digit interval probability formula"
           />
           <p>
-            The first digit is k when k &lt;= M &lt; k + 1. On the log scale,
-            this becomes log10(k) &lt;= log10(M) &lt; log10(k + 1). If log10(M)
+            The first digit is k when k ≤ M &lt; k + 1. On the log scale,
+            this becomes log₁₀(k) ≤ log₁₀(M) &lt; log₁₀(k + 1). If log₁₀(M)
             is uniform on [0, 1), then the probability of each first digit is
             just the length of that interval. Note that this is the probability
             mass function of the Benford Distribution.
@@ -85,23 +92,23 @@ export function ExplainerPage() {
             accessibilityLabel="First digit three interval example"
           />
           <p>
-            For the running example, M = 3.14, so D = 3 because 3 &lt;= 3.14
+            For the running example, M = 3.14, so D = 3 because 3 ≤ 3.14
             &lt; 4. As per Benford's Law, a number with starting digit = 3 is
             expected to appear only 12.3% of the time.
           </p>
         </div>
         <LogIntervalStrip />
         <p className="key-requirement">
-          The key requirement is that log10(M), or equivalently {"{log10(X)}"},
-          the fractional part of log10(X), is approximately uniform.
+          The key requirement is that log₁₀(M), or equivalently {"{log₁₀(X)}"},
+          the fractional part of log₁₀(X), is approximately uniform.
         </p>
       </article>
 
       <article className="math-step">
-        <h3>Products become sums</h3>
+        <h3>Step 4 — Products become sums</h3>
         <p>
           Multiplicative growth moves into additive log space. With many
-          independent factors, the central limit theorem explains why log10(X)
+          independent factors, the central limit theorem explains why log₁₀(X)
           often looks approximately Normal.
         </p>
         <FormulaBlock
@@ -115,10 +122,10 @@ export function ExplainerPage() {
       </article>
 
       <article className="math-step">
-        <h3>Wrap the Normal around one order of magnitude</h3>
+        <h3>Step 5 — Wrap the Normal around one order of magnitude</h3>
         <p>
           Benford needs the wrapped fractional log to be nearly uniform. For Z =
-          log10(X), each fractional position r collects Normal-density mass at
+          log₁₀(X), each fractional position r collects Normal-density mass at
           k + r for every integer k.
         </p>
         <FormulaBlock
@@ -130,15 +137,15 @@ export function ExplainerPage() {
           The sum is over all integer values of k. To calculate the wrapped
           density at 0.2, sum the densities at ..., -2.8, -1.8, -0.8, 0.2,
           1.2, 2.2, 3.2, ... . These all have fractional part 0.2, where
-          fractional part means x - floor(x), so the fractional part of -2.8 is
+          fractional part means x − ⌊x⌋, so the fractional part of -2.8 is
           -2.8 - (-3) = 0.2.
         </p>
         <WrappedNormalVisual />
         <p className="wrap-conclusion">
           For the narrow Normal, the wrapped density at 0.2 and 0.7 looks very
           different, while for the wide Normal, the wrapped densities look much
-          closer. In the former case, {"{log(X)}"}, the fractional part of
-          log(X), does not appear uniform; in the latter case, it approaches a
+          closer. In the former case, {"{log₁₀(X)}"}, the fractional part of
+          log₁₀(X), does not appear uniform; in the latter case, it approaches a
           uniform distribution.
         </p>
       </article>

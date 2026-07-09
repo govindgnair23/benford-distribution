@@ -4,23 +4,23 @@ import { BenfordPmfChart } from "./charts/BenfordPmfChart";
 const scenarios = [
   {
     title: "Populations and city sizes",
-    body: "Often span several orders of magnitude, so Benford-like first digits can appear."
+    body: "City populations run from hamlets of a few hundred to megacities of tens of millions. That sweep across many orders of magnitude is exactly the log-scale spread Benford needs."
   },
   {
     title: "River lengths",
-    body: "Measurements across many scales can create the broad log spread Benford needs."
+    body: "Rivers range from short creeks to continental systems thousands of kilometres long. Measured across so many scales, their leading digits follow the Benford tilt."
   },
   {
     title: "Transaction and accounting amounts",
-    body: "Line items may be Benford-like when they mix many naturally scaled processes."
+    body: "Ledgers combine tiny incidental charges with large capital movements. Blending many naturally scaled processes spreads the values across several orders of magnitude."
   },
   {
     title: "Scientific measurements",
-    body: "Constants or measured quantities across scales can show the decreasing digit shape."
+    body: "Physical constants and measured quantities span an enormous range of magnitudes. Collected together, their first digits trace Benford's decreasing shape."
   },
   {
     title: "Market and economic quantities",
-    body: "Company sizes, prices, and other broad-scale quantities can be plausible candidates."
+    body: "Company valuations, prices, and market caps stretch from small firms to trillion-dollar giants. That wide multiplicative range is fertile ground for Benford's Law."
   }
 ];
 
@@ -98,9 +98,11 @@ export function WhatIsBenfordPage() {
           ))}
         </div>
         <p className="caveat-note">
-          Benford is not expected for assigned identifiers, tightly bounded
-          ranges, policy-shaped prices, rounded or thresholded data, or samples
-          that do not span enough scale.
+          These are candidates, not guarantees. Benford is not expected for
+          assigned identifiers, tightly bounded ranges, policy-shaped prices,
+          rounded or thresholded data, or samples that do not span enough scale.
+          Any real dataset should be checked against the fractional-log
+          diagnostic rather than assumed to be Benford.
         </p>
       </article>
     </section>

@@ -9,7 +9,7 @@ import {
 } from "recharts";
 
 import { histogram } from "../../lib/histograms";
-import { chartPalette, editorialColors } from "../../styles/tokens";
+import { chartPalette, chartTooltipStyle } from "../../styles/tokens";
 import { ChartFrame } from "./ChartFrame";
 
 interface OriginalValueHistogramProps {
@@ -33,7 +33,7 @@ export function OriginalValueHistogram({ values }: OriginalValueHistogramProps) 
 
   return (
     <ChartFrame
-      title="Histogram of X"
+      title="1 · Original values"
       summary="This is the original-value distribution before taking logs."
     >
       <ResponsiveContainer width="100%" height={220}>
@@ -56,8 +56,8 @@ export function OriginalValueHistogram({ values }: OriginalValueHistogramProps) 
             stroke={chartPalette.neutrals.axis}
             tick={{ fill: chartPalette.neutrals.label }}
           />
-          <Tooltip />
-          <Bar dataKey="count" fill={editorialColors.accentWarmDeep} radius={[3, 3, 0, 0]} />
+          <Tooltip {...chartTooltipStyle} />
+          <Bar dataKey="count" fill={chartPalette.series[0]} radius={[3, 3, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
       <ul className="visually-hidden" aria-label="Original-value histogram bin counts">

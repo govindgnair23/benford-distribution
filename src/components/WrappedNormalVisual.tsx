@@ -15,7 +15,7 @@ import {
   wrappedDensityProfile,
   wrappedDensitySum
 } from "../lib/wrappedNormal";
-import { chartPalette, editorialColors } from "../styles/tokens";
+import { chartPalette, chartTooltipStyle, editorialColors } from "../styles/tokens";
 import { ChartFrame } from "./charts/ChartFrame";
 
 interface NormalCase {
@@ -186,7 +186,7 @@ export function WrappedNormalVisual() {
                       tick={{ fill: chartPalette.neutrals.label, fontSize: 11 }}
                     />
                     <YAxis hide domain={[0, "dataMax"]} />
-                    <Tooltip />
+                    <Tooltip {...chartTooltipStyle} />
                     <Line
                       type="monotone"
                       dataKey="density"
@@ -241,7 +241,7 @@ export function WrappedNormalVisual() {
                         tick={{ fill: chartPalette.neutrals.label, fontSize: 11 }}
                       />
                       <YAxis hide domain={[0, "dataMax"]} />
-                      <Tooltip />
+                      <Tooltip {...chartTooltipStyle} />
                       <ReferenceLine
                         y={1}
                         stroke={chartPalette.neutrals.label}

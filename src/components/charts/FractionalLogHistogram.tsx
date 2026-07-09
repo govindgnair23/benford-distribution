@@ -2,6 +2,7 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
+  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -9,7 +10,7 @@ import {
 } from "recharts";
 
 import { histogram } from "../../lib/histograms";
-import { chartPalette, editorialColors } from "../../styles/tokens";
+import { chartPalette, chartTooltipStyle } from "../../styles/tokens";
 import { ChartFrame } from "./ChartFrame";
 
 interface FractionalLogHistogramProps {
@@ -21,18 +22,13 @@ export function FractionalLogHistogram({ values }: FractionalLogHistogramProps) 
     range: `${bin.start.toFixed(1)}-${bin.end.toFixed(1)}`,
     count: bin.count
   }));
+  const expectedCount = values.length / 10;
 
   return (
     <ChartFrame
-      title="Fractional-log histogram"
-      summary={`${values.length.toLocaleString()} values across 10 bins. Fractional logs are the direct diagnostic for Benford behavior.`}
+      title="3 · Fractional logs"
+      summary={`${values.length.toLocaleString()} values across 10 bins. The dashed line marks the expected count if fractional logs were perfectly uniform (N ÷ 10). Fractional logs are the direct diagnostic for Benford behavior.`}
     >
-      <div
-        className="chart-summary sr-summary"
-        aria-label="Fractional logs are the direct diagnostic for whether first digits should look Benford-like."
-      >
-        {values.length} values across 10 bins
-      </div>
       <ResponsiveContainer width="100%" height={240}>
         <BarChart data={bins} margin={{ top: 10, right: 10, bottom: 4, left: 0 }}>
           <CartesianGrid
@@ -51,8 +47,19 @@ export function FractionalLogHistogram({ values }: FractionalLogHistogramProps) 
             stroke={chartPalette.neutrals.axis}
             tick={{ fill: chartPalette.neutrals.label }}
           />
-          <Tooltip />
-          <Bar dataKey="count" fill={editorialColors.accentWarm} radius={[3, 3, 0, 0]} />
+          <Tooltip {...chartTooltipStyle} />
+          <ReferenceLine
+            y={expectedCount}
+            stroke={chartPalette.neutrals.label}
+            strokeDasharray="4 4"
+            label={{
+              value: "Uniform N ÷ 10",
+              position: "insideTopRight",
+              fill: chartPalette.neutrals.label,
+              fontSize: 11
+            }}
+          />
+          <Bar dataKey="count" fill={chartPalette.series[0]} radius={[3, 3, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
       <ul className="visually-hidden" aria-label="Fractional-log histogram bin counts">

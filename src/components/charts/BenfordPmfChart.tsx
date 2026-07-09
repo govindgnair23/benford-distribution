@@ -2,6 +2,7 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
+  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -9,7 +10,7 @@ import {
 } from "recharts";
 
 import { benfordProbability } from "../../lib/benford";
-import { chartPalette, editorialColors } from "../../styles/tokens";
+import { chartPalette, chartTooltipStyle, editorialColors } from "../../styles/tokens";
 import { ChartFrame } from "./ChartFrame";
 
 export function BenfordPmfChart() {
@@ -24,7 +25,7 @@ export function BenfordPmfChart() {
   return (
     <ChartFrame
       title="Benford PMF"
-      summary="Benford probabilities decrease from about 30.1% for digit 1 to about 4.6% for digit 9."
+      summary="Benford probabilities decrease from about 30.1% for digit 1 to about 4.6% for digit 9. The dashed line marks the 11.1% uniform expectation for comparison."
     >
       <ResponsiveContainer width="100%" height={260}>
         <BarChart data={rows} margin={{ top: 10, right: 10, bottom: 4, left: 0 }}>
@@ -44,7 +45,18 @@ export function BenfordPmfChart() {
             stroke={chartPalette.neutrals.axis}
             tick={{ fill: chartPalette.neutrals.label }}
           />
-          <Tooltip />
+          <Tooltip {...chartTooltipStyle} />
+          <ReferenceLine
+            y={11.1}
+            stroke={chartPalette.neutrals.label}
+            strokeDasharray="4 4"
+            label={{
+              value: "Uniform 11.1%",
+              position: "insideTopRight",
+              fill: chartPalette.neutrals.label,
+              fontSize: 11
+            }}
+          />
           <Bar dataKey="probability" fill={editorialColors.accentDeep} radius={[3, 3, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>

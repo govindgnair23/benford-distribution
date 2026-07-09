@@ -9,6 +9,6 @@ describe("FirstDigitChart", () => {
 
     expect(screen.getByText(/first digits vs benford/i)).toBeInTheDocument();
     expect(screen.getByText(/D=1 observed 60.0%/i)).toBeInTheDocument();
-    expect(screen.getByText(/Benford 30.1%/i)).toBeInTheDocument();
+    expect(screen.getByText(/Benford reference 30.1%/i)).toBeInTheDocument();
   });
 });

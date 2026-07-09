@@ -58,7 +58,7 @@ describe("App", () => {
       screen.getByRole("heading", { name: /what is benford's law/i })
     ).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: /why it happens/i }));
+    await user.click(screen.getByRole("tab", { name: /why it happens/i }));
 
     expect(
       screen.getByRole("heading", { name: /why benford happens/i })
@@ -67,7 +67,7 @@ describe("App", () => {
       screen.queryByRole("heading", { name: /what is benford's law/i })
     ).not.toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: /simulations/i }));
+    await user.click(screen.getByRole("tab", { name: /simulations/i }));
 
     expect(
       screen.getByRole("heading", { name: /simulations/i })
@@ -94,20 +94,32 @@ describe("App", () => {
       screen.getByRole("button", { name: /back to applet library/i })
     ).toHaveFocus();
 
+    // The tablist is a single tab stop; only the active tab is in tab order.
     await user.tab();
     expect(
-      screen.getByRole("button", { name: /^what it is$/i })
+      screen.getByRole("tab", { name: /^what it is$/i })
     ).toHaveFocus();
+    expect(
+      screen.getByRole("tab", { name: /^what it is$/i })
+    ).toHaveAttribute("aria-selected", "true");
 
-    await user.tab();
-    expect(screen.getByRole("button", { name: /why it happens/i })).toHaveFocus();
+    // Arrow keys move between tabs with roving focus and activate the panel.
+    await user.keyboard("{ArrowRight}");
+    expect(screen.getByRole("tab", { name: /why it happens/i })).toHaveFocus();
+    expect(
+      screen.getByRole("heading", { name: /why benford happens/i })
+    ).toBeInTheDocument();
 
-    await user.tab();
-    expect(screen.getByRole("button", { name: /simulations/i })).toHaveFocus();
-
-    await user.keyboard("{Enter}");
+    await user.keyboard("{ArrowRight}");
+    expect(screen.getByRole("tab", { name: /simulations/i })).toHaveFocus();
     expect(
       screen.getByRole("heading", { name: /simulations/i })
     ).toBeInTheDocument();
+
+    // Wraps around from the last tab back to the first.
+    await user.keyboard("{ArrowRight}");
+    expect(
+      screen.getByRole("tab", { name: /^what it is$/i })
+    ).toHaveFocus();
   });
 });

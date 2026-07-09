@@ -1,8 +1,9 @@
 import {
   Bar,
-  BarChart,
   CartesianGrid,
+  ComposedChart,
   Legend,
+  Line,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -11,7 +12,7 @@ import {
 
 import { benfordProbability } from "../../lib/benford";
 import { firstDigitFrequencies } from "../../lib/diagnostics";
-import { chartPalette, editorialColors } from "../../styles/tokens";
+import { chartPalette, chartTooltipStyle, editorialColors } from "../../styles/tokens";
 import { ChartFrame } from "./ChartFrame";
 
 interface FirstDigitChartProps {
@@ -31,11 +32,11 @@ export function FirstDigitChart({ firstDigits }: FirstDigitChartProps) {
 
   return (
     <ChartFrame
-      title="First digits vs Benford"
-      summary="Observed first-digit frequencies are shown next to Benford reference probabilities."
+      title="4 · First digits vs Benford"
+      summary="Observed first-digit frequencies are drawn as bars; the Benford reference is overlaid as connected markers to compare shape against."
     >
       <ResponsiveContainer width="100%" height={260}>
-        <BarChart data={rows} margin={{ top: 10, right: 10, bottom: 4, left: 0 }}>
+        <ComposedChart data={rows} margin={{ top: 10, right: 10, bottom: 4, left: 0 }}>
           <CartesianGrid
             stroke={chartPalette.neutrals.gridline}
             strokeDasharray="3 3"
@@ -52,16 +53,29 @@ export function FirstDigitChart({ firstDigits }: FirstDigitChartProps) {
             stroke={chartPalette.neutrals.axis}
             tick={{ fill: chartPalette.neutrals.label }}
           />
-          <Tooltip />
+          <Tooltip {...chartTooltipStyle} />
           <Legend />
-          <Bar dataKey="observed" fill={editorialColors.accentDeep} radius={[3, 3, 0, 0]} />
-          <Bar dataKey="benford" fill={editorialColors.accentWarm} radius={[3, 3, 0, 0]} />
-        </BarChart>
+          <Bar
+            dataKey="observed"
+            name="Observed"
+            fill={chartPalette.series[0]}
+            radius={[3, 3, 0, 0]}
+          />
+          <Line
+            dataKey="benford"
+            name="Benford reference"
+            type="monotone"
+            stroke={editorialColors.accentWarm}
+            strokeWidth={2}
+            dot={{ r: 3, fill: editorialColors.accentWarm }}
+            isAnimationActive={false}
+          />
+        </ComposedChart>
       </ResponsiveContainer>
       <ul className="sr-summary" aria-label="First digit frequency summary">
         {rows.map((row) => (
           <li key={row.digit}>
-            {row.digit} observed {row.observed.toFixed(1)}%, Benford{" "}
+            {row.digit} observed {row.observed.toFixed(1)}%, Benford reference{" "}
             {row.benford.toFixed(1)}%
           </li>
         ))}

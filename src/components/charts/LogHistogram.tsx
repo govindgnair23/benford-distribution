@@ -9,7 +9,7 @@ import {
 } from "recharts";
 
 import { histogram } from "../../lib/histograms";
-import { chartPalette } from "../../styles/tokens";
+import { chartPalette, chartTooltipStyle } from "../../styles/tokens";
 import { ChartFrame } from "./ChartFrame";
 
 interface LogHistogramProps {
@@ -32,7 +32,7 @@ export function LogHistogram({ values }: LogHistogramProps) {
 
   return (
     <ChartFrame
-      title="Histogram of log10(X)"
+      title="2 · log₁₀ values"
       summary="This shows how wide the distribution is before wrapping fractional parts."
     >
       <ResponsiveContainer width="100%" height={220}>
@@ -55,8 +55,8 @@ export function LogHistogram({ values }: LogHistogramProps) {
             stroke={chartPalette.neutrals.axis}
             tick={{ fill: chartPalette.neutrals.label }}
           />
-          <Tooltip />
-          <Bar dataKey="count" fill={chartPalette.neutrals.axis} radius={[3, 3, 0, 0]} />
+          <Tooltip {...chartTooltipStyle} />
+          <Bar dataKey="count" fill={chartPalette.series[0]} radius={[3, 3, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
       <ul className="visually-hidden" aria-label="log10(X) histogram bin counts">

@@ -33,8 +33,18 @@ export function SimulationLab() {
   const activeConfig =
     config.mode === "direct" ? config.direct : config.multiplicative;
 
+  // All config edits (typed values, slider drags, preset changes) route through
+  // the transition so regenerating large samples never blocks per keystroke.
+  function handleConfigChange(next: LabConfig) {
+    startRegen(() => {
+      setConfig(next);
+    });
+  }
+
   function handlePresetChange(preset: PresetKey) {
-    setConfig(clonePreset(preset));
+    startRegen(() => {
+      setConfig(clonePreset(preset));
+    });
   }
 
   function handleRerun() {
@@ -75,7 +85,7 @@ export function SimulationLab() {
       <div className="lab-layout">
         <SimulationControls
           config={config}
-          onChange={setConfig}
+          onChange={handleConfigChange}
           onPresetChange={handlePresetChange}
           onRerun={handleRerun}
           isRegenerating={isRegenerating}
@@ -86,6 +96,11 @@ export function SimulationLab() {
           seed={activeConfig.seed}
         />
       </div>
+      <p className="chart-grid-caption">
+        Read the pipeline left to right: original values become their log₁₀,
+        then the fractional part of each log, then the resulting first digits
+        compared against Benford.
+      </p>
       <div className="chart-grid">
         <OriginalValueHistogram values={sample.values} />
         <LogHistogram values={sample.logSamples} />

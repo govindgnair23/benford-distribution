@@ -25,11 +25,18 @@ export function evaluateSample(sample: SimulatedSample): SampleDiagnostics {
   };
 }
 
+// SD(log10 X) cutoffs used to classify a sample's log width. Surfaced in the
+// UI (SimulationControls guidance) so learners can predict classification.
+export const LOG_WIDTH_THRESHOLDS = {
+  narrowMax: 0.25,
+  wideMin: 0.6
+} as const;
+
 export function classifyLogWidth(logWidth: number): WidthLabel {
-  if (logWidth < 0.25) {
+  if (logWidth < LOG_WIDTH_THRESHOLDS.narrowMax) {
     return "narrow";
   }
-  if (logWidth < 0.6) {
+  if (logWidth < LOG_WIDTH_THRESHOLDS.wideMin) {
     return "transitional";
   }
   return "wide";

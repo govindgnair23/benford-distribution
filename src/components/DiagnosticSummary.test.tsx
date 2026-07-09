@@ -27,7 +27,7 @@ describe("DiagnosticSummary", () => {
       name: /simulation diagnostics/i
     });
 
-    expect(within(aside).getByText("SD(log10 X)")).toBeInTheDocument();
+    expect(within(aside).getByText("SD(log₁₀ X)")).toBeInTheDocument();
     expect(within(aside).getByText("0.83")).toBeInTheDocument();
 
     expect(within(aside).getByText("Width class")).toBeInTheDocument();
@@ -55,7 +55,7 @@ describe("DiagnosticSummary", () => {
     expect(screen.getByTestId("seed-value")).toHaveTextContent("42");
   });
 
-  it("attaches tooltip titles to the technical metrics", () => {
+  it("shows the metric explanations as visible captions, not hover titles", () => {
     render(
       <DiagnosticSummary
         diagnostics={sampleDiagnostics}
@@ -64,7 +64,13 @@ describe("DiagnosticSummary", () => {
       />
     );
 
-    expect(screen.getByText("0.83")).toHaveAttribute("title", expect.stringMatching(/standard deviation/i));
-    expect(screen.getByText("0.124")).toHaveAttribute("title", expect.stringMatching(/root mean squared error/i));
+    expect(screen.getByText("0.83")).not.toHaveAttribute("title");
+    expect(screen.getByText("0.124")).not.toHaveAttribute("title");
+    expect(
+      screen.getByText(/standard deviation of log₁₀\(x\)/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/root-mean-square error of observed vs benford/i)
+    ).toBeInTheDocument();
   });
 });

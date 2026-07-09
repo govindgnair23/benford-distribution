@@ -37,3 +37,19 @@ export const editorialColors = {
   accentWarmDeep: "#8d3d25",
   accentDeep: "#1f3832",
 } as const;
+
+// Shared Recharts <Tooltip> styling so every chart renders the same editorial
+// tooltip: cream --surface-card background, 1px --border-card hairline, no
+// radius, no shadow, --ink-strong text. Spread onto <Tooltip {...chartTooltipStyle} />.
+export const chartTooltipStyle = {
+  contentStyle: {
+    background: "#fffaf1",
+    border: "1px solid #d9cdb8",
+    borderRadius: 0,
+    boxShadow: "none",
+    color: "#18211f",
+  },
+  wrapperStyle: { outline: "none" },
+  labelStyle: { color: "#18211f", fontWeight: 700 },
+  itemStyle: { color: "#18211f" },
+} as const;

@@ -498,6 +498,21 @@ select:focus-visible {
   font-size: 0.72rem;
 }
 
+.interval-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--ink-muted);
+  font-size: 0.82rem;
+}
+
+.interval-legend li {
+  font-weight: 700;
+}
+
 .wrap-visual {
   grid-column: 1 / -1;
   display: grid;
@@ -735,7 +750,7 @@ select:focus-visible {
   gap: 12px;
 }
 
-.control-panel input,
+.control-panel input:not([type="range"]),
 .control-panel select {
   min-height: 40px;
   width: 100%;
@@ -763,14 +778,75 @@ select:focus-visible {
   opacity: 0.55;
 }
 
-.control-panel input:hover,
+.control-panel input:not([type="range"]):hover,
 .control-panel select:hover {
   border-color: var(--ink-label);
 }
 
-.control-panel input:focus,
+.control-panel input:not([type="range"]):focus,
 .control-panel select:focus {
   border-color: var(--accent-warm);
+}
+
+/* RangeInput: paired slider + number input, kept in sync in SimulationControls.
+   The number carries the visible label; the slider sits beneath it. Track is a
+   hairline; the thumb is a sharp-cornered --accent-warm square, on system. */
+.range-field {
+  display: grid;
+  gap: 8px;
+  align-content: end;
+  color: var(--ink-label);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.range-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 20px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.range-slider:focus-visible {
+  outline: 3px solid var(--accent-warm);
+  outline-offset: 3px;
+}
+
+.range-slider::-webkit-slider-runnable-track {
+  height: 2px;
+  background: var(--border-input);
+}
+
+.range-slider::-moz-range-track {
+  height: 2px;
+  background: var(--border-input);
+}
+
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: -7px;
+  border: 0;
+  border-radius: 0;
+  background: var(--accent-warm);
+}
+
+.range-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: 0;
+  border-radius: 0;
+  background: var(--accent-warm);
+}
+
+.guidance-threshold {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: 0.85rem;
 }
 
 .secondary-action {
@@ -845,11 +921,24 @@ select:focus-visible {
   text-transform: uppercase;
 }
 
+.diagnostic-summary small.metric-note {
+  color: var(--ink-muted);
+  font-size: 0.76rem;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.chart-grid-caption {
+  margin: 22px 0 0;
+  color: var(--ink-muted);
+  font-size: 0.92rem;
+}
+
 .chart-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 22px;
-  margin-top: 22px;
+  margin-top: 12px;
 }
 
 .chart-frame {

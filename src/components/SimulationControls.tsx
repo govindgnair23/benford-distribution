@@ -1,5 +1,6 @@
 import type { ChangeEvent } from "react";
 
+import { LOG_WIDTH_THRESHOLDS } from "../lib/diagnostics";
 import type { LabConfig, PresetKey, SimulationMode } from "../lib/presets";
 
 interface SimulationControlsProps {
@@ -8,6 +9,74 @@ interface SimulationControlsProps {
   onPresetChange: (preset: PresetKey) => void;
   onRerun: () => void;
   isRegenerating?: boolean;
+}
+
+// Parse a raw input string, ignoring empty / NaN values (so a cleared field
+// never simulates), and clamp finite values into [min, max]. Returns null when
+// the value should be ignored and the last valid config kept.
+function clampInput(raw: string, min: number, max: number): number | null {
+  if (raw.trim() === "") {
+    return null;
+  }
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed)) {
+    return null;
+  }
+  return Math.min(max, Math.max(min, parsed));
+}
+
+interface RangeNumberFieldProps {
+  label: string;
+  min: number;
+  max: number;
+  step: number;
+  value: number;
+  onValue: (value: number) => void;
+}
+
+// Paired range slider + number input kept in sync; both commit through the same
+// clamp path. The number input carries the visible <label>; the slider carries
+// a distinct aria-label so assistive tech announces it separately.
+function RangeNumberField({
+  label,
+  min,
+  max,
+  step,
+  value,
+  onValue
+}: RangeNumberFieldProps) {
+  function commit(raw: string) {
+    const next = clampInput(raw, min, max);
+    if (next !== null) {
+      onValue(next);
+    }
+  }
+
+  return (
+    <div className="range-field">
+      <label>
+        {label}
+        <input
+          type="number"
+          min={min}
+          max={max}
+          step={step}
+          value={value}
+          onChange={(event) => commit(event.target.value)}
+        />
+      </label>
+      <input
+        type="range"
+        className="range-slider"
+        aria-label={`${label} slider`}
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(event) => commit(event.target.value)}
+      />
+    </div>
+  );
 }
 
 export function SimulationControls({
@@ -48,6 +117,18 @@ export function SimulationControls({
     });
   }
 
+  function commitNumber(
+    raw: string,
+    min: number,
+    max: number,
+    apply: (value: number) => void
+  ) {
+    const next = clampInput(raw, min, max);
+    if (next !== null) {
+      apply(next);
+    }
+  }
+
   return (
     <form className="control-panel" aria-label="Simulation controls">
       <div className="control-row">
@@ -81,19 +162,25 @@ export function SimulationControls({
           <h3>Lognormal presets</h3>
           <div className="guidance-columns">
             <p>
-              <strong>Narrow:</strong> log10(X) values cluster tightly, so the
+              <strong>Narrow:</strong> log₁₀(X) values cluster tightly, so the
               X values stay within a small scale range and Benford usually does
               not appear.
             </p>
             <p>
-              <strong>Transitional:</strong> log10(X) starts spreading across
+              <strong>Transitional:</strong> log₁₀(X) starts spreading across
               more of the log scale, but fractional logs still show structure.
             </p>
             <p>
-              <strong>Wide:</strong> log10(X) spans many orders of magnitude,
+              <strong>Wide:</strong> log₁₀(X) spans many orders of magnitude,
               so fractional logs can become closer to uniform.
             </p>
           </div>
+          <p className="guidance-threshold">
+            Width class follows SD(log₁₀ X): below{" "}
+            {LOG_WIDTH_THRESHOLDS.narrowMax} reads as narrow,{" "}
+            {LOG_WIDTH_THRESHOLDS.narrowMax}–{LOG_WIDTH_THRESHOLDS.wideMin} as
+            transitional, and {LOG_WIDTH_THRESHOLDS.wideMin} or above as wide.
+          </p>
         </section>
       ) : (
         <section className="model-guidance" aria-label="Multiplicative growth model explanation">
@@ -127,12 +214,13 @@ export function SimulationControls({
             step="100"
             value={active.sampleSize}
             onChange={(event) => {
-              const value = Number(event.target.value);
-              if (config.mode === "direct") {
-                updateDirect("sampleSize", value);
-              } else {
-                updateMultiplicative("sampleSize", value);
-              }
+              commitNumber(event.target.value, 100, 50000, (value) => {
+                if (config.mode === "direct") {
+                  updateDirect("sampleSize", value);
+                } else {
+                  updateMultiplicative("sampleSize", value);
+                }
+              });
             }}
           />
         </label>
@@ -146,23 +234,20 @@ export function SimulationControls({
                 step="0.1"
                 value={config.direct.mu}
                 onChange={(event) =>
-                  updateDirect("mu", Number(event.target.value))
+                  commitNumber(event.target.value, -Infinity, Infinity, (value) =>
+                    updateDirect("mu", value)
+                  )
                 }
               />
             </label>
-            <label>
-              Sigma
-              <input
-                type="number"
-                min="0"
-                max="5"
-                step="0.01"
-                value={config.direct.sigma}
-                onChange={(event) =>
-                  updateDirect("sigma", Number(event.target.value))
-                }
-              />
-            </label>
+            <RangeNumberField
+              label="Sigma"
+              min={0}
+              max={2.5}
+              step={0.01}
+              value={config.direct.sigma}
+              onValue={(value) => updateDirect("sigma", value)}
+            />
           </>
         ) : (
           <>
@@ -174,23 +259,20 @@ export function SimulationControls({
                 step="10"
                 value={config.multiplicative.startValue}
                 onChange={(event) =>
-                  updateMultiplicative("startValue", Number(event.target.value))
+                  commitNumber(event.target.value, 0.01, Infinity, (value) =>
+                    updateMultiplicative("startValue", value)
+                  )
                 }
               />
             </label>
-            <label>
-              Steps
-              <input
-                type="number"
-                min="0"
-                max="200"
-                step="1"
-                value={config.multiplicative.steps}
-                onChange={(event) =>
-                  updateMultiplicative("steps", Number(event.target.value))
-                }
-              />
-            </label>
+            <RangeNumberField
+              label="Steps"
+              min={0}
+              max={200}
+              step={1}
+              value={config.multiplicative.steps}
+              onValue={(value) => updateMultiplicative("steps", value)}
+            />
             <label>
               Average growth factor
               <input
@@ -199,28 +281,22 @@ export function SimulationControls({
                 min="0.01"
                 value={config.multiplicative.growthFactorMean}
                 onChange={(event) =>
-                  updateMultiplicative(
-                    "growthFactorMean",
-                    Number(event.target.value)
+                  commitNumber(event.target.value, 0.01, Infinity, (value) =>
+                    updateMultiplicative("growthFactorMean", value)
                   )
                 }
               />
             </label>
-            <label>
-              Growth factor volatility
-              <input
-                type="number"
-                min="0"
-                step="0.01"
-                value={config.multiplicative.growthFactorVolatility}
-                onChange={(event) =>
-                  updateMultiplicative(
-                    "growthFactorVolatility",
-                    Number(event.target.value)
-                  )
-                }
-              />
-            </label>
+            <RangeNumberField
+              label="Growth factor volatility"
+              min={0}
+              max={0.5}
+              step={0.01}
+              value={config.multiplicative.growthFactorVolatility}
+              onValue={(value) =>
+                updateMultiplicative("growthFactorVolatility", value)
+              }
+            />
           </>
         )}
 

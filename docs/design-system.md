@@ -209,6 +209,63 @@ Each pattern is described by the CSS class hook it ships with. Use the existing 
 
 `.diagnostic-summary` — 4-column grid of small caps `<span>` + bold value `<strong>` pairs, with an optional descriptive paragraph spanning all columns.
 - Use for the "RMSE / log-width / classification" readout at the top of a lab.
+- Technical metrics (SD, RMSE) carry a visible `<small class="metric-note">` caption explaining the number. **Don't** hide these behind `title=` hover tooltips — keyboard and touch users never see them.
+
+### StatCallout
+
+`.stat-callout` — a short cream line that pulls one number out of surrounding prose (e.g. "About **30.1%** of Benford values begin with 1").
+- **Do:** wrap the figure in `<strong>`; keep to one sentence.
+- **Don't:** stack several callouts; use a chart or list instead.
+
+### CaveatNote
+
+`.caveat-note` — a muted paragraph that concentrates all the "this may not hold" qualifications for a section in one place, so the surrounding copy can state the positive case plainly.
+- **Do:** keep every hedge here rather than sprinkling "may / often / can" through each card.
+
+### FormulaStack
+
+`.formula-stack` — a `min-width: 0` column that stacks two or more `<FormulaBlock>` figures (general form + worked example) with no gap collapse.
+- **Do:** pair a "general form" block with an "example" block.
+
+### FormulaExplanationPairs
+
+`.formula-explanation-pairs` — a two-column grid (matching `.math-step`) that alternates a `<FormulaBlock>` with the prose paragraph that reads it. Use when a derivation step needs formula-and-gloss pairs side by side.
+
+### GuidanceColumns / guidance-threshold
+
+`.guidance-columns` — a 4-up grid of short `<p>` definitions inside a `.model-guidance` panel (e.g. narrow / transitional / wide preset meanings).
+`.guidance-threshold` — a muted single line beneath the columns that surfaces the numeric cutoffs behind a classification, so users can predict it.
+- **Do:** source thresholds from the domain constant (`LOG_WIDTH_THRESHOLDS`) rather than hardcoding.
+
+### IntervalStrip
+
+`.interval-module` (wrapper), `.interval-strip` (`role="img"`), `.interval-segment` (gold-gradient cell sized by `flex-grow`), `.interval-legend` (overflow row).
+- Segments narrower than ~6% of the strip drop their inline `<small>` percentage; those values move to the `.interval-legend` row beneath so they stay legible.
+- **Do:** keep the strip's `aria-label` accurate, naming the largest and smallest intervals.
+
+### WrapVisual family
+
+`.wrap-visual`, `.wrap-visual-header`, `.wrap-density-grid`, `.wrap-density-panel`, `.wrap-density-legend`, `.wrap-density-values`, `.wrapped-profile-block`, `.wrap-conclusion` — the explainer's narrow-vs-wide Normal comparison. A header + a two-up grid of density panels, each with a `<ChartFrame>`, a summed-value `<dl>`, and a wrapped-density sub-chart.
+- **Don't** reuse for generic charts; this is a bespoke pedagogical layout.
+
+### SrSummary
+
+`.sr-summary` — a list (or line) that restates a chart's data as text for screen readers and as a sighted fallback. Charts also ship a `.visually-hidden` per-bin/per-digit list for the full breakdown.
+- **Do:** give every chart one plain-language summary; keep numbers in sync with the chart.
+- **Don't** duplicate the same summary in two visible nodes.
+
+### RangeInput
+
+`.range-field` (wrapper), `.range-slider` (the `<input type="range">`) — a slider paired with a number input, kept in sync so either can drive a value (see `SimulationControls`).
+- The number input carries the visible `<label>`; the slider carries a distinct `aria-label` ("<field> slider") so it is announced separately and doesn't collide in `getByLabelText`.
+- Track is a 2px `--border-input` hairline; the thumb is a sharp-cornered 16px `--accent-warm` square (border-radius 0, on system). Focus shows the standard `--accent-warm` outline.
+- **Do:** clamp both inputs to the same `[min, max]` and ignore empty/NaN edits before committing config.
+- **Don't** give the range input a border/background box — it is excluded from the base `.control-panel input` rule via `:not([type="range"])`.
+
+### ChartTooltip
+
+`chartTooltipStyle` (exported from `src/styles/tokens.ts`) — the shared Recharts `<Tooltip>` styling: cream `--surface-card` background, 1px `--border-card` hairline, no radius, no shadow, `--ink-strong` text. Spread it: `<Tooltip {...chartTooltipStyle} />`.
+- **Do:** use it on every chart tooltip so hover chrome matches the editorial surface. **Don't** leave a bare `<Tooltip />` (defaults to a white rounded shadowed box that breaks the system).
 
 ## 5. How to add an applet
 
