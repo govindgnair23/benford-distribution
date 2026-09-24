@@ -30,11 +30,20 @@ export function OriginalValueHistogram({ values }: OriginalValueHistogramProps) 
     range: `${formatValue(bin.start)}-${formatValue(bin.end)}`,
     count: bin.count
   }));
+  const largestBinCount = Math.max(...bins.map((bin) => bin.count));
+  const isCompressed =
+    finiteValues.length >= 20 &&
+    min > 0 &&
+    max / min >= 100 &&
+    largestBinCount / finiteValues.length >= 0.9;
+  const summary = isCompressed
+    ? `${largestBinCount.toLocaleString()} of ${finiteValues.length.toLocaleString()} values fall in one bin because extreme values stretch the linear axis. The next log-scale chart reveals their spread.`
+    : "This is the original-value distribution before taking logs.";
 
   return (
     <ChartFrame
       title="1 · Original values"
-      summary="This is the original-value distribution before taking logs."
+      summary={summary}
     >
       <ResponsiveContainer width="100%" height={220}>
         <BarChart data={bins} margin={{ top: 10, right: 10, bottom: 22, left: 0 }}>

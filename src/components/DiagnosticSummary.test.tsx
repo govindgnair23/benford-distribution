@@ -35,6 +35,7 @@ describe("DiagnosticSummary", () => {
 
     expect(within(aside).getByText("Distance from Benford")).toBeInTheDocument();
     expect(within(aside).getByText("0.124")).toBeInTheDocument();
+    expect(within(aside).getByText(/12\.4 percentage points/i)).toBeInTheDocument();
 
     expect(within(aside).getByText("Sample size")).toBeInTheDocument();
     expect(within(aside).getByText("10,000")).toBeInTheDocument();
@@ -72,5 +73,9 @@ describe("DiagnosticSummary", () => {
     expect(
       screen.getByText(/root-mean-square error of observed vs benford/i)
     ).toBeInTheDocument();
+    expect(screen.getByText(/typical sampling-only RMSE.*0\.003/i)).toBeInTheDocument();
+    expect(screen.getByText(/not a pass\/fail test/i)).toBeInTheDocument();
+    expect(screen.getByText(/teaching category based on log spread/i)).toBeInTheDocument();
+    expect(screen.getByText(/transitional samples can already match/i)).toBeInTheDocument();
   });
 });

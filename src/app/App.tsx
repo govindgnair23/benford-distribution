@@ -36,20 +36,12 @@ export function App() {
         {SelectedApplet ? (
           <SelectedApplet />
         ) : (
-          <section className="applet-catalog" aria-labelledby="catalog-title">
-            <div className="catalog-intro">
-              <p className="eyebrow">Choose an applet</p>
-              <h2 id="catalog-title">Applet Library</h2>
-              <p>
-                Each StatQuest applet is a focused workspace for one statistical
-                idea, with explanation, visuals, and direct experimentation.
-              </p>
-            </div>
+          <section className="applet-catalog" aria-label="Applet catalog">
             <div className="applet-grid">
               {availableApplets.map((applet) => (
                 <article className="applet-card" key={applet.id}>
                   <p className="applet-area">{applet.conceptArea}</p>
-                  <h3>{applet.title}</h3>
+                  <h2>{applet.title}</h2>
                   <p>{applet.subtitle}</p>
                   <button
                     type="button"

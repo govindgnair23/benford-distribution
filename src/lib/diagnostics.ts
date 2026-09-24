@@ -68,6 +68,22 @@ export function rmse(observed: number[], expected: number[]): number {
   return Math.sqrt(meanSquaredError);
 }
 
+// For N independent draws from exact Benford probabilities, this is the
+// root-mean-square first-digit sampling error in probability units. It is a
+// reference scale, not a goodness-of-fit cutoff.
+export function expectedBenfordSamplingRmse(sampleSize: number): number {
+  if (!Number.isInteger(sampleSize) || sampleSize <= 0) {
+    throw new Error("sampleSize must be a positive integer");
+  }
+
+  const probabilities = benfordProbabilities();
+  const sumOfVariances = probabilities.reduce(
+    (sum, probability) => sum + probability * (1 - probability),
+    0
+  );
+  return Math.sqrt(sumOfVariances / (probabilities.length * sampleSize));
+}
+
 function buildExplanation(
   widthLabel: WidthLabel,
   benfordRmse: number,
@@ -82,12 +98,14 @@ function buildExplanation(
   if (widthLabel === "transitional") {
     return `SD(log10 X) is ${logWidth.toFixed(
       2
-    )}. The sample is starting to spread across the log scale, but fractional logs may still show visible structure. Sampling noise can still move the digit bars.`;
+    )}. Fractional logs may still show structure, while first digits can already look close to Benford. Current digit RMSE is ${benfordRmse.toFixed(
+      3
+    )}; compare it with the sampling-only reference below.`;
   }
 
   return `SD(log10 X) is ${logWidth.toFixed(
     2
-  )}, spanning multiple orders of magnitude. The wrapped fractional logs are close to uniform, so the first-digit distribution is closer to Benford. Current RMSE is ${benfordRmse.toFixed(
+  )}, spanning multiple orders of magnitude. That width does not guarantee Benford. Inspect the fractional-log histogram and compare the current digit RMSE of ${benfordRmse.toFixed(
     3
-  )}.`;
+  )} with the sampling-only reference below.`;
 }

@@ -11,8 +11,11 @@ describe("App", () => {
     expect(
       screen.getByRole("heading", { name: /statquest/i })
     ).toBeInTheDocument();
+    expect(screen.getByRole("region", { name: /applet catalog/i })).toBeInTheDocument();
+    expect(screen.queryByText(/choose an applet/i)).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: /applet library/i })).not.toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: /applet library/i })
+      screen.getByText(/explore why first digits follow Benford's Law when values span orders of magnitude/i)
     ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /open benford emergence lab/i })
@@ -22,9 +25,7 @@ describe("App", () => {
   it("starts on the catalog instead of inside the Benford applet", () => {
     render(<App />);
 
-    expect(
-      screen.getByRole("heading", { name: /applet library/i })
-    ).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /benford emergence lab/i })).toBeInTheDocument();
     expect(
       screen.queryByRole("heading", { name: /what is benford's law/i })
     ).not.toBeInTheDocument();

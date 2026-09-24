@@ -162,13 +162,18 @@ export function SimulationControls({
           <h3>Lognormal presets</h3>
           <div className="guidance-columns">
             <p>
+              <strong>Model:</strong> log₁₀(X) ~ Normal(μ, σ²), then X =
+              10^log₁₀(X). Here μ and σ describe log₁₀(X), not X itself.
+            </p>
+            <p>
               <strong>Narrow:</strong> log₁₀(X) values cluster tightly, so the
               X values stay within a small scale range and Benford usually does
               not appear.
             </p>
             <p>
               <strong>Transitional:</strong> log₁₀(X) starts spreading across
-              more of the log scale, but fractional logs still show structure.
+              more of the log scale. Fractional logs may still show structure,
+              while the first digits can already match Benford closely.
             </p>
             <p>
               <strong>Wide:</strong> log₁₀(X) spans many orders of magnitude,
@@ -176,7 +181,8 @@ export function SimulationControls({
             </p>
           </div>
           <p className="guidance-threshold">
-            Width class follows SD(log₁₀ X): below{" "}
+            These are teaching categories based only on SD(log₁₀ X), not
+            thresholds for Benford conformity. Below{" "}
             {LOG_WIDTH_THRESHOLDS.narrowMax} reads as narrow,{" "}
             {LOG_WIDTH_THRESHOLDS.narrowMax}–{LOG_WIDTH_THRESHOLDS.wideMin} as
             transitional, and {LOG_WIDTH_THRESHOLDS.wideMin} or above as wide.
@@ -186,19 +192,25 @@ export function SimulationControls({
         <section className="model-guidance" aria-label="Multiplicative growth model explanation">
           <h3>Multiplicative growth model</h3>
           <div className="guidance-columns">
-            <p>Model: X_final = X_start * G_1 * G_2 * ... * G_n.</p>
             <p>
-              <strong>Average growth factor:</strong> the typical multiplier per
-              step. For example, 1.02 means about 2% growth per step.
+              <strong>Model:</strong> X_final = X_start * G_1 * G_2 * ... * G_n,
+              where Gᵢ ~ Normal(μ_G, σ_G²), restricted to Gᵢ &gt; 0.
             </p>
             <p>
-              <strong>Growth factor volatility:</strong> how much multipliers
-              vary around the average. Higher values widen the final
-              distribution faster.
+              <strong>Factor Normal mean:</strong> μ_G is the mean of the
+              underlying Normal distribution before nonpositive draws are
+              rejected. The accepted factors' actual average can be slightly
+              higher.
             </p>
             <p>
-              <strong>Steps:</strong> more multiplications give more
-              opportunities for growth factors to accumulate.
+              <strong>Factor Normal standard deviation:</strong> σ_G is the
+              standard deviation of that underlying Normal distribution. It is
+              measured in multiplier units, so 0.18 means an SD of 0.18.
+            </p>
+            <p>
+              <strong>Sample:</strong> each observation follows an independent
+              path with newly drawn factors for every step, starting from the
+              same X_start.
             </p>
           </div>
         </section>
@@ -228,7 +240,7 @@ export function SimulationControls({
         {config.mode === "direct" ? (
           <>
             <label>
-              Mu
+              Mean of log₁₀(X) (μ)
               <input
                 type="number"
                 step="0.1"
@@ -241,7 +253,7 @@ export function SimulationControls({
               />
             </label>
             <RangeNumberField
-              label="Sigma"
+              label="Standard deviation of log₁₀(X) (σ)"
               min={0}
               max={2.5}
               step={0.01}
@@ -274,7 +286,7 @@ export function SimulationControls({
               onValue={(value) => updateMultiplicative("steps", value)}
             />
             <label>
-              Average growth factor
+              Factor Normal mean (μ_G)
               <input
                 type="number"
                 step="0.01"
@@ -288,7 +300,7 @@ export function SimulationControls({
               />
             </label>
             <RangeNumberField
-              label="Growth factor volatility"
+              label="Factor Normal standard deviation (σ_G)"
               min={0}
               max={0.5}
               step={0.01}
@@ -306,9 +318,13 @@ export function SimulationControls({
           onClick={onRerun}
           disabled={isRegenerating}
         >
-          Rerun sample
+          Draw another sample
         </button>
       </div>
+      <p className="guidance-threshold">
+        Controls update the current results automatically. The Draw another
+        sample button keeps these settings and uses a new random seed.
+      </p>
     </form>
   );
 }

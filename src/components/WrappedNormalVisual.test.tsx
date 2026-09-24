@@ -73,4 +73,32 @@ describe("WrappedNormalVisual", () => {
     expect(screen.getByText(/Narrow profile peaks near R = 0.2/i)).toBeInTheDocument();
     expect(screen.getByText(/Wide profile is much flatter/i)).toBeInTheDocument();
   });
+
+  it("shows how integer-shifted values wrap to one fractional position", () => {
+    render(<WrappedNormalVisual />);
+
+    expect(
+      screen.getByRole("img", {
+        name: /0.2, 1.2, and 2.2 all wrap to fractional position 0.2/i
+      })
+    ).toBeInTheDocument();
+    expect(screen.getByText(/keep only the fractional part/i)).toBeInTheDocument();
+    expect(screen.getAllByText("0.2").length).toBeGreaterThan(1);
+    expect(screen.getByText("1.2")).toBeInTheDocument();
+    expect(screen.getByText("2.2")).toBeInTheDocument();
+  });
+
+  it("explains the density scale, uniform reference, and finite-window approximation", () => {
+    render(<WrappedNormalVisual />);
+
+    expect(screen.getAllByText("Density").length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/uniform density = 1/i).length).toBeGreaterThan(0);
+    expect(
+      screen.getByText(/area over an interval is its probability/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/finite range of integer shifts shown here/i)
+    ).toBeInTheDocument();
+    expect(screen.getByText(/about 0.995 rather than exactly 1/i)).toBeInTheDocument();
+  });
 });

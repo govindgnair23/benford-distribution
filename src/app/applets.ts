@@ -15,7 +15,7 @@ export const availableApplets: AppletDefinition[] = [
     id: "benford",
     title: "Benford Emergence Lab",
     subtitle:
-      "Explore why first digits follow a logarithmic pattern when values span orders of magnitude.",
+      "Explore why first digits follow Benford's Law when values span orders of magnitude.",
     conceptArea: "Probability",
     component: BenfordApplet
   }

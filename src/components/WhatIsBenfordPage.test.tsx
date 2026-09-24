@@ -16,6 +16,9 @@ describe("WhatIsBenfordPage", () => {
       screen.getByText(/P\(D=d\)=\\log_\{10\}\\left\(\\frac\{d\+1\}\{d\}\\right\)/i)
     ).not.toBeNull();
     expect(screen.getAllByText(/30.1%/i).length).toBeGreaterThan(0);
+    expect(screen.getByText(/first nonzero digit of a positive number/i)).toBeInTheDocument();
+    expect(screen.getByText(/0\.0314.*first digit 3/i)).toBeInTheDocument();
+    expect(screen.getByText(/zero has no first nonzero digit.*negative values/i)).toBeInTheDocument();
   });
 
   it("contrasts Benford with a uniform digit expectation", () => {
@@ -26,14 +29,16 @@ describe("WhatIsBenfordPage", () => {
     expect(screen.getByText(/not uniform over digits/i)).toBeInTheDocument();
   });
 
-  it("lists cautious real-world scenarios and non-examples", () => {
+  it("lists real-world candidates without the technical caveat", () => {
     render(<WhatIsBenfordPage />);
 
     expect(screen.getByText(/populations and city sizes/i)).toBeInTheDocument();
-    expect(screen.getByText(/river lengths/i)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /river lengths/i })).toBeInTheDocument();
     expect(screen.getByText(/transaction and accounting amounts/i)).toBeInTheDocument();
     expect(screen.getByText(/scientific measurements/i)).toBeInTheDocument();
     expect(screen.getByText(/not guaranteed/i)).toBeInTheDocument();
-    expect(screen.getByText(/assigned identifiers/i)).toBeInTheDocument();
+    expect(screen.queryByText(/assigned identifiers/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/fractional logs are spread roughly evenly/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/river lengths.*can be candidates/i)).toBeInTheDocument();
   });
 });

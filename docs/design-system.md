@@ -149,8 +149,8 @@ Each pattern is described by the CSS class hook it ships with. Use the existing 
 
 ### HeroBand / IntroBand
 
-`.hero-panel` (applet hero), `.intro-band` (page hero on tabs), `.catalog-intro` (catalog landing).
-- Full-width hairline-bordered band with vertical centering. Applet/catalog identity headlines use `--type-display`; tab/page section headlines use `--type-section-title`.
+`.hero-panel` (applet hero), `.intro-band` (page hero on tabs).
+- Full-width hairline-bordered band with vertical centering. Applet identity headlines use `--type-display`; tab/page section headlines use `--type-section-title`.
 - **Do:** one big headline + one summary paragraph. That is the entire pattern.
 - **Don't:** add CTAs, badges, or imagery.
 
@@ -170,6 +170,12 @@ Each pattern is described by the CSS class hook it ships with. Use the existing 
 
 `.math-step` — two-column grid (`minmax(220px, 0.75fr) minmax(0, 1.25fr)`) with a bottom hairline divider. The left column carries the step heading; the right carries prose and formulas.
 - Use to walk through a derivation, one step per `.math-step` row.
+
+### ExplainerPhase
+
+`.explainer-phase`, `.explainer-phase-header` — a semantic section and sunken editorial header that group consecutive math steps by purpose.
+- **Do:** use an eyebrow for the step range, a short h3 title, and one sentence explaining what the phase establishes.
+- **Don't:** use it for a single step or as a replacement for the page-level `.intro-band`.
 
 ### FormulaBlock
 
@@ -204,6 +210,7 @@ Each pattern is described by the CSS class hook it ships with. Use the existing 
 
 `.control-panel` — cream card containing `.control-row` grids of labeled inputs/selects, plus optional `.model-guidance`.
 - Inputs use `--surface-input` background, `--border-input` border, `--ink-strong` text. Labels are 0.88rem bold `--ink-label`.
+- `.lab-result-peek` gives the current width class and digit RMSE just before the controls and stays visible while their section scrolls.
 
 ### DiagnosticSummary
 
@@ -216,11 +223,6 @@ Each pattern is described by the CSS class hook it ships with. Use the existing 
 `.stat-callout` — a short cream line that pulls one number out of surrounding prose (e.g. "About **30.1%** of Benford values begin with 1").
 - **Do:** wrap the figure in `<strong>`; keep to one sentence.
 - **Don't:** stack several callouts; use a chart or list instead.
-
-### CaveatNote
-
-`.caveat-note` — a muted paragraph that concentrates all the "this may not hold" qualifications for a section in one place, so the surrounding copy can state the positive case plainly.
-- **Do:** keep every hedge here rather than sprinkling "may / often / can" through each card.
 
 ### FormulaStack
 
@@ -245,7 +247,7 @@ Each pattern is described by the CSS class hook it ships with. Use the existing 
 
 ### WrapVisual family
 
-`.wrap-visual`, `.wrap-visual-header`, `.wrap-density-grid`, `.wrap-density-panel`, `.wrap-density-legend`, `.wrap-density-values`, `.wrapped-profile-block`, `.wrap-conclusion` — the explainer's narrow-vs-wide Normal comparison. A header + a two-up grid of density panels, each with a `<ChartFrame>`, a summed-value `<dl>`, and a wrapped-density sub-chart.
+`.wrap-visual`, `.wrap-visual-header`, `.wrap-mapping`, `.wrap-density-intro`, `.wrap-density-grid`, `.wrap-density-panel`, `.wrap-density-legend`, `.wrap-density-values`, `.wrapped-profile-block`, `.wrap-conclusion` — the explainer's narrow-vs-wide Normal comparison. A static mapping shows integer-shifted values landing at the same fractional position before the two-up density panels. Each panel has a `<ChartFrame>`, a summed-value `<dl>`, and a wrapped-density sub-chart with labeled density axes.
 - **Don't** reuse for generic charts; this is a bespoke pedagogical layout.
 
 ### SrSummary

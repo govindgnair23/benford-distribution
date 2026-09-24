@@ -129,11 +129,41 @@ export function WrappedNormalVisual() {
     >
       <div className="wrap-visual-header">
         <p className="eyebrow">Deeper look</p>
-        <h4>Integer-shift density contributions</h4>
+        <h4>First, wrap values onto one unit</h4>
+        <p>
+          To wrap a value, keep only the fractional part. Values separated by a
+          whole number therefore arrive at the same position between 0 and 1.
+        </p>
+        <div
+          className="wrap-mapping"
+          role="img"
+          aria-label="0.2, 1.2, and 2.2 all wrap to fractional position 0.2"
+        >
+          <div className="wrap-mapping-examples" aria-hidden="true">
+            {["0.2", "1.2", "2.2"].map((value) => (
+              <div className="wrap-mapping-example" key={value}>
+                <span>{value}</span>
+                <b>keep fractional part</b>
+                <strong>0.2</strong>
+              </div>
+            ))}
+          </div>
+          <div className="wrap-unit-line" aria-hidden="true">
+            <span>0</span>
+            <i />
+            <b>fractional position 0.2</b>
+            <span>1</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="wrap-density-intro">
+        <h4>Then add the density at matching positions</h4>
         <p>
           Compare R = 0.2 and R = 0.7 by adding Normal-density values at every
-          integer shift k + R. Green lines mark R = 0.2, and blue lines mark R =
-          0.7 in the finite plotted window.
+          integer shift k + R. The vertical axis is <strong>Density</strong>:
+          density is a curve's height, while its area over an interval is its
+          probability. A density can therefore be greater than 1.
         </p>
         <div className="wrap-density-legend" aria-label="Contribution line colors">
           <span>
@@ -141,6 +171,9 @@ export function WrappedNormalVisual() {
           </span>
           <span>
             <i className="legend-swatch point-seven" /> Blue lines mark R = 0.7
+          </span>
+          <span>
+            <i className="legend-swatch uniform-density" /> Uniform density = 1
           </span>
         </div>
       </div>
@@ -155,7 +188,13 @@ export function WrappedNormalVisual() {
           const profileSummary =
             normalCase.key === "narrow"
               ? "Narrow profile peaks near R = 0.2 instead of staying flat."
-              : "Wide profile is much flatter, so fractional positions have similar wrapped density.";
+              : "Wide profile is much flatter and sits at about 0.995, so fractional positions have similar wrapped density.";
+          const wrappedDomain = normalCase.key === "narrow" ? [0, 4.2] : [0, 1.05];
+          const wrappedTicks =
+            normalCase.key === "narrow" ? [0, 1, 2, 3, 4] : [0, 0.25, 0.5, 0.75, 1];
+          const densityDomain = normalCase.key === "narrow" ? [0, 4] : [0, 0.04];
+          const densityTicks =
+            normalCase.key === "narrow" ? [0, 1, 2, 3, 4] : [0, 0.01, 0.02, 0.03, 0.04];
 
           return (
             <article className="wrap-density-panel" key={normalCase.key}>
@@ -170,7 +209,7 @@ export function WrappedNormalVisual() {
                 <ResponsiveContainer width="100%" height={230}>
                   <LineChart
                     data={rows}
-                    margin={{ top: 8, right: 10, bottom: 6, left: 0 }}
+                    margin={{ top: 8, right: 10, bottom: 6, left: 8 }}
                   >
                     <CartesianGrid
                       stroke={chartPalette.neutrals.gridline}
@@ -185,7 +224,20 @@ export function WrappedNormalVisual() {
                       stroke={chartPalette.neutrals.axis}
                       tick={{ fill: chartPalette.neutrals.label, fontSize: 11 }}
                     />
-                    <YAxis hide domain={[0, "dataMax"]} />
+                    <YAxis
+                      width={44}
+                      domain={densityDomain}
+                      ticks={densityTicks}
+                      stroke={chartPalette.neutrals.axis}
+                      tick={{ fill: chartPalette.neutrals.label, fontSize: 10 }}
+                      label={{
+                        value: "Density",
+                        angle: -90,
+                        position: "insideLeft",
+                        fill: chartPalette.neutrals.label,
+                        fontSize: 10
+                      }}
+                    />
                     <Tooltip {...chartTooltipStyle} />
                     <Line
                       type="monotone"
@@ -225,7 +277,7 @@ export function WrappedNormalVisual() {
                   <ResponsiveContainer width="100%" height={160}>
                     <LineChart
                       data={profile}
-                      margin={{ top: 8, right: 10, bottom: 6, left: 0 }}
+                      margin={{ top: 18, right: 10, bottom: 6, left: 8 }}
                     >
                       <CartesianGrid
                         stroke={chartPalette.neutrals.gridline}
@@ -240,12 +292,31 @@ export function WrappedNormalVisual() {
                         stroke={chartPalette.neutrals.axis}
                         tick={{ fill: chartPalette.neutrals.label, fontSize: 11 }}
                       />
-                      <YAxis hide domain={[0, "dataMax"]} />
+                      <YAxis
+                        width={44}
+                        domain={wrappedDomain}
+                        ticks={wrappedTicks}
+                        stroke={chartPalette.neutrals.axis}
+                        tick={{ fill: chartPalette.neutrals.label, fontSize: 10 }}
+                        label={{
+                          value: "Density",
+                          angle: -90,
+                          position: "insideLeft",
+                          fill: chartPalette.neutrals.label,
+                          fontSize: 10
+                        }}
+                      />
                       <Tooltip {...chartTooltipStyle} />
                       <ReferenceLine
                         y={1}
                         stroke={chartPalette.neutrals.label}
                         strokeDasharray="4 4"
+                        label={{
+                          value: "Uniform = 1",
+                          position: "insideTopRight",
+                          fill: chartPalette.neutrals.label,
+                          fontSize: 10
+                        }}
                       />
                       <Line
                         type="monotone"
@@ -264,6 +335,13 @@ export function WrappedNormalVisual() {
           );
         })}
       </div>
+
+      <p className="wrap-window-note">
+        Each total uses the finite range of integer shifts shown here. In the
+        wide example, tiny omitted tail contributions make the displayed sum
+        about 0.995 rather than exactly 1. Including all integer shifts brings
+        the nearly uniform wrapped density to 1.
+      </p>
 
       <ul
         className="sr-summary"

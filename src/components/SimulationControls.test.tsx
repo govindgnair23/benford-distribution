@@ -26,8 +26,15 @@ describe("SimulationControls", () => {
     expect(screen.getByRole("option", { name: /^narrow$/i })).toBeInTheDocument();
     expect(screen.getByRole("option", { name: /^transitional$/i })).toBeInTheDocument();
     expect(screen.getByRole("option", { name: /^wide$/i })).toBeInTheDocument();
-    expect(screen.getByLabelText(/^mu$/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/^sigma$/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/mean of log₁₀\(X\)/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole("spinbutton", {
+        name: /standard deviation of log₁₀\(X\)/i
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/log₁₀\(X\) ~ Normal\(μ, σ²\)/i)
+    ).toBeInTheDocument();
     expect(screen.getByText(/log₁₀\(X\) values cluster tightly/i)).toBeInTheDocument();
     expect(screen.getByText(/log₁₀\(X\) starts spreading/i)).toBeInTheDocument();
     expect(screen.getByText(/log₁₀\(X\) spans many orders/i)).toBeInTheDocument();
@@ -64,13 +71,24 @@ describe("SimulationControls", () => {
     expect(
       screen.getByText(/X_final = X_start \* G_1 \* G_2 \* ... \* G_n/i)
     ).toBeInTheDocument();
-    expect(screen.getByText(/typical multiplier per step/i)).toBeInTheDocument();
-    expect(screen.getByText(/higher values widen the final distribution faster/i)).toBeInTheDocument();
-    expect(screen.getByText(/more multiplications give more opportunities/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/starting value/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/average growth factor/i)).toBeInTheDocument();
     expect(
-      screen.getByRole("spinbutton", { name: /growth factor volatility/i })
+      screen.getByText(/Gᵢ ~ Normal\(μ_G, σ_G²\), restricted to Gᵢ > 0/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/mean of the underlying Normal distribution before/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/standard deviation of that underlying Normal distribution/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/independent path with newly drawn factors/i)
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText(/starting value/i)).toBeInTheDocument();
+    expect(
+      screen.getByLabelText(/factor Normal mean/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("spinbutton", { name: /factor Normal standard deviation/i })
     ).toBeInTheDocument();
   });
 
@@ -100,8 +118,12 @@ describe("SimulationControls", () => {
       />
     );
 
-    const sigmaNumber = screen.getByRole("spinbutton", { name: /^sigma$/i });
-    const sigmaSlider = screen.getByRole("slider", { name: /sigma slider/i });
+    const sigmaNumber = screen.getByRole("spinbutton", {
+      name: /standard deviation of log₁₀\(X\)/i
+    });
+    const sigmaSlider = screen.getByRole("slider", {
+      name: /standard deviation of log₁₀\(X\).*slider/i
+    });
 
     expect(sigmaNumber).toHaveValue(0.08);
     expect(sigmaSlider).toHaveValue("0.08");
@@ -145,7 +167,9 @@ describe("SimulationControls", () => {
       />
     );
 
-    const sigmaNumber = screen.getByRole("spinbutton", { name: /^sigma$/i });
+    const sigmaNumber = screen.getByRole("spinbutton", {
+      name: /standard deviation of log₁₀\(X\)/i
+    });
     fireEvent.change(sigmaNumber, { target: { value: "9" } });
 
     expect(onChange).toHaveBeenCalled();
@@ -166,5 +190,40 @@ describe("SimulationControls", () => {
     expect(screen.getByText(/reads as narrow/i)).toBeInTheDocument();
     expect(screen.getByText(/0\.25/)).toBeInTheDocument();
     expect(screen.getByText(/0\.6/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/teaching categories based only on SD\(log₁₀ X\)/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/not thresholds for Benford conformity/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/first digits can already match Benford closely/i)
+    ).toBeInTheDocument();
+  });
+
+  it("explains automatic updates and draws another sample on request", async () => {
+    const user = userEvent.setup();
+    const onRerun = vi.fn();
+
+    render(
+      <SimulationControls
+        config={presets.narrow}
+        onChange={vi.fn()}
+        onPresetChange={vi.fn()}
+        onRerun={onRerun}
+      />
+    );
+
+    expect(
+      screen.getByText(/controls update the current results automatically/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/The Draw another sample button keeps these settings and uses a new random seed/i)
+    ).toBeInTheDocument();
+    const drawButton = screen.getByRole("button", {
+      name: /draw another sample/i
+    });
+    await user.click(drawButton);
+    expect(onRerun).toHaveBeenCalledOnce();
   });
 });

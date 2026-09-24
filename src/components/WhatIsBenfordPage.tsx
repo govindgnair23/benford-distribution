@@ -4,11 +4,11 @@ import { BenfordPmfChart } from "./charts/BenfordPmfChart";
 const scenarios = [
   {
     title: "Populations and city sizes",
-    body: "City populations run from hamlets of a few hundred to megacities of tens of millions. That sweep across many orders of magnitude is exactly the log-scale spread Benford needs."
+    body: "City populations run from hamlets of a few hundred to megacities of tens of millions. That range creates an opportunity for Benford-like digits, depending on how the populations are sampled."
   },
   {
     title: "River lengths",
-    body: "Rivers range from short creeks to continental systems thousands of kilometres long. Measured across so many scales, their leading digits follow the Benford tilt."
+    body: "River lengths can be candidates for Benford's Law when a sample mixes short creeks with much longer rivers. Their actual digit pattern still needs to be checked."
   },
   {
     title: "Transaction and accounting amounts",
@@ -16,11 +16,11 @@ const scenarios = [
   },
   {
     title: "Scientific measurements",
-    body: "Physical constants and measured quantities span an enormous range of magnitudes. Collected together, their first digits trace Benford's decreasing shape."
+    body: "Physical constants and measured quantities can span an enormous range of magnitudes. Depending on which quantities are collected, their first digits may show Benford's decreasing shape."
   },
   {
     title: "Market and economic quantities",
-    body: "Company valuations, prices, and market caps stretch from small firms to trillion-dollar giants. That wide multiplicative range is fertile ground for Benford's Law."
+    body: "Company valuations, prices, and market caps stretch from small firms to trillion-dollar giants. Some collections may show Benford's Law, while pricing and selection rules can change the pattern."
   }
 ];
 
@@ -45,6 +45,12 @@ export function WhatIsBenfordPage() {
             Benford's Law says the first digit D follows a decreasing
             probability mass function. Digit 1 is most common, digit 9 is least
             common, and the distribution is not uniform over digits.
+          </p>
+          <p>
+            Here, the first digit means the first nonzero digit of a positive
+            number: 3140 has first digit 3, 0.0314 has first digit 3, and 10
+            has first digit 1. Zero has no first nonzero digit, and negative
+            values are outside this applet's scope.
           </p>
           <FormulaBlock
             label="Benford PMF"
@@ -97,13 +103,6 @@ export function WhatIsBenfordPage() {
             </div>
           ))}
         </div>
-        <p className="caveat-note">
-          These are candidates, not guarantees. Benford is not expected for
-          assigned identifiers, tightly bounded ranges, policy-shaped prices,
-          rounded or thresholded data, or samples that do not span enough scale.
-          Any real dataset should be checked against the fractional-log
-          diagnostic rather than assumed to be Benford.
-        </p>
       </article>
     </section>
   );

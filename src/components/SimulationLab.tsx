@@ -83,6 +83,11 @@ export function SimulationLab() {
       </div>
 
       <div className="lab-layout">
+        <p className="lab-result-peek">
+          Current sample: {diagnostics.widthLabel} log spread · first-digit RMSE{" "}
+          {diagnostics.benfordRmse.toFixed(3)} ({(diagnostics.benfordRmse * 100).toFixed(1)}{" "}
+          percentage points).
+        </p>
         <SimulationControls
           config={config}
           onChange={handleConfigChange}
@@ -97,9 +102,9 @@ export function SimulationLab() {
         />
       </div>
       <p className="chart-grid-caption">
-        Read the pipeline left to right: original values become their log₁₀,
-        then the fractional part of each log, then the resulting first digits
-        compared against Benford.
+        Follow the numbered charts in order (top to bottom on narrow screens):
+        original values become their log₁₀, then the fractional part of each
+        log, then first digits compared against Benford.
       </p>
       <div className="chart-grid">
         <OriginalValueHistogram values={sample.values} />
