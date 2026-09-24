@@ -250,6 +250,12 @@ Each pattern is described by the CSS class hook it ships with. Use the existing 
 `.wrap-visual`, `.wrap-visual-header`, `.wrap-mapping`, `.wrap-density-intro`, `.wrap-density-grid`, `.wrap-density-panel`, `.wrap-density-legend`, `.wrap-density-values`, `.wrapped-profile-block`, `.wrap-conclusion` — the explainer's narrow-vs-wide Normal comparison. A static mapping shows integer-shifted values landing at the same fractional position before the two-up density panels. Each panel has a `<ChartFrame>`, a summed-value `<dl>`, and a wrapped-density sub-chart with labeled density axes.
 - **Don't** reuse for generic charts; this is a bespoke pedagogical layout.
 
+### WrapAnimation
+
+`.wrap-animation` and its `.wrap-animation-stage` / `.wrap-animation-profile` parts — a compact, user-triggered Step 5 demonstration. Three log values move to the same fractional position, while a narrow/wide switch compares the resulting wrapped-density shapes. The full formula and chart comparison remain in the adjacent `.wrap-details` disclosure.
+- **Do:** start still, label controls and the diagram, keep the shape comparison available without motion, and disable transitions for `prefers-reduced-motion`.
+- **Don't:** auto-play on page load or use the normalized bar heights as an absolute density scale.
+
 ### SrSummary
 
 `.sr-summary` — a list (or line) that restates a chart's data as text for screen readers and as a sighted fallback. Charts also ship a `.visually-hidden` per-bin/per-digit list for the full breakdown.

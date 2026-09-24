@@ -528,6 +528,187 @@ select:focus-visible {
   margin: 18px 0;
 }
 
+.wrap-animation,
+.wrap-details {
+  grid-column: 1 / -1;
+}
+
+.wrap-animation {
+  padding: var(--space-panel);
+  border: 1px solid var(--border-card);
+  background: var(--surface-card);
+}
+
+.wrap-animation-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--space-panel);
+}
+
+.wrap-animation-heading h4 {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+}
+
+.wrap-animation-heading .eyebrow {
+  margin-bottom: calc(var(--space-control) / 2);
+}
+
+.wrap-animation-stage {
+  position: relative;
+  height: 180px;
+  margin-top: var(--space-panel);
+  padding: 0 var(--space-control);
+  background: var(--surface-sunken);
+}
+
+.wrap-animation-source-label {
+  position: absolute;
+  top: 3px;
+  left: var(--space-control);
+  color: var(--ink-muted);
+  font-size: 0.78rem;
+}
+
+.wrap-animation-source,
+.wrap-animation-target {
+  position: absolute;
+  right: var(--space-panel);
+  left: var(--space-panel);
+  display: flex;
+  justify-content: space-between;
+  color: var(--ink-muted);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
+.wrap-animation-source {
+  top: 42px;
+  border-top: 2px solid var(--accent-deep);
+}
+
+.wrap-animation-target {
+  bottom: var(--space-panel);
+  border-top: 2px solid var(--accent-warm);
+}
+
+.wrap-animation-target strong {
+  position: absolute;
+  left: 20%;
+  color: var(--accent-warm-text);
+  transform: translateX(-50%);
+}
+
+.wrap-animation-dots span {
+  position: absolute;
+  top: 59px;
+  z-index: 1;
+  padding: 2px 4px;
+  background: var(--accent-deep);
+  color: var(--ink-on-accent);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  transition: left 750ms ease, top 750ms ease;
+}
+
+.wrap-animation-dots span:nth-child(1) { left: 7%; }
+.wrap-animation-dots span:nth-child(2) { left: 40%; }
+.wrap-animation-dots span:nth-child(3) { left: 73%; }
+.wrap-animation-stage[data-stage="after"] .wrap-animation-dots span { left: 20%; }
+.wrap-animation-stage[data-stage="after"] .wrap-animation-dots span:nth-child(1) { top: 76px; }
+.wrap-animation-stage[data-stage="after"] .wrap-animation-dots span:nth-child(2) { top: 94px; }
+.wrap-animation-stage[data-stage="after"] .wrap-animation-dots span:nth-child(3) { top: 112px; }
+
+.wrap-animation-compare {
+  margin-top: var(--space-panel);
+}
+
+.wrap-animation-compare h5 {
+  margin: 0 0 calc(var(--space-control) / 2);
+  font-family: var(--font-serif);
+  font-size: 1rem;
+}
+
+.wrap-animation-switch {
+  display: flex;
+  gap: 0;
+  margin-bottom: var(--space-control);
+}
+
+.wrap-animation-switch button {
+  padding: 8px var(--space-control);
+  border: 1px solid var(--border-card);
+  background: var(--surface-input);
+  color: var(--ink-body);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.wrap-animation-switch button[aria-pressed="true"] {
+  border-color: var(--accent-deep);
+  background: var(--accent-deep);
+  color: var(--ink-on-accent);
+}
+
+.wrap-animation-profile {
+  display: flex;
+  align-items: end;
+  gap: 2px;
+  height: 110px;
+  border-bottom: 2px solid var(--accent-deep);
+}
+
+.wrap-animation-profile span {
+  flex: 1;
+  min-width: 0;
+  background: var(--chart-series-3);
+  transform-origin: bottom;
+  transition: height 600ms ease, transform 600ms ease;
+}
+
+.wrap-animation-axis {
+  display: flex;
+  justify-content: space-between;
+  color: var(--ink-muted);
+  font-size: 0.78rem;
+}
+
+.wrap-animation-result {
+  margin: var(--space-control) 0 0;
+  font-weight: 700;
+}
+
+.wrap-animation-scale-note {
+  margin: 4px 0 0;
+  color: var(--ink-muted);
+  font-size: 0.78rem;
+}
+
+.wrap-details {
+  padding: var(--space-panel);
+  border-top: 1px solid var(--border-hairline);
+}
+
+.wrap-details summary {
+  color: var(--accent-warm-text);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.wrap-details[open] summary {
+  margin-bottom: var(--space-panel);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wrap-animation-dots span,
+  .wrap-animation-profile span {
+    transition: none;
+  }
+}
+
 .wrap-conclusion {
   grid-column: 1 / -1;
   max-width: 860px;

@@ -28,7 +28,7 @@ describe("ExplainerPage", () => {
       screen.getByText(/Step 3 showed that Benford requires the fractional part of log₁₀\(X\) to be nearly uniform/i)
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/placing each log value at its fractional position between 0 and 1.*called wrapping.*0\.2 and 1\.2 both land at 0\.2/i)
+      screen.getByText(/Wrapping keeps only that fractional part.*0\.2 and 1\.2 both land at 0\.2/i)
     ).toBeInTheDocument();
     expect(screen.getByLabelText(/wrapped density formula/i)).toBeInTheDocument();
     expect(screen.getByText(/sum is over all integer values of k/i)).toBeInTheDocument();
@@ -146,6 +146,14 @@ describe("ExplainerPage", () => {
     expect(
       within(mechanismPhase).getByRole("heading", { name: /step 5/i })
     ).toBeInTheDocument();
+  });
+
+  it("keeps Step 5 concise until the reader opens the detailed math", () => {
+    render(<ExplainerPage />);
+
+    const details = screen.getByText("See the math and density comparison").closest("details");
+    expect(details).not.toHaveAttribute("open");
+    expect(screen.getByRole("button", { name: /wrap values/i })).toBeInTheDocument();
   });
 
   it("connects the significand range to the uniform-log requirement", () => {

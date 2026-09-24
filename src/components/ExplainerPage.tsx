@@ -1,5 +1,6 @@
 import { FormulaBlock } from "./FormulaBlock";
 import { LogIntervalStrip } from "./LogIntervalStrip";
+import { WrapAnimation } from "./WrapAnimation";
 import { WrappedNormalVisual } from "./WrappedNormalVisual";
 
 export function ExplainerPage() {
@@ -200,31 +201,38 @@ export function ExplainerPage() {
           <h3>Step 5 — Wrap the Normal around one order of magnitude</h3>
           <p>
             Step 3 showed that Benford requires the fractional part of log₁₀(X)
-            to be nearly uniform. For Z = log₁₀(X), placing each log value at its
-            fractional position between 0 and 1 is called wrapping: 0.2 and
-            1.2 both land at 0.2. To find how much Normal density lands at a
-            position r, add the density at k + r for every integer k.
+            to be nearly uniform. Wrapping keeps only that fractional part:
+            0.2 and 1.2 both land at 0.2. Use the controls to wrap the values
+            and compare the narrow and wide distributions.
           </p>
-          <FormulaBlock
-            label="Wrapped density"
-            formula={String.raw`f_{\{Z\}}(r)=\sum_{k\in\mathbb{Z}} f_Z(k+r)`}
-            accessibilityLabel="Wrapped density formula"
-          />
-          <p>
-            The sum is over all integer values of k. To calculate the wrapped
-            density at 0.2, sum the densities at ..., -2.8, -1.8, -0.8, 0.2,
-            1.2, 2.2, 3.2, ... . These all have fractional part 0.2, where
-            fractional part means x − ⌊x⌋, so the fractional part of -2.8 is
-            -2.8 - (-3) = 0.2.
-          </p>
-          <WrappedNormalVisual />
-          <p className="wrap-conclusion">
-            For the narrow Normal, the wrapped density at 0.2 and 0.7 looks very
-            different, while for the wide Normal, the wrapped densities look much
-            closer. In the former case, {"{log₁₀(X)}"}, the fractional part of
-            log₁₀(X), does not appear uniform; in the latter case, it approaches a
-            uniform distribution.
-          </p>
+          <WrapAnimation />
+          <details className="wrap-details">
+            <summary>See the math and density comparison</summary>
+            <p>
+              For Z = log₁₀(X), the wrapped density at fractional position r
+              adds the Normal density at k + r for every integer k.
+            </p>
+            <FormulaBlock
+              label="Wrapped density"
+              formula={String.raw`f_{\{Z\}}(r)=\sum_{k\in\mathbb{Z}} f_Z(k+r)`}
+              accessibilityLabel="Wrapped density formula"
+            />
+            <p>
+              The sum is over all integer values of k. To calculate the wrapped
+              density at 0.2, sum the densities at ..., -2.8, -1.8, -0.8, 0.2,
+              1.2, 2.2, 3.2, ... . These all have fractional part 0.2, where
+              fractional part means x − ⌊x⌋, so the fractional part of -2.8 is
+              -2.8 - (-3) = 0.2.
+            </p>
+            <WrappedNormalVisual />
+            <p className="wrap-conclusion">
+              For the narrow Normal, the wrapped density at 0.2 and 0.7 looks very
+              different, while for the wide Normal, the wrapped densities look much
+              closer. In the former case, {"{log₁₀(X)}"}, the fractional part of
+              log₁₀(X), does not appear uniform; in the latter case, it approaches a
+              uniform distribution.
+            </p>
+          </details>
         </article>
 
         <article className="math-step">
