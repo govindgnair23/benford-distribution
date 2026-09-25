@@ -9,6 +9,7 @@ import {
   wrappedDensityAt
 } from "../lib/fractionalStacks";
 import { normalDensity } from "../lib/wrappedNormal";
+import { useElementWidth } from "./useElementWidth";
 
 const MEAN = 3.2;
 const FRACTIONAL_VALUES = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1];
@@ -41,21 +42,6 @@ function prefersReducedMotion() {
 function niceStep(max: number) {
   for (const step of [0.25, 0.5, 1, 2]) if (max / step <= 5.2) return step;
   return 2;
-}
-
-function useElementWidth(fallback: number) {
-  const ref = useRef<HTMLDivElement | null>(null);
-  const [width, setWidth] = useState(fallback);
-  useEffect(() => {
-    const node = ref.current;
-    if (!node || typeof ResizeObserver === "undefined") return;
-    const observer = new ResizeObserver(([entry]) => {
-      if (entry.contentRect.width > 0) setWidth(entry.contentRect.width);
-    });
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
-  return [ref, width] as const;
 }
 
 export function WrapAnimation() {

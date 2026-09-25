@@ -74,7 +74,7 @@ describe("App", () => {
       screen.getByRole("heading", { name: /simulations/i })
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/adjust log width and watch fractional logs/i)
+      screen.getByText(/run two simple processes side by side/i)
     ).toBeInTheDocument();
   });
 

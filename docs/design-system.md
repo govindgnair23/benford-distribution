@@ -257,6 +257,13 @@ Each pattern is described by the CSS class hook it ships with. Use the existing 
 - **Do:** start still, keep both charts on one shared density scale with the line at 1, label controls and the SVG, and jump straight to end states under `prefers-reduced-motion`.
 - **Don't:** auto-play on page load or rescale each chart to its own peak.
 
+### AddVsMultiplyLab
+
+`.avm-lab` and its `.avm-*` parts — the Simulations tab's lead comparison. The same uniform draws feed an adding process and a multiplying process (`src/lib/addVsMultiply.ts`); a step slider and Play button move through time, and each side shows the 95% band on a log scale, the fractional-log histogram, first digits vs Benford, and a verdict pill. A shared chart tracks the gap to Benford per step against a sampling-noise band. The original lognormal/growth lab sits below it in a closed `.lab-advanced` disclosure.
+- **Colors:** each process sets `--avm-process` (add: `--chart-series-3`, multiply: `--chart-series-1`), which drives its band, paths, bins, digit bars and gap line; Benford markers use `--accent-warm`; the noise band uses `--chart-region-cool`. Verdict pills use `--accent-deep` (close), `--ink-muted` (getting closer) and `--accent-warm-text` (not Benford).
+- **Do:** open on the final step so the result is visible at rest, and jump straight to the end under `prefers-reduced-motion`.
+- **Don't:** give the two processes different random draws; the comparison depends on them sharing one source of randomness.
+
 ### SrSummary
 
 `.sr-summary` — a list (or line) that restates a chart's data as text for screen readers and as a sighted fallback. Charts also ship a `.visually-hidden` per-bin/per-digit list for the full breakdown.

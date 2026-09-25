@@ -11,6 +11,7 @@ import {
   simulateDirectLognormal,
   simulateMultiplicativeGrowth
 } from "../lib/simulation";
+import { AddVsMultiplyLab } from "./AddVsMultiplyLab";
 import { DiagnosticSummary } from "./DiagnosticSummary";
 import { SimulationControls } from "./SimulationControls";
 import { FirstDigitChart } from "./charts/FirstDigitChart";
@@ -77,41 +78,48 @@ export function SimulationLab() {
         <p className="eyebrow">Make Benford appear</p>
         <h2 id="lab-title">Simulations</h2>
         <p>
-          Adjust log width and watch fractional logs move from bunched to flat,
-          then compare first digits against Benford probabilities.
+          Run two simple processes side by side and see which one ends up
+          following Benford’s Law, and why.
         </p>
       </div>
 
-      <div className="lab-layout">
-        <p className="lab-result-peek">
-          Current sample: {diagnostics.widthLabel} log spread · first-digit RMSE{" "}
-          {diagnostics.benfordRmse.toFixed(3)} ({(diagnostics.benfordRmse * 100).toFixed(1)}{" "}
-          percentage points).
+      <AddVsMultiplyLab />
+
+      <details className="lab-advanced">
+        <summary>
+          Advanced: set the log spread directly, or tune the growth model in detail
+        </summary>
+        <div className="lab-layout">
+          <p className="lab-result-peek">
+            Current sample: {diagnostics.widthLabel} log spread · first-digit RMSE{" "}
+            {diagnostics.benfordRmse.toFixed(3)} ({(diagnostics.benfordRmse * 100).toFixed(1)}{" "}
+            percentage points).
+          </p>
+          <SimulationControls
+            config={config}
+            onChange={handleConfigChange}
+            onPresetChange={handlePresetChange}
+            onRerun={handleRerun}
+            isRegenerating={isRegenerating}
+          />
+          <DiagnosticSummary
+            diagnostics={diagnostics}
+            sampleSize={activeConfig.sampleSize}
+            seed={activeConfig.seed}
+          />
+        </div>
+        <p className="chart-grid-caption">
+          Follow the numbered charts in order (top to bottom on narrow screens):
+          original values become their log₁₀, then the fractional part of each
+          log, then first digits compared against Benford.
         </p>
-        <SimulationControls
-          config={config}
-          onChange={handleConfigChange}
-          onPresetChange={handlePresetChange}
-          onRerun={handleRerun}
-          isRegenerating={isRegenerating}
-        />
-        <DiagnosticSummary
-          diagnostics={diagnostics}
-          sampleSize={activeConfig.sampleSize}
-          seed={activeConfig.seed}
-        />
-      </div>
-      <p className="chart-grid-caption">
-        Follow the numbered charts in order (top to bottom on narrow screens):
-        original values become their log₁₀, then the fractional part of each
-        log, then first digits compared against Benford.
-      </p>
-      <div className="chart-grid">
-        <OriginalValueHistogram values={sample.values} />
-        <LogHistogram values={sample.logSamples} />
-        <FractionalLogHistogram values={sample.fractionalLogs} />
-        <FirstDigitChart firstDigits={sample.firstDigits} />
-      </div>
+        <div className="chart-grid">
+          <OriginalValueHistogram values={sample.values} />
+          <LogHistogram values={sample.logSamples} />
+          <FractionalLogHistogram values={sample.fractionalLogs} />
+          <FirstDigitChart firstDigits={sample.firstDigits} />
+        </div>
+      </details>
     </section>
   );
 }

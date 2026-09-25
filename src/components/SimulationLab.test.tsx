@@ -63,4 +63,16 @@ describe("SimulationLab", () => {
 
     expect(screen.getByTestId("seed-value").textContent).not.toBe(firstSeed);
   });
+
+  it("leads with the add vs multiply comparison and keeps the detailed lab under Advanced", () => {
+    render(<SimulationLab />);
+
+    const comparison = screen.getByRole("heading", { name: /add vs multiply/i });
+    const advanced = screen.getByText(/advanced: set the log spread directly/i).closest("details");
+    expect(advanced).not.toHaveAttribute("open");
+    expect(
+      comparison.compareDocumentPosition(advanced!) & Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
+    expect(advanced).toContainElement(screen.getByRole("form", { name: /simulation controls/i }));
+  });
 });
