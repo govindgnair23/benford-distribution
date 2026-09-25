@@ -15,7 +15,7 @@ describe("App", () => {
     expect(screen.queryByText(/choose an applet/i)).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: /applet library/i })).not.toBeInTheDocument();
     expect(
-      screen.getByText(/explore why first digits follow Benford's Law when values span orders of magnitude/i)
+      screen.getByText(/explore when first-digit frequencies approach Benford's Law/i)
     ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /open benford emergence lab/i })
@@ -47,7 +47,7 @@ describe("App", () => {
     ).toBeInTheDocument();
   });
 
-  it("preserves Benford's internal definition, explainer, and simulation tabs", async () => {
+  it("opens Benford's definition, explainer, simulation, and quiz tabs", async () => {
     const user = userEvent.setup();
     render(<App />);
 
@@ -74,8 +74,13 @@ describe("App", () => {
       screen.getByRole("heading", { name: /simulations/i })
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/run two simple processes side by side/i)
+      screen.getByText(/compare additive and multiplicative processes/i)
     ).toBeInTheDocument();
+
+    await user.click(screen.getByRole("tab", { name: /^quiz$/i }));
+
+    expect(screen.getByRole("heading", { name: /quiz/i })).toBeInTheDocument();
+    expect(screen.getByRole("tabpanel", { name: /quiz/i })).toBeInTheDocument();
   });
 
   it("supports keyboard use from the catalog into Benford tabs", async () => {
@@ -117,10 +122,42 @@ describe("App", () => {
       screen.getByRole("heading", { name: /simulations/i })
     ).toBeInTheDocument();
 
+    await user.keyboard("{ArrowRight}");
+    expect(screen.getByRole("tab", { name: /^quiz$/i })).toHaveFocus();
+    expect(screen.getByRole("tabpanel", { name: /quiz/i })).toBeInTheDocument();
+
     // Wraps around from the last tab back to the first.
     await user.keyboard("{ArrowRight}");
     expect(
       screen.getByRole("tab", { name: /^what it is$/i })
     ).toHaveFocus();
+  });
+
+  it("keeps quiz results when a review link opens an explanation tab", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(screen.getByRole("button", { name: /open benford emergence lab/i }));
+    await user.click(screen.getByRole("tab", { name: /^quiz$/i }));
+
+    for (let index = 0; index < 8; index += 1) {
+      await user.click(screen.getAllByRole("radio")[0]);
+      await user.click(screen.getByRole("button", { name: /check answer/i }));
+      await user.click(screen.getByRole("button", { name: index === 7 ? /see results/i : /next question/i }));
+    }
+
+    expect(screen.getByRole("heading", { name: /quiz complete/i })).toBeInTheDocument();
+    await user.click(screen.getAllByRole("link", { name: /review what it is/i })[0]);
+    expect(screen.getByRole("heading", { name: /what is benford's law/i })).toBeInTheDocument();
+
+    await user.click(screen.getByRole("tab", { name: /^quiz$/i }));
+    expect(screen.getByRole("heading", { name: /quiz complete/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /retry missed questions/i })).toBeInTheDocument();
+
+    const wideRangeLink = screen.getAllByRole("link", { name: /review why it happens/i })
+      .find((link) => link.getAttribute("href") === "#wide-range-title");
+    expect(wideRangeLink).toBeDefined();
+    await user.click(wideRangeLink!);
+    expect(screen.getByRole("heading", { name: /a wide range alone is not enough/i })).toBeInTheDocument();
   });
 });

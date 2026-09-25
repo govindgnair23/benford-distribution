@@ -27,6 +27,9 @@ describe("WrapAnimation", () => {
     expect(screen.getByRole("button", { name: /^play$/i })).toBeInTheDocument();
     expect(screen.getByRole("img", { name: /0 of 10 fractional values stacked/i })).toBeInTheDocument();
     expect(screen.getByText(/press play/i)).toBeInTheDocument();
+    expect(screen.getByRole("checkbox", { name: /show the continuous density curve/i })).toBeChecked();
+    expect(screen.getByText(/density is height.*probability is area/i)).toBeInTheDocument();
+    expect(screen.getByText(/on \[0, 1\).*height 1 everywhere/i)).toBeInTheDocument();
   });
 
   it("stacks one fractional value at a time with Next value", () => {
@@ -42,8 +45,16 @@ describe("WrapAnimation", () => {
   it("writes out the density sum for fractional value 0.2", () => {
     render(<WrapAnimation />);
 
-    expect(screen.getByText(/fractional value/i, { selector: ".stack-readout-lead" })).toHaveTextContent("0.2");
+    expect(screen.getByText(/selected fractional position/i, { selector: ".stack-readout-lead" })).toHaveTextContent("0.2");
     expect(screen.getByText(/total =/i)).toHaveTextContent(/f\(3\.2\) 3\.989.*= 3\.989/);
+  });
+
+  it("uses fractional positions from 0.0 through 0.9", () => {
+    render(<WrapAnimation />);
+
+    fireEvent.click(screen.getByRole("button", { name: /next value/i }));
+    expect(screen.getByText(/fractional position/i, { selector: ".stack-caption" })).toHaveTextContent("0.0");
+    expect(screen.queryByText(/1\.0 is the same as 0\.0/i)).not.toBeInTheDocument();
   });
 
   it("shows narrow totals are not uniform and wide totals are", () => {
@@ -54,7 +65,7 @@ describe("WrapAnimation", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /very wide/i }));
     expect(screen.getByRole("button", { name: /very wide/i })).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByText(/the result is uniform/i)).toBeInTheDocument();
+    expect(screen.getByText(/nearly uniform in this example/i)).toBeInTheDocument();
   });
 
   it("lets readers set the spread with a slider", () => {
@@ -69,5 +80,15 @@ describe("WrapAnimation", () => {
     render(<WrapAnimation />);
 
     expect(screen.getByRole("img", { name: /first-digit shares.*benford/i })).toBeInTheDocument();
+    expect(screen.getByText(/model probabilities.*no sampling noise/i)).toBeInTheDocument();
+    expect(screen.getByText(/share of values \(%\)/i)).toBeInTheDocument();
+  });
+
+  it("keeps secondary metrics inside diagnostic details", () => {
+    render(<WrapAnimation />);
+
+    const details = screen.getByText(/show diagnostic details/i).closest("details");
+    expect(details).not.toHaveAttribute("open");
+    expect(details).toHaveTextContent(/largest single-digit difference/i);
   });
 });

@@ -149,6 +149,7 @@ function FractionalChart({ summary, name }: { summary: ProcessStep; name: string
           {yMax < 10 ? yMax.toFixed(1) : Math.round(yMax)}
         </text>
         <text className="avm-tick" x={left - 5} y={top + plotHeight} textAnchor="end">0</text>
+        <text className="avm-axis-title" x={8} y={top + plotHeight / 2} transform={`rotate(-90 8 ${top + plotHeight / 2})`} textAnchor="middle">Density</text>
         <text className="avm-tick" x={left} y={height - 5}>0</text>
         <text className="avm-tick" x={left + plotWidth} y={height - 5} textAnchor="end">1</text>
       </svg>
@@ -169,7 +170,7 @@ function DigitBars({ summary, name }: { summary: ProcessStep; name: string }) {
     >
       {shares.map((share, index) => (
         <div className="avm-digit" key={index} aria-hidden="true">
-          <span className="avm-digit-value">{(share * 100).toFixed(1)}</span>
+          <span className="avm-digit-value">{share === 1 ? "100" : (share * 100).toFixed(1)}</span>
           <div className="avm-digit-column">
             <div className="avm-digit-bar" style={{ height: `${(share / scaleTop) * 100}%` }} />
             <div className="avm-digit-benford" style={{ bottom: `${(benfordProbability(index + 1) / scaleTop) * 100}%` }} />
@@ -204,7 +205,7 @@ function GapChart({ add, multiply, step }: { add: ProcessRun; multiply: ProcessR
 
   return (
     <div className="avm-chart" ref={ref}>
-      <svg viewBox={`0 0 ${width} ${height}`} height={height} role="img" aria-label={`Gap to Benford by step: add ${(add.steps[step].benfordRmse * 100).toFixed(1)}, multiply ${(multiply.steps[step].benfordRmse * 100).toFixed(1)} percentage points at step ${step}`}>
+      <svg viewBox={`0 0 ${width} ${height}`} height={height} role="img" aria-label={`Digit RMSE by step: add ${(add.steps[step].benfordRmse * 100).toFixed(1)}, multiply ${(multiply.steps[step].benfordRmse * 100).toFixed(1)} percentage points at step ${step}`}>
         {ticks.map((value) => (
           <g key={value}>
             <line className="avm-grid" x1={left} x2={left + plotWidth} y1={y(value)} y2={y(value)} />
@@ -212,7 +213,7 @@ function GapChart({ add, multiply, step }: { add: ProcessRun; multiply: ProcessR
           </g>
         ))}
         <rect className="avm-noise" x={left} y={y(noiseBand)} width={plotWidth} height={y(0) - y(noiseBand)} />
-        <text className="avm-tick" x={left + plotWidth - 4} y={y(noiseBand) - 4} textAnchor="end">sampling noise</text>
+        <text className="avm-tick" x={left + 4} y={y(noiseBand) - 4}>2× RMS sampling reference</text>
         {[0, 50, 100, 150, 200].map((t) => (
           <text key={t} className="avm-tick" x={x(t)} y={height - 8} textAnchor="middle">{t}</text>
         ))}
@@ -237,7 +238,7 @@ function GapChart({ add, multiply, step }: { add: ProcessRun; multiply: ProcessR
   );
 }
 
-interface ProcessPanelProps {
+interface ProcessSetupProps {
   kind: ProcessKey;
   title: string;
   rule: string;
@@ -246,10 +247,9 @@ interface ProcessPanelProps {
   children: React.ReactNode;
 }
 
-function ProcessPanel({ kind, title, rule, run, step, children }: ProcessPanelProps) {
+function ProcessSetup({ kind, title, rule, run, step, children }: ProcessSetupProps) {
   const summary = run.steps[step];
   const verdict = benfordVerdict(summary.benfordRmse, SAMPLE_SIZE);
-  const name = kind === "add" ? "Adding" : "Multiplying";
   const titleId = `avm-${kind}-title`;
   return (
     <section className={`avm-process avm-${kind}`} aria-labelledby={titleId}>
@@ -260,30 +260,27 @@ function ProcessPanel({ kind, title, rule, run, step, children }: ProcessPanelPr
       {children}
       <div className="avm-verdict">
         <span className={`avm-pill is-${verdict}`}>{verdictText[verdict]}</span>
-        <small>average gap {(summary.benfordRmse * 100).toFixed(1)} percentage points</small>
-      </div>
-      <div>
-        <p className="avm-chart-label">Where the values are, over time (log scale)</p>
-        <PathsChart run={run} step={step} name={name} />
-        <p className="avm-chart-note">
-          The shaded band holds 95% of values: {formatLogValue(summary.lowerLog)} to{" "}
-          {formatLogValue(summary.upperLog)}, about{" "}
-          {formatOrders(summary.upperLog - summary.lowerLog)} orders of magnitude.
-        </p>
-      </div>
-      <div>
-        <p className="avm-chart-label">Fractional part of log₁₀(X) now</p>
-        <FractionalChart summary={summary} name={name} />
-      </div>
-      <div>
-        <p className="avm-chart-label">First digits now</p>
-        <div className="avm-legend">
-          <span><i className="avm-swatch-process" />This process</span>
-          <span><i className="avm-swatch-benford" />Benford</span>
-        </div>
-        <DigitBars summary={summary} name={name} />
+        <small>Digit RMSE: {(summary.benfordRmse * 100).toFixed(1)} percentage points</small>
+        <small>Middle 95% span {formatOrders(summary.upperLog - summary.lowerLog)} orders of magnitude</small>
       </div>
     </section>
+  );
+}
+
+function ProcessResult({
+  kind,
+  title,
+  children
+}: {
+  kind: ProcessKey;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <article className={`avm-result avm-${kind}`}>
+      <h5>{title}</h5>
+      {children}
+    </article>
   );
 }
 
@@ -350,18 +347,21 @@ export function AddVsMultiplyLab() {
   }
 
   const percent = `${Math.round(multiplyRange * 100)}%`;
+  const addSummary = run.add.steps[step];
+  const multiplySummary = run.multiply.steps[step];
+  const multiplyVerdict = benfordVerdict(multiplySummary.benfordRmse, SAMPLE_SIZE);
 
   return (
     <section className="avm-lab" aria-labelledby="avm-title">
       <div className="avm-intro">
-        <p className="eyebrow">What produces Benford?</p>
-        <h3 id="avm-title">Add vs multiply: which one makes Benford?</h3>
+
+        <h3 id="avm-title">Add vs multiply</h3>
         <p>
           Both processes start {SAMPLE_SIZE.toLocaleString("en-US")} values at{" "}
           {defaultAddVsMultiplyConfig.startValue} and change each one a little at every
-          step, using the same random draws. The left one adds a random amount each
-          step; the right one multiplies by a random percentage. Press Play and watch
-          which set of first digits turns into Benford’s.
+          step, using the same random draws. The additive process adds an amount; the
+          multiplicative process applies a percentage change. Press Play and compare
+          how their first-digit shares and log-scale spreads change.
         </p>
       </div>
 
@@ -393,10 +393,14 @@ export function AddVsMultiplyLab() {
             }}
           />
         </div>
+        <div className="avm-live-summary" aria-live="polite" aria-label="Current Digit RMSE in percentage points">
+          <span>Add <strong>{(addSummary.benfordRmse * 100).toFixed(1)} pp</strong></span>
+          <span>Multiply <strong>{(multiplySummary.benfordRmse * 100).toFixed(1)} pp</strong></span>
+        </div>
       </div>
 
       <div className="avm-duel">
-        <ProcessPanel
+        <ProcessSetup
           kind="add"
           title="Add a random amount"
           rule={`Each step: X ← X + amount, where the amount is between 0 and ${2 * addAmount}. Like a savings balance, or a height built from many small effects.`}
@@ -419,11 +423,11 @@ export function AddVsMultiplyLab() {
               onChange={(event) => setAddAmount(Number(event.target.value))}
             />
           </div>
-        </ProcessPanel>
+        </ProcessSetup>
 
-        <ProcessPanel
+        <ProcessSetup
           kind="multiply"
-          title="Multiply by a random percentage"
+          title="Apply a random percentage change"
           rule={`Each step: X ← X × (1 + change), where the change is between −${percent} and +${percent}. Like a stock price, a population, or compound growth.`}
           run={run.multiply}
           step={step}
@@ -444,42 +448,122 @@ export function AddVsMultiplyLab() {
               onChange={(event) => setMultiplyRange(Number(event.target.value) / 100)}
             />
           </div>
-        </ProcessPanel>
+        </ProcessSetup>
       </div>
 
-      <div className="avm-gap">
-        <h4>Distance from Benford at every step</h4>
+      <section className="avm-comparison-row" aria-labelledby="avm-digits-title">
+        <h4 id="avm-digits-title">First-digit shares</h4>
         <p className="avm-chart-note">
-          Average gap between the nine first-digit shares and Benford’s, in percentage
-          points. Below the shaded band, the remaining gap is about what random sampling
-          alone would leave.
+          Compare each sample with the same Benford reference. Bar labels show the
+          share of values in percent.
+        </p>
+        <div className="avm-pair">
+          <ProcessResult kind="add" title="Add a random amount">
+            <p className="avm-chart-label">Share of values (%)</p>
+            <div className="avm-legend">
+              <span><i className="avm-swatch-process" />Additive sample</span>
+              <span><i className="avm-swatch-benford" />Benford reference</span>
+            </div>
+            <DigitBars summary={addSummary} name="Adding" />
+          </ProcessResult>
+          <ProcessResult kind="multiply" title="Apply a random percentage change">
+            <p className="avm-chart-label">Share of values (%)</p>
+            <div className="avm-legend">
+              <span><i className="avm-swatch-process" />Multiplicative sample</span>
+              <span><i className="avm-swatch-benford" />Benford reference</span>
+            </div>
+            <DigitBars summary={multiplySummary} name="Multiplying" />
+          </ProcessResult>
+        </div>
+      </section>
+
+      <section className="avm-comparison-row" aria-labelledby="avm-spread-title">
+        <h4 id="avm-spread-title">Spread of values over time</h4>
+        <p className="avm-chart-note">
+          The vertical scale shows the values themselves on a log scale; the shaded
+          region contains the middle 95% of simulated values.
+        </p>
+        <div className="avm-pair">
+          <ProcessResult kind="add" title="Add a random amount">
+            <PathsChart run={run.add} step={step} name="Adding" />
+            <p className="avm-chart-note">
+              {formatLogValue(addSummary.lowerLog)} to {formatLogValue(addSummary.upperLog)}, about{" "}
+              {formatOrders(addSummary.upperLog - addSummary.lowerLog)} orders of magnitude.
+            </p>
+          </ProcessResult>
+          <ProcessResult kind="multiply" title="Apply a random percentage change">
+            <PathsChart run={run.multiply} step={step} name="Multiplying" />
+            <p className="avm-chart-note">
+              {formatLogValue(multiplySummary.lowerLog)} to {formatLogValue(multiplySummary.upperLog)}, about{" "}
+              {formatOrders(multiplySummary.upperLog - multiplySummary.lowerLog)} orders of magnitude.
+            </p>
+          </ProcessResult>
+        </div>
+      </section>
+
+      <details className="avm-diagnostics">
+        <summary>Fractional-log density diagnostics</summary>
+        <p className="avm-chart-note">
+          Density describes concentration, not probability at one exact point. A flat
+          density near 1 indicates fractional logs that are close to uniform.
+        </p>
+        <div className="avm-pair">
+          <ProcessResult kind="add" title="Add a random amount">
+            <p className="avm-chart-label">Density</p>
+            <FractionalChart summary={addSummary} name="Adding" />
+          </ProcessResult>
+          <ProcessResult kind="multiply" title="Apply a random percentage change">
+            <p className="avm-chart-label">Density</p>
+            <FractionalChart summary={multiplySummary} name="Multiplying" />
+          </ProcessResult>
+        </div>
+      </details>
+
+      <div className="avm-gap">
+        <h4>Digit RMSE at every step</h4>
+        <p className="avm-chart-note">
+          Digit RMSE summarizes the typical difference between the nine sampled shares
+          and Benford’s probabilities, in percentage points. The shaded band is a
+          heuristic reference at twice the RMS sampling error for this sample size,
+          not a confidence interval or a pass/fail cutoff. Values within the shaded band
+          are on the same scale as variation expected from random sampling alone.
         </p>
         <GapChart add={run.add} multiply={run.multiply} step={step} />
       </div>
 
       <div className="avm-why">
         <div>
-          <h4>Why adding doesn’t get there</h4>
+          <h4>Why these additive values stay concentrated</h4>
           <p>
-            Each new amount is small next to a total that keeps growing. With the
-            default settings, after 200 steps of about 10 each, a typical value is near
-            2,100, give or take about 4%. The values bunch up inside one order of
-            magnitude, so a few first digits take almost everything.
+            Each new amount is small next to a total that keeps growing. Under the
+            current settings, the middle 95% span about{" "}
+            {formatOrders(addSummary.upperLog - addSummary.lowerLog)} orders of magnitude.
+            That concentration leaves a few first digits with most of the observations.
           </p>
         </div>
         <div>
-          <h4>Why multiplying does</h4>
-          <p>
-            Multiplying X adds to log₁₀(X). Those random additions pile up, so the log
-            values keep spreading out. Once they span one or two orders of magnitude,
-            the fractional parts even out (Step 5 on the “Why it happens” tab), and that
-            gives Benford’s digits.
-          </p>
+          <h4>How multiplication can spread values</h4>
+          {multiplyVerdict === "far" ? (
+            <p>
+              At the current setting, the multiplicative values remain concentrated,
+              so their first-digit shares do not approach Benford. Larger percentage
+              changes or more steps can spread log₁₀(X) further; a wide range alone still
+              does not guarantee a Benford match.
+            </p>
+          ) : (
+            <p>
+              Percentage changes add to log₁₀(X), so repeated changes can spread the log
+              values. Here their fractional parts are becoming more even (see “Combine
+              matching fractional positions” on the “Why it happens” tab), and the
+              first-digit shares move closer to Benford’s probabilities.
+            </p>
+          )}
         </div>
       </div>
       <p className="avm-takeaway">
-        Benford appears when a process spreads values smoothly across several orders
-        of magnitude. Repeated multiplication is the most common way that happens.
+        First-digit shares approach Benford when the fractional logs become nearly
+        uniform. Multiplication can create that condition, depending on the size and
+        number of percentage changes.
       </p>
     </section>
   );

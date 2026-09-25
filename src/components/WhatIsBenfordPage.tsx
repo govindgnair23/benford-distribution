@@ -28,23 +28,19 @@ export function WhatIsBenfordPage() {
   return (
     <section className="what-page" aria-labelledby="what-title">
       <div className="intro-band">
-        <p className="eyebrow">First-digit law</p>
         <h2 id="what-title">What is Benford's Law?</h2>
         <p>
-          Benford's Law is a probability distribution over first digits. The
-          next sections define the distribution before explaining why it can
-          emerge from wide log-scale data.
+          Benford's Law assigns different probabilities to the first digits 1 through 9.
+          Compare its predictions with equally likely digits below.
         </p>
       </div>
 
       <div className="what-grid">
         <article className="definition-panel">
-          <p className="eyebrow">Probability mass function</p>
           <h3>First digits are not evenly distributed</h3>
           <p>
-            Benford's Law says the first digit D follows a decreasing
-            probability mass function. Digit 1 is most common, digit 9 is least
-            common, and the distribution is not uniform over digits.
+            Under Benford's Law, digit 1 is most common and digit 9 is least
+            common. These probabilities are not uniform over digits.
           </p>
           <p>
             Here, the first digit means the first nonzero digit of a positive
@@ -88,7 +84,6 @@ export function WhatIsBenfordPage() {
       </article>
 
       <article className="scenario-section">
-        <p className="eyebrow">Where it may show up</p>
         <h3>Common real-world candidates</h3>
         <p>
           These are not guaranteed Benford datasets. They are contexts where

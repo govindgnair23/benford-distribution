@@ -24,7 +24,8 @@ export function LogHistogram({ values }: LogHistogramProps) {
     binCount: 16,
     min: min - padding,
     max: max + padding
-  }).map((bin) => ({
+  }).map((bin, index) => ({
+    id: index,
     label: ((bin.start + bin.end) / 2).toFixed(1),
     range: `${bin.start.toFixed(1)}-${bin.end.toFixed(1)}`,
     count: bin.count
@@ -61,7 +62,7 @@ export function LogHistogram({ values }: LogHistogramProps) {
       </ResponsiveContainer>
       <ul className="visually-hidden" aria-label="log10(X) histogram bin counts">
         {bins.map((bin) => (
-          <li key={bin.range}>
+          <li key={bin.id}>
             {bin.range}: {bin.count} value{bin.count === 1 ? "" : "s"}
           </li>
         ))}

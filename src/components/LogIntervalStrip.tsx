@@ -30,9 +30,9 @@ export function LogIntervalStrip() {
           <div
             className="interval-segment"
             key={interval.digit}
-            style={{ flexGrow: interval.probability }}
+            style={{ width: `${interval.probability * 100}%` }}
           >
-            <span>D={interval.digit}</span>
+            <span>{interval.digit}</span>
             {interval.probability >= INLINE_LABEL_MIN ? (
               <small>{(interval.probability * 100).toFixed(1)}%</small>
             ) : null}

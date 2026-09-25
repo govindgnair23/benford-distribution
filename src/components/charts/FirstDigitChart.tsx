@@ -33,7 +33,7 @@ export function FirstDigitChart({ firstDigits }: FirstDigitChartProps) {
   return (
     <ChartFrame
       title="4 · First digits vs Benford"
-      summary="Observed first-digit frequencies are drawn as bars; the Benford reference is overlaid as connected markers to compare shape against."
+      summary="Share of values (%). Sample frequencies—vary between runs—are bars; the Benford reference is the connected line."
     >
       <ResponsiveContainer width="100%" height={260}>
         <ComposedChart data={rows} margin={{ top: 10, right: 10, bottom: 4, left: 0 }}>
@@ -52,12 +52,18 @@ export function FirstDigitChart({ firstDigits }: FirstDigitChartProps) {
             width={44}
             stroke={chartPalette.neutrals.axis}
             tick={{ fill: chartPalette.neutrals.label }}
+            label={{
+              value: "Share of values (%)",
+              angle: -90,
+              position: "insideLeft",
+              fill: chartPalette.neutrals.label
+            }}
           />
           <Tooltip {...chartTooltipStyle} />
           <Legend />
           <Bar
             dataKey="observed"
-            name="Observed"
+            name="Sample frequency"
             fill={chartPalette.series[0]}
             radius={[3, 3, 0, 0]}
           />

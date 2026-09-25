@@ -33,9 +33,8 @@ describe("DiagnosticSummary", () => {
     expect(within(aside).getByText("Width class")).toBeInTheDocument();
     expect(within(aside).getByText("transitional")).toBeInTheDocument();
 
-    expect(within(aside).getByText("Distance from Benford")).toBeInTheDocument();
-    expect(within(aside).getByText("0.124")).toBeInTheDocument();
-    expect(within(aside).getByText(/12\.4 percentage points/i)).toBeInTheDocument();
+    expect(within(aside).getByText("Digit RMSE")).toBeInTheDocument();
+    expect(within(aside).getByText(/12\.4 pp/i)).toBeInTheDocument();
 
     expect(within(aside).getByText("Sample size")).toBeInTheDocument();
     expect(within(aside).getByText("10,000")).toBeInTheDocument();
@@ -66,14 +65,15 @@ describe("DiagnosticSummary", () => {
     );
 
     expect(screen.getByText("0.83")).not.toHaveAttribute("title");
-    expect(screen.getByText("0.124")).not.toHaveAttribute("title");
+    expect(screen.getByText(/12\.4 pp/i)).not.toHaveAttribute("title");
     expect(
       screen.getByText(/standard deviation of log₁₀\(x\)/i)
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/root-mean-square error of observed vs benford/i)
+      screen.getByText(/root-mean-square difference across the nine first-digit shares/i)
     ).toBeInTheDocument();
-    expect(screen.getByText(/typical sampling-only RMSE.*0\.003/i)).toBeInTheDocument();
+    expect(screen.getByText(/typical sampling-only digit RMSE.*0\.3 percentage points/i)).toBeInTheDocument();
+    expect(screen.getByText(/0\.124 in probability units/i)).toBeInTheDocument();
     expect(screen.getByText(/not a pass\/fail test/i)).toBeInTheDocument();
     expect(screen.getByText(/teaching category based on log spread/i)).toBeInTheDocument();
     expect(screen.getByText(/transitional samples can already match/i)).toBeInTheDocument();

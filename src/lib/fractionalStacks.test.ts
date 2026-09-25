@@ -10,7 +10,7 @@ import {
 } from "./fractionalStacks";
 import { normalDensity } from "./wrappedNormal";
 
-const tenthValues = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1];
+const tenthValues = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
 
 describe("normalCdf", () => {
   it("is one half at the mean and near 0.975 at 1.96 standard deviations", () => {
@@ -62,15 +62,15 @@ describe("stackFractionalDensities", () => {
     );
   });
 
-  it("treats fractional value 1.0 as landing on whole numbers", () => {
+  it("stacks fractional value 0.0 at whole numbers", () => {
     const [stack] = stackFractionalDensities({
       mean: 3.2,
       standardDeviation: 0.3,
-      fractionalValues: [1],
+      fractionalValues: [0],
       minShift: 2,
       maxShift: 5
     });
-    expect(stack.contributions.map((point) => point.x)).toEqual([3, 4, 5]);
+    expect(stack.contributions.map((point) => point.x)).toEqual([2, 3, 4]);
   });
 
   it("gives very unequal totals for a narrow Normal", () => {
@@ -82,8 +82,8 @@ describe("stackFractionalDensities", () => {
       ...range
     }).map((stack) => stack.total);
 
-    expect(totals[1]).toBeGreaterThan(3.9);
-    expect(totals[6]).toBeLessThan(0.001);
+    expect(totals[2]).toBeGreaterThan(3.9);
+    expect(totals[7]).toBeLessThan(0.001);
   });
 
   it("gives totals near 1 for a wide Normal", () => {

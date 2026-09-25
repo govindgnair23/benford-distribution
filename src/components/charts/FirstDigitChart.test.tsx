@@ -8,6 +8,8 @@ describe("FirstDigitChart", () => {
     render(<FirstDigitChart firstDigits={[1, 1, 1, 2, 9]} />);
 
     expect(screen.getByText(/first digits vs benford/i)).toBeInTheDocument();
+    expect(screen.getByText(/sample frequencies—vary between runs/i)).toBeInTheDocument();
+    expect(screen.getByText(/share of values \(%\)/i)).toBeInTheDocument();
     expect(screen.getByText(/D=1 observed 60.0%/i)).toBeInTheDocument();
     expect(screen.getByText(/Benford reference 30.1%/i)).toBeInTheDocument();
   });

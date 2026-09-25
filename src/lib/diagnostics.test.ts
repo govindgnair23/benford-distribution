@@ -16,6 +16,8 @@ describe("diagnostics", () => {
 
     expect(diagnostics.widthLabel).toBe("narrow");
     expect(diagnostics.explanation).toMatch(/concentrated/i);
+    expect(diagnostics.explanation).toMatch(/digit RMSE is \d+\.\d percentage points/i);
+    expect(diagnostics.explanation).not.toMatch(/not close to Benford/i);
     expect(diagnostics.benfordRmse).toBeGreaterThan(0.1);
   });
 
@@ -32,6 +34,9 @@ describe("diagnostics", () => {
     expect(diagnostics.widthLabel).toBe("wide");
     expect(diagnostics.explanation).toMatch(/does not guarantee Benford/i);
     expect(diagnostics.explanation).toMatch(/inspect the fractional-log histogram/i);
+    expect(diagnostics.explanation).toMatch(/shown here/i);
+    expect(diagnostics.explanation).toMatch(/percentage points/i);
+    expect(diagnostics.explanation).not.toMatch(/reference below/i);
     expect(diagnostics.benfordRmse).toBeLessThan(0.03);
   });
 

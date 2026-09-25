@@ -198,7 +198,13 @@ Each pattern is described by the CSS class hook it ships with. Use the existing 
 ### PageTabs
 
 `.page-tabs` — flex-row of tab buttons, right-aligned on desktop, full-width on mobile. Active state: `--accent-deep` background with `--ink-on-accent` text.
-- Use for top-of-applet tab switching (the Benford applet has `what | why | simulations`).
+- Use for top-of-applet tab switching (the Benford applet has `what | why | simulations | quiz`).
+
+### QuizPage
+
+`.quiz-page`, `.quiz-panel`, `.quiz-question`, `.quiz-options`, `.quiz-feedback`, `.quiz-results` — a single-question knowledge check that uses the existing intro band, cream panel, sharp-cornered answer rows, and action button. After submission, `.quiz-option-correct` highlights the right row, while text labels distinguish the correct choice from the learner's selected choice. The log-interval question reuses `.interval-module` after submission.
+- **Do:** group choices in a native fieldset, explain the selected misconception only after submission, and list missed concepts with explanation links and a retry-missed action at the end. Keep the quiz mounted while those links open other tabs so progress survives review navigation.
+- **Don't:** rely on color alone for correctness or advance automatically before feedback can be read.
 
 ### SecondaryAction
 
@@ -241,7 +247,7 @@ Each pattern is described by the CSS class hook it ships with. Use the existing 
 
 ### IntervalStrip
 
-`.interval-module` (wrapper), `.interval-strip` (`role="img"`), `.interval-segment` (gold-gradient cell sized by `flex-grow`), `.interval-legend` (overflow row).
+`.interval-module` (wrapper), `.interval-strip` (`role="img"`), `.interval-segment` (gold-gradient cell sized by its exact probability as a percentage width), `.interval-legend` (overflow row).
 - Segments narrower than ~6% of the strip drop their inline `<small>` percentage; those values move to the `.interval-legend` row beneath so they stay legible.
 - **Do:** keep the strip's `aria-label` accurate, naming the largest and smallest intervals.
 
@@ -252,14 +258,14 @@ Each pattern is described by the CSS class hook it ships with. Use the existing 
 
 ### WrapAnimation
 
-`.wrap-animation` with `.stack-*` parts — the Step 5 demonstration. For each fractional value 0.1 … 1.0, the density lines of the log₁₀(X) Normal (`.stack-line`) drop from the top chart and stack into one bar (`.stack-piece`) in the bottom chart; a σ slider and `.wrap-animation-switch` presets change the spread. Math lives in `src/lib/fractionalStacks.ts`. The full formula and chart comparison remain in the adjacent `.wrap-details` disclosure.
+`.wrap-animation` with `.stack-*` parts — the Step 5 demonstration. For each fractional value 0.0 … 0.9, the density lines of the log₁₀(X) Normal (`.stack-line`) drop from the top chart and stack into one bar (`.stack-piece`) in the bottom chart; a σ slider and `.wrap-animation-switch` presets change the spread. Math lives in `src/lib/fractionalStacks.ts`. The full formula and chart comparison remain in the adjacent `.wrap-details` disclosure.
 - **Colors:** Normal curve `--accent-deep`; density lines and stacked pieces `--chart-series-1` (the app's "observed" role); unstacked lines `--chart-axis`; "uniform = 1" reference `--chart-label` dashed; Benford markers in the digit comparison `--accent-warm`, matching `FirstDigitChart`.
 - **Do:** start still, keep both charts on one shared density scale with the line at 1, label controls and the SVG, and jump straight to end states under `prefers-reduced-motion`.
 - **Don't:** auto-play on page load or rescale each chart to its own peak.
 
 ### AddVsMultiplyLab
 
-`.avm-lab` and its `.avm-*` parts — the Simulations tab's lead comparison. The same uniform draws feed an adding process and a multiplying process (`src/lib/addVsMultiply.ts`); a step slider and Play button move through time, and each side shows the 95% band on a log scale, the fractional-log histogram, first digits vs Benford, and a verdict pill. A shared chart tracks the gap to Benford per step against a sampling-noise band. The original lognormal/growth lab sits below it in a closed `.lab-advanced` disclosure.
+`.avm-lab` and its `.avm-*` parts — the Simulations tab's comparison. The same uniform draws feed an adding process and a multiplying process (`src/lib/addVsMultiply.ts`); a step slider and Play button move through time, and each side shows the 95% band on a log scale, the fractional-log histogram, first digits vs Benford, and a verdict pill. A shared chart tracks the gap to Benford per step against a sampling-noise band.
 - **Colors:** each process sets `--avm-process` (add: `--chart-series-3`, multiply: `--chart-series-1`), which drives its band, paths, bins, digit bars and gap line; Benford markers use `--accent-warm`; the noise band uses `--chart-region-cool`. Verdict pills use `--accent-deep` (close), `--ink-muted` (getting closer) and `--accent-warm-text` (not Benford).
 - **Do:** open on the final step so the result is visible at rest, and jump straight to the end under `prefers-reduced-motion`.
 - **Don't:** give the two processes different random draws; the comparison depends on them sharing one source of randomness.
@@ -310,3 +316,16 @@ If you find yourself wanting to inline a literal — a new color, a one-off spac
 - **Add** the token to `:root` in `global.css`, name it semantically (`--accent-cool`, not `--blue`), document its role in section 2 of this file, and (if it will be consumed from TSX for a chart) mirror it in `src/styles/tokens.ts`. Update the contrast audit if it introduces a new ink/surface pair.
 
 Drift happens when literals slip into chart components or one-off CSS rules. The `:root` block, this doc, and `tokens.ts` are the gatekeepers. Keep them in sync.
+
+## Teaching flow and comparison updates
+
+- Page introductions use content-height padding (`--space-section`), one title, and one instruction; avoid fixed-height empty bands and repeated eyebrows.
+- `.worked-example` is a four-step ordered list inside a DefinitionPanel, with `--space-control` between steps. Show the digit interval strip immediately after it. `.derivation-details` uses the existing WrapDetails disclosure for the full symbolic derivation.
+- Fractional density illustrations use positions in [0, 1), with ten sample positions from 0.0 to 0.9 and a continuous density curve enabled by default. Explain density before the chart. Secondary metrics belong in an optional diagnostic disclosure.
+- Label sampled digit results as frequencies and analytic results as model probabilities. Digit RMSE uses percentage points throughout; a largest-single-digit difference is a separate diagnostic. Fractional histograms use density with a uniform reference of 1; retain counts in accessible summaries.
+- AddVsMultiply uses paired result rows: digit frequencies, spread, then optional fractional density diagnostics. Its compact playback summary stays visible on narrow screens; all spacing and surfaces reuse existing tokens. Refer to processes by name, not physical position.
+- Sampling references describe random variation, not formal pass/fail or confidence thresholds.
+
+- Interval-strip labels show digits without redundant notation; segment widths are exact probabilities and never grow to fit text. Hide inline percentages on phones while retaining the full accessible chart description.
+
+- `--type-chart-value` (`0.75rem`) is the minimum for compact HTML digit-bar values. Use the visible “Share of values (%)” caption instead of repeating a percent sign in every narrow column.

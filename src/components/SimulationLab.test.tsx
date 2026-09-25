@@ -1,78 +1,23 @@
 import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
 import { SimulationLab } from "./SimulationLab";
 
 describe("SimulationLab", () => {
-  it("starts with a narrow lognormal preset and non-Benford explanation", () => {
+  it("omits the separate advanced model lab", () => {
     render(<SimulationLab />);
 
-    expect(
-      screen.getByRole("heading", { name: /simulations/i })
-    ).toBeInTheDocument();
-    expect(screen.getByLabelText(/model/i)).toHaveValue("direct");
-    expect(screen.getByRole("spinbutton", { name: /standard deviation of log₁₀\(X\)/i })).toHaveValue(0.08);
-    expect(screen.getByText(/not close to Benford/i)).toBeInTheDocument();
-    expect(
-      screen.getByText(/current sample.*first-digit RMSE.*\d+\.\d percentage points/i)
-    ).toBeInTheDocument();
-    expect(screen.getByText(/follow the numbered charts in order/i)).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { name: /original values/i })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { name: /log₁₀ values/i })
-    ).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /add vs multiply/i })).toBeInTheDocument();
+    expect(screen.queryByText(/advanced model controls/i)).not.toBeInTheDocument();
+    expect(screen.queryByRole("form", { name: /simulation controls/i })).not.toBeInTheDocument();
   });
 
-  it("applies the wide preset and updates the explanation", async () => {
-    const user = userEvent.setup();
+  it("keeps the add vs multiply comparison as the Simulations workspace", () => {
     render(<SimulationLab />);
 
-    await user.selectOptions(
-      screen.getByRole("combobox", { name: /lognormal preset/i }),
-      "wide"
-    );
-
-    expect(screen.getByRole("spinbutton", { name: /standard deviation of log₁₀\(X\)/i })).toHaveValue(2);
-    expect(screen.getByText(/does not guarantee Benford/i)).toBeInTheDocument();
-  });
-
-  it("exposes multiplicative controls in multiplicative mode", async () => {
-    const user = userEvent.setup();
-    render(<SimulationLab />);
-
-    await user.selectOptions(screen.getByLabelText(/model/i), "multiplicative");
-
-    expect(screen.getByLabelText(/starting value/i)).toBeInTheDocument();
-    expect(screen.getByRole("spinbutton", { name: /^steps$/i })).toBeInTheDocument();
-    expect(screen.getByLabelText(/factor Normal mean/i)).toBeInTheDocument();
-    expect(
-      screen.getByRole("spinbutton", { name: /factor Normal standard deviation/i })
-    ).toBeInTheDocument();
-    expect(screen.getByText(/mean of the underlying Normal distribution before/i)).toBeInTheDocument();
-  });
-
-  it("reruns the same parameters with a new seed", async () => {
-    const user = userEvent.setup();
-    render(<SimulationLab />);
-
-    const firstSeed = screen.getByTestId("seed-value").textContent;
-    await user.click(screen.getByRole("button", { name: /draw another sample/i }));
-
-    expect(screen.getByTestId("seed-value").textContent).not.toBe(firstSeed);
-  });
-
-  it("leads with the add vs multiply comparison and keeps the detailed lab under Advanced", () => {
-    render(<SimulationLab />);
-
-    const comparison = screen.getByRole("heading", { name: /add vs multiply/i });
-    const advanced = screen.getByText(/advanced: set the log spread directly/i).closest("details");
-    expect(advanced).not.toHaveAttribute("open");
-    expect(
-      comparison.compareDocumentPosition(advanced!) & Node.DOCUMENT_POSITION_FOLLOWING
-    ).toBeTruthy();
-    expect(advanced).toContainElement(screen.getByRole("form", { name: /simulation controls/i }));
+    expect(screen.getByRole("heading", { name: "Simulations" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /add vs multiply/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /^play$/i })).toBeInTheDocument();
+    expect(screen.getByText(/compare additive and multiplicative processes/i)).toBeInTheDocument();
   });
 });

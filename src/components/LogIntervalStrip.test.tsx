@@ -8,7 +8,7 @@ describe("LogIntervalStrip", () => {
     render(<LogIntervalStrip />);
 
     for (let digit = 1; digit <= 9; digit += 1) {
-      expect(screen.getByText(`D=${digit}`)).toBeInTheDocument();
+      expect(screen.getByText(`${digit}`, { selector: ".interval-segment span" })).toBeInTheDocument();
     }
   });
 

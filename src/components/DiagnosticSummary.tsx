@@ -35,20 +35,16 @@ export function DiagnosticSummary({
         </small>
       </div>
       <div>
-        <span>Distance from Benford</span>
-        <strong>
-          {diagnostics.benfordRmse.toFixed(3)}
-          <small> RMSE</small>
-        </strong>
+        <span>Digit RMSE</span>
+        <strong>{(diagnostics.benfordRmse * 100).toFixed(1)} pp</strong>
         <small className="metric-note">
-          {(diagnostics.benfordRmse * 100).toFixed(1)} percentage points across
-          the nine first-digit probabilities.
+          Root-mean-square difference across the nine first-digit shares;{" "}
+          {diagnostics.benfordRmse.toFixed(3)} in probability units.
         </small>
         <small className="metric-note">
-          Root-mean-square error of observed vs Benford first-digit
-          probabilities. Typical sampling-only RMSE at this sample size is about{" "}
-          {samplingRmse.toFixed(3)} ({(samplingRmse * 100).toFixed(1)} percentage
-          points). This is a reference scale, not a pass/fail test.
+          Typical sampling-only Digit RMSE at this sample size is about{" "}
+          {(samplingRmse * 100).toFixed(1)} percentage points. This is a
+          reference scale, not a pass/fail test.
         </small>
       </div>
       <div>

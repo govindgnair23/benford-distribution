@@ -12,18 +12,18 @@ import { normalDensity } from "../lib/wrappedNormal";
 import { useElementWidth } from "./useElementWidth";
 
 const MEAN = 3.2;
-const FRACTIONAL_VALUES = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1];
+const FRACTIONAL_VALUES = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
 const STEP_COUNT = FRACTIONAL_VALUES.length;
 const MS_PER_VALUE = 750;
 const SIGMA_MIN = 0.06;
 const SIGMA_MAX = 2;
 const SLIDER_MAX = 1000;
-const RESTING_FOCUS = 1; // fractional value 0.2
+const RESTING_FOCUS = 2; // fractional position 0.2
 
 const presets = [
   { label: "Narrow", sigma: 0.1 },
   { label: "In between", sigma: 0.25 },
-  { label: "Wide enough", sigma: 0.5 },
+  { label: "Nearly uniform", sigma: 0.5 },
   { label: "Very wide", sigma: 1.5 }
 ];
 
@@ -49,7 +49,7 @@ export function WrapAnimation() {
   const [progress, setProgress] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [hover, setHover] = useState<number | null>(null);
-  const [showSmooth, setShowSmooth] = useState(false);
+  const [showSmooth, setShowSmooth] = useState(true);
   const [figureRef, width] = useElementWidth(720);
   const frame = useRef<number | null>(null);
   const progressRef = useRef(0);
@@ -141,8 +141,8 @@ export function WrapAnimation() {
   const { minShift, maxShift } = model.range;
   const span = maxShift - minShift;
   const xTop = (x: number) => left + ((x - minShift) / span) * plotWidth;
-  const xBottom = (r: number) => left + (r / 1.1) * plotWidth;
-  const barWidth = Math.max(8, (plotWidth / 11) * 0.6);
+  const xBottom = (r: number) => left + r * plotWidth;
+  const barWidth = Math.max(8, (plotWidth / 10) * 0.6);
   const stackedCount = Math.floor(progress + 1e-6);
   const focus = hover ?? (progress <= 0 || progress >= STEP_COUNT ? RESTING_FOCUS : clamp(Math.ceil(progress) - 1, 0, STEP_COUNT - 1));
 
@@ -169,11 +169,10 @@ export function WrapAnimation() {
     if (py < topBase + 40) {
       const value = minShift + u * span;
       r = value - Math.floor(value);
-      if (r < 0.05) r += 1;
     } else {
-      r = u * 1.1;
+      r = u;
     }
-    return clamp(Math.round(r * 10) - 1, 0, STEP_COUNT - 1);
+    return clamp(Math.round(r * 10), 0, STEP_COUNT - 1);
   }
 
   // ---------- text ----------
@@ -182,17 +181,17 @@ export function WrapAnimation() {
   const worst = Math.max(...model.totals.map((total) => Math.abs(total - 1)));
   let caption: string;
   if (progress <= 0) {
-    caption = "The curve is the distribution of log₁₀(X). Each thin line is its density at a point with fractional part 0.1, 0.2, …, or 1.0. Press Play to add up the lines for each fractional value, one value at a time.";
+    caption = "The top curve is the distribution of log₁₀(X). Each thin line marks its density at a point with fractional part 0.0, 0.1, …, or 0.9. Press Play to add the lines for one fractional position at a time.";
   } else if (progress < STEP_COUNT) {
     const index = clamp(Math.ceil(progress) - 1, 0, STEP_COUNT - 1);
     const examples = model.stacks[index].contributions.slice(0, 3).map((point) => point.x.toFixed(1)).join(", ");
-    caption = `Fractional value ${FRACTIONAL_VALUES[index].toFixed(1)}: the density lines at ${examples}, … drop down and stack into one bar.`;
+    caption = `Fractional position ${FRACTIONAL_VALUES[index].toFixed(1)}: the density lines at ${examples}, … drop down and stack into one bar.`;
   } else if (worst > 0.25) {
-    caption = `Most of log₁₀(X) sits close to ${MEAN.toFixed(1)}, so the bars near fractional value 0.2 collect almost all the density. The totals run from ${low.toFixed(2)} to ${high.toFixed(2)}, which is not uniform.`;
+    caption = `Most of log₁₀(X) sits close to ${MEAN.toFixed(1)}, so the bars near fractional position 0.2 collect almost all the density. The totals run from ${low.toFixed(2)} to ${high.toFixed(2)}, which is not uniform.`;
   } else if (worst > 0.05) {
     caption = `The totals run from ${low.toFixed(2)} to ${high.toFixed(2)}. They are getting closer to 1, but are not uniform yet.`;
   } else {
-    caption = `Every bar collects many small pieces, and every total lands near 1 (${low.toFixed(2)} to ${high.toFixed(2)}). The result is uniform, which gives Benford.`;
+    caption = `Every illustrated total lands near 1 (${low.toFixed(2)} to ${high.toFixed(2)}), and the continuous curve is nearly flat. The fractional part is nearly uniform in this example, so its first-digit probabilities are close to Benford.`;
   }
 
   const focusStack = model.stacks[focus];
@@ -213,11 +212,11 @@ export function WrapAnimation() {
   const fontSize = compact ? 10 : 11;
 
   return (
-    <section className="wrap-animation" aria-label="Stacking densities by fractional value">
+    <section className="wrap-animation" aria-label="Stacking densities by fractional position">
       <div className="wrap-animation-heading">
         <div>
           <p className="eyebrow">Watch the totals</p>
-          <h4>Add up the density at each fractional value</h4>
+          <h4>Add up the density at each fractional position</h4>
         </div>
         <div className="stack-actions">
           <button className="secondary-action stack-play" type="button" onClick={play} disabled={playing}>
@@ -263,6 +262,15 @@ export function WrapAnimation() {
         </div>
       </div>
 
+      <p className="stack-note">
+        Density is height; probability is area over an interval. A uniform density on [0, 1)
+        has height 1 everywhere.
+      </p>
+      <label className="stack-smooth-toggle">
+        <input type="checkbox" checked={showSmooth} onChange={(event) => setShowSmooth(event.target.checked)} />
+        Show the continuous density curve
+      </label>
+
       <div className="stack-figure" ref={figureRef}>
         <svg
           viewBox={`0 0 ${width} ${height}`}
@@ -273,10 +281,10 @@ export function WrapAnimation() {
           onPointerLeave={() => setHover(null)}
         >
           <text className="stack-title" x={left} y={topTop - 14} fontSize={fontSize + 2}>
-            Distribution of log₁₀(X), with density lines at each fractional value
+            Density of log₁₀(X)
           </text>
           <text className="stack-title" x={left} y={bottomTop - 14} fontSize={fontSize + 2}>
-            Density added up for each fractional value
+            Wrapped density by fractional position
           </text>
 
           {[[topTop, topBase], [bottomTop, bottomBase]].map(([panelTop, base]) => (
@@ -312,12 +320,12 @@ export function WrapAnimation() {
           </text>
           <polyline className="stack-curve" points={curvePoints} />
 
-          <text className="stack-tick" x={left} y={bottomBase + 16} textAnchor="middle" fontSize={fontSize}>0</text>
           {FRACTIONAL_VALUES.map((r) => (
             <text key={r} className="stack-tick stack-tick-strong" x={xBottom(r)} y={bottomBase + 16} textAnchor="middle" fontSize={fontSize}>
               {r.toFixed(1)}
             </text>
           ))}
+          <text className="stack-tick" x={xBottom(1)} y={bottomBase + 16} textAnchor="middle" fontSize={fontSize}>1</text>
           {showSmooth && <polyline className="stack-smooth" points={smoothPoints} />}
 
           {model.stacks.map((stack, index) => {
@@ -362,32 +370,28 @@ export function WrapAnimation() {
         </svg>
       </div>
 
-      <label className="stack-smooth-toggle">
-        <input type="checkbox" checked={showSmooth} onChange={(event) => setShowSmooth(event.target.checked)} />
-        Also show the total at every fractional value, not just these ten
-      </label>
       <p className="stack-note">
-        Both charts use the same density scale; the dashed line at 1 is what a uniform
-        result looks like. A fractional value of 1.0 is the same as 0.0: 3.0 and 4.0 both
-        have fractional part 0. Hover over a bar or its lines to see the sum.
+        Both charts use the same density scale. The dashed horizontal line marks uniform
+        density at height 1. The continuous curve shows the totals between the ten illustrated
+        positions. Hover over a bar or its lines to inspect its sum.
       </p>
-      <p className="stack-caption" aria-live="polite">{caption}</p>
       <div className="stack-readout">
         <div className="stack-readout-lead">
-          Fractional value <b>{focusStack.fractionalValue.toFixed(1)}</b>: add the density at {firstPoints}, …
-          {focusStack.fractionalValue === 1 ? " (the same as fractional value 0.0)" : ""}
+          Selected fractional position <b>{focusStack.fractionalValue.toFixed(1)}</b>: add the density at {firstPoints}, …
         </div>
         <div className="stack-readout-terms">
           total = {termParts.join(" + ")} = <b>{focusStack.total.toFixed(3)}</b>
         </div>
       </div>
+      <p className="stack-caption" aria-live="polite">{caption}</p>
 
       <div className="stack-results">
         <div>
-          <h5>First digits this curve produces</h5>
+          <h5>Model probabilities—no sampling noise</h5>
+          <p className="stack-note">Share of values (%)</p>
           <div className="stack-legend">
-            <span><i className="stack-swatch-share" />Share from this Normal</span>
-            <span><i className="stack-swatch-benford" />Benford</span>
+            <span><i className="stack-swatch-share" />This Normal model</span>
+            <span><i className="stack-swatch-benford" />Benford reference</span>
           </div>
           <div
             className="stack-digits"
@@ -408,24 +412,27 @@ export function WrapAnimation() {
             ))}
           </div>
         </div>
-        <dl className="stack-stats">
-          <div>
-            <dt>How spread out X is</dt>
-            <dd>about {spread < 1 ? spread.toFixed(2) : spread.toFixed(1)} orders of magnitude (middle 95%)</dd>
-          </div>
-          <div>
-            <dt>The ten totals</dt>
-            <dd>{low.toFixed(2)} to {high.toFixed(2)}</dd>
-          </div>
-          <div>
-            <dt>Furthest from 1, at any fractional value</dt>
-            <dd>{(model.deviation * 100).toFixed(model.deviation < 0.1 ? 1 : 0)}%</dd>
-          </div>
-          <div>
-            <dt>Largest gap to Benford</dt>
-            <dd>{(benfordGap * 100).toFixed(1)} percentage points</dd>
-          </div>
-        </dl>
+        <details className="wrap-details">
+          <summary>Show diagnostic details</summary>
+          <dl className="stack-stats">
+            <div>
+              <dt>How spread out X is</dt>
+              <dd>about {spread < 1 ? spread.toFixed(2) : spread.toFixed(1)} orders of magnitude (middle 95%)</dd>
+            </div>
+            <div>
+              <dt>The ten illustrated totals</dt>
+              <dd>{low.toFixed(2)} to {high.toFixed(2)}</dd>
+            </div>
+            <div>
+              <dt>Furthest from uniform height 1</dt>
+              <dd>{(model.deviation * 100).toFixed(model.deviation < 0.1 ? 1 : 0)}%</dd>
+            </div>
+            <div>
+              <dt>Largest single-digit difference</dt>
+              <dd>{(benfordGap * 100).toFixed(1)} percentage points from Benford</dd>
+            </div>
+          </dl>
+        </details>
       </div>
     </section>
   );

@@ -2,15 +2,17 @@ import { useRef, useState } from "react";
 import type { KeyboardEvent } from "react";
 
 import { ExplainerPage } from "../../components/ExplainerPage";
+import { QuizPage } from "../../components/QuizPage";
 import { SimulationLab } from "../../components/SimulationLab";
 import { WhatIsBenfordPage } from "../../components/WhatIsBenfordPage";
 
-type BenfordPage = "what" | "why" | "simulations";
+type BenfordPage = "what" | "why" | "simulations" | "quiz";
 
 const tabs: { id: BenfordPage; label: string }[] = [
   { id: "what", label: "What it is" },
   { id: "why", label: "Why it happens" },
-  { id: "simulations", label: "Simulations" }
+  { id: "simulations", label: "Simulations" },
+  { id: "quiz", label: "Quiz" }
 ];
 
 export function BenfordApplet() {
@@ -76,14 +78,24 @@ export function BenfordApplet() {
         </nav>
       </div>
 
+      {page !== "quiz" ? (
+        <div
+          role="tabpanel"
+          id={`benford-panel-${page}`}
+          aria-labelledby={`benford-tab-${page}`}
+        >
+          {page === "what" ? <WhatIsBenfordPage /> : null}
+          {page === "why" ? <ExplainerPage /> : null}
+          {page === "simulations" ? <SimulationLab /> : null}
+        </div>
+      ) : null}
       <div
         role="tabpanel"
-        id={`benford-panel-${page}`}
-        aria-labelledby={`benford-tab-${page}`}
+        id="benford-panel-quiz"
+        aria-labelledby="benford-tab-quiz"
+        hidden={page !== "quiz"}
       >
-        {page === "what" ? <WhatIsBenfordPage /> : null}
-        {page === "why" ? <ExplainerPage /> : null}
-        {page === "simulations" ? <SimulationLab /> : null}
+        <QuizPage onReview={(reviewPage) => focusTab(tabs.findIndex((tab) => tab.id === reviewPage))} />
       </div>
     </section>
   );

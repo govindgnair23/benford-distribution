@@ -89,23 +89,21 @@ function buildExplanation(
   benfordRmse: number,
   logWidth: number
 ): string {
+  const rmsePercentagePoints = (benfordRmse * 100).toFixed(1);
+
   if (widthLabel === "narrow") {
     return `SD(log10 X) is ${logWidth.toFixed(
       2
-    )}, so the log values are concentrated within much less than one order of magnitude. Fractional logs stay concentrated, and the first digits are not close to Benford.`;
+    )}, so the log values are concentrated within much less than one order of magnitude. Fractional logs stay concentrated. In this sample, Digit RMSE is ${rmsePercentagePoints} percentage points; compare it with the sampling-only reference shown here.`;
   }
 
   if (widthLabel === "transitional") {
     return `SD(log10 X) is ${logWidth.toFixed(
       2
-    )}. Fractional logs may still show structure, while first digits can already look close to Benford. Current digit RMSE is ${benfordRmse.toFixed(
-      3
-    )}; compare it with the sampling-only reference below.`;
+    )}. Fractional logs may still show structure, while first digits can already look close to Benford. In this sample, Digit RMSE is ${rmsePercentagePoints} percentage points; compare it with the sampling-only reference shown here.`;
   }
 
   return `SD(log10 X) is ${logWidth.toFixed(
     2
-  )}, spanning multiple orders of magnitude. That width does not guarantee Benford. Inspect the fractional-log histogram and compare the current digit RMSE of ${benfordRmse.toFixed(
-    3
-  )} with the sampling-only reference below.`;
+  )}, spanning multiple orders of magnitude. That width does not guarantee Benford. Inspect the fractional-log histogram and compare this sample’s Digit RMSE of ${rmsePercentagePoints} percentage points with the sampling-only reference shown here.`;
 }

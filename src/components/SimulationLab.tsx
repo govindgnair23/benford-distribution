@@ -1,125 +1,17 @@
-import { useMemo, useState, useTransition } from "react";
-
-import { evaluateSample } from "../lib/diagnostics";
-import {
-  clonePreset,
-  nextSeed,
-  type LabConfig,
-  type PresetKey
-} from "../lib/presets";
-import {
-  simulateDirectLognormal,
-  simulateMultiplicativeGrowth
-} from "../lib/simulation";
 import { AddVsMultiplyLab } from "./AddVsMultiplyLab";
-import { DiagnosticSummary } from "./DiagnosticSummary";
-import { SimulationControls } from "./SimulationControls";
-import { FirstDigitChart } from "./charts/FirstDigitChart";
-import { FractionalLogHistogram } from "./charts/FractionalLogHistogram";
-import { LogHistogram } from "./charts/LogHistogram";
-import { OriginalValueHistogram } from "./charts/OriginalValueHistogram";
 
 export function SimulationLab() {
-  const [config, setConfig] = useState<LabConfig>(() => clonePreset("narrow"));
-  const [isRegenerating, startRegen] = useTransition();
-
-  const sample = useMemo(() => {
-    if (config.mode === "direct") {
-      return simulateDirectLognormal(config.direct);
-    }
-    return simulateMultiplicativeGrowth(config.multiplicative);
-  }, [config]);
-
-  const diagnostics = useMemo(() => evaluateSample(sample), [sample]);
-  const activeConfig =
-    config.mode === "direct" ? config.direct : config.multiplicative;
-
-  // All config edits (typed values, slider drags, preset changes) route through
-  // the transition so regenerating large samples never blocks per keystroke.
-  function handleConfigChange(next: LabConfig) {
-    startRegen(() => {
-      setConfig(next);
-    });
-  }
-
-  function handlePresetChange(preset: PresetKey) {
-    startRegen(() => {
-      setConfig(clonePreset(preset));
-    });
-  }
-
-  function handleRerun() {
-    startRegen(() => {
-      setConfig((current) => {
-        if (current.mode === "direct") {
-          return {
-            ...current,
-            direct: {
-              ...current.direct,
-              seed: nextSeed(current.direct.seed)
-            }
-          };
-        }
-
-        return {
-          ...current,
-          multiplicative: {
-            ...current.multiplicative,
-            seed: nextSeed(current.multiplicative.seed)
-          }
-        };
-      });
-    });
-  }
-
   return (
     <section className="lab-page" aria-labelledby="lab-title">
       <div className="lab-header">
-        <p className="eyebrow">Make Benford appear</p>
         <h2 id="lab-title">Simulations</h2>
         <p>
-          Run two simple processes side by side and see which one ends up
-          following Benford’s Law, and why.
+          Compare additive and multiplicative processes, then inspect how log
+          spread and fractional logs relate to first-digit frequencies.
         </p>
       </div>
 
       <AddVsMultiplyLab />
-
-      <details className="lab-advanced">
-        <summary>
-          Advanced: set the log spread directly, or tune the growth model in detail
-        </summary>
-        <div className="lab-layout">
-          <p className="lab-result-peek">
-            Current sample: {diagnostics.widthLabel} log spread · first-digit RMSE{" "}
-            {diagnostics.benfordRmse.toFixed(3)} ({(diagnostics.benfordRmse * 100).toFixed(1)}{" "}
-            percentage points).
-          </p>
-          <SimulationControls
-            config={config}
-            onChange={handleConfigChange}
-            onPresetChange={handlePresetChange}
-            onRerun={handleRerun}
-            isRegenerating={isRegenerating}
-          />
-          <DiagnosticSummary
-            diagnostics={diagnostics}
-            sampleSize={activeConfig.sampleSize}
-            seed={activeConfig.seed}
-          />
-        </div>
-        <p className="chart-grid-caption">
-          Follow the numbered charts in order (top to bottom on narrow screens):
-          original values become their log₁₀, then the fractional part of each
-          log, then first digits compared against Benford.
-        </p>
-        <div className="chart-grid">
-          <OriginalValueHistogram values={sample.values} />
-          <LogHistogram values={sample.logSamples} />
-          <FractionalLogHistogram values={sample.fractionalLogs} />
-          <FirstDigitChart firstDigits={sample.firstDigits} />
-        </div>
-      </details>
     </section>
   );
 }
