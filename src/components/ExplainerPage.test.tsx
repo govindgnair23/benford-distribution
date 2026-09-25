@@ -16,7 +16,7 @@ describe("ExplainerPage", () => {
       "Step 2 — Split a number into scale and significand",
       "Step 3 — Turn first digits into log intervals",
       "Step 4 — Products become sums",
-      "Step 5 — Wrap the Normal around one order of magnitude",
+      "Step 5 — Add up the density at each fractional value",
       "Wide is an approximation, not a guarantee"
     ]);
   });
@@ -28,7 +28,10 @@ describe("ExplainerPage", () => {
       screen.getByText(/Step 3 showed that Benford requires the fractional part of log₁₀\(X\) to be nearly uniform/i)
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/Wrapping keeps only that fractional part.*0\.2 and 1\.2 both land at 0\.2/i)
+      screen.getByText(/for 0\.2, that is 2\.2, 3\.2, 4\.2, and so on/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/narrow Normal gives very unequal totals.*wide Normal.*totals close to 1/i)
     ).toBeInTheDocument();
     expect(screen.getByLabelText(/wrapped density formula/i)).toBeInTheDocument();
     expect(screen.getByText(/sum is over all integer values of k/i)).toBeInTheDocument();
@@ -153,7 +156,7 @@ describe("ExplainerPage", () => {
 
     const details = screen.getByText("See the math and density comparison").closest("details");
     expect(details).not.toHaveAttribute("open");
-    expect(screen.getByRole("button", { name: /wrap values/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /^play$/i })).toBeInTheDocument();
   });
 
   it("connects the significand range to the uniform-log requirement", () => {

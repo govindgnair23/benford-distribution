@@ -252,9 +252,10 @@ Each pattern is described by the CSS class hook it ships with. Use the existing 
 
 ### WrapAnimation
 
-`.wrap-animation` and its `.wrap-animation-stage` / `.wrap-animation-profile` parts — a compact, user-triggered Step 5 demonstration. Three log values move to the same fractional position, while a narrow/wide switch compares the resulting wrapped-density shapes. The full formula and chart comparison remain in the adjacent `.wrap-details` disclosure.
-- **Do:** start still, label controls and the diagram, keep the shape comparison available without motion, and disable transitions for `prefers-reduced-motion`.
-- **Don't:** auto-play on page load or use the normalized bar heights as an absolute density scale.
+`.wrap-animation` with `.stack-*` parts — the Step 5 demonstration. For each fractional value 0.1 … 1.0, the density lines of the log₁₀(X) Normal (`.stack-line`) drop from the top chart and stack into one bar (`.stack-piece`) in the bottom chart; a σ slider and `.wrap-animation-switch` presets change the spread. Math lives in `src/lib/fractionalStacks.ts`. The full formula and chart comparison remain in the adjacent `.wrap-details` disclosure.
+- **Colors:** Normal curve `--accent-deep`; density lines and stacked pieces `--chart-series-1` (the app's "observed" role); unstacked lines `--chart-axis`; "uniform = 1" reference `--chart-label` dashed; Benford markers in the digit comparison `--accent-warm`, matching `FirstDigitChart`.
+- **Do:** start still, keep both charts on one shared density scale with the line at 1, label controls and the SVG, and jump straight to end states under `prefers-reduced-motion`.
+- **Don't:** auto-play on page load or rescale each chart to its own peak.
 
 ### SrSummary
 

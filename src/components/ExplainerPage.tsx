@@ -198,12 +198,15 @@ export function ExplainerPage() {
         </article>
 
         <article className="math-step">
-          <h3>Step 5 — Wrap the Normal around one order of magnitude</h3>
+          <h3>Step 5 — Add up the density at each fractional value</h3>
           <p>
             Step 3 showed that Benford requires the fractional part of log₁₀(X)
-            to be nearly uniform. Wrapping keeps only that fractional part:
-            0.2 and 1.2 both land at 0.2. Use the controls to wrap the values
-            and compare the narrow and wide distributions.
+            to be nearly uniform. Step 4 showed that log₁₀(X) is often roughly
+            Normal. For each fractional value 0.1, 0.2, …, 1.0, add up the Normal’s
+            density at every point with that fractional part: for 0.2, that is 2.2,
+            3.2, 4.2, and so on. If the ten totals are equal, the fractional part
+            is uniform. A narrow Normal gives very unequal totals. A wide Normal, where X spans
+            several orders of magnitude, gives totals close to 1.
           </p>
           <WrapAnimation />
           <details className="wrap-details">
