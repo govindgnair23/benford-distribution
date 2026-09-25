@@ -49,8 +49,8 @@ export function WhatIsBenfordPage() {
           <p>
             Here, the first digit means the first nonzero digit of a positive
             number: 3140 has first digit 3, 0.0314 has first digit 3, and 10
-            has first digit 1. Zero has no first nonzero digit, and negative
-            values are outside this applet's scope.
+            has first digit 1. Zero has no first nonzero digit; this applet
+            considers positive values.
           </p>
           <FormulaBlock
             label="Benford PMF"

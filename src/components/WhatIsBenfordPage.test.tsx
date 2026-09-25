@@ -18,7 +18,8 @@ describe("WhatIsBenfordPage", () => {
     expect(screen.getAllByText(/30.1%/i).length).toBeGreaterThan(0);
     expect(screen.getByText(/first nonzero digit of a positive number/i)).toBeInTheDocument();
     expect(screen.getByText(/0\.0314.*first digit 3/i)).toBeInTheDocument();
-    expect(screen.getByText(/zero has no first nonzero digit.*negative values/i)).toBeInTheDocument();
+    expect(screen.getByText(/Zero has no first nonzero digit; this applet considers positive values\./i)).toBeInTheDocument();
+    expect(screen.queryByText(/negative values/i)).not.toBeInTheDocument();
   });
 
   it("contrasts Benford with a uniform digit expectation", () => {

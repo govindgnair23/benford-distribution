@@ -184,8 +184,10 @@ export function ExplainerPage() {
           <h3>Step 4 — Products become sums</h3>
           <p>
             Multiplicative growth moves into additive log space. With many
-            independent factors, the central limit theorem explains why log₁₀(X)
-            often looks approximately Normal.
+            independent factors and suitable conditions on their logs, the
+            central limit theorem can make log₁₀(X) approximately Normal.
+            Normality is not required for Benford's Law; we use a Normal model
+            here to illustrate how fractional logs can approach uniformity.
           </p>
           <FormulaBlock
             formula={String.raw`X=A_1A_2\cdots A_n`}
@@ -201,8 +203,8 @@ export function ExplainerPage() {
           <h3>Step 5 — Add up the density at each fractional value</h3>
           <p>
             Step 3 showed that Benford requires the fractional part of log₁₀(X)
-            to be nearly uniform. Step 4 showed that log₁₀(X) is often roughly
-            Normal. For each fractional value 0.1, 0.2, …, 1.0, add up the Normal’s
+            to be nearly uniform. Step 4 introduced a roughly Normal model for
+            log₁₀(X). For each fractional value 0.1, 0.2, …, 1.0, add up the Normal’s
             density at every point with that fractional part: for 0.2, that is 2.2,
             3.2, 4.2, and so on. If the ten totals are equal, the fractional part
             is uniform. A narrow Normal gives very unequal totals. A wide Normal, where X spans
@@ -241,10 +243,13 @@ export function ExplainerPage() {
         <article className="math-step">
           <h3>Wide is an approximation, not a guarantee</h3>
           <p>
-            If the log-transformed values span a wide range, meaning the original
-            values cover multiple orders of magnitude, Benford-like behavior
-            becomes plausible. The direct diagnostic is whether the fractional-log
-            histogram is approaching uniform. Simulated Benford emergence is not a
+            <strong>
+              If the log-transformed values span a wide range, meaning the original
+              values cover multiple orders of magnitude, Benford-like behavior
+              becomes plausible.
+            </strong>{" "}
+            The direct diagnostic is whether the fractional-log histogram is
+            approaching uniform. Simulated Benford emergence is not a
             fraud detector or a universal test for real datasets; real data can be
             shaped by truncation, rounding, assignment, selection effects, and
             reporting thresholds. For example, powers of 10 span many orders of

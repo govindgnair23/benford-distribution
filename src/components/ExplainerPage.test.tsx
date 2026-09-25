@@ -21,6 +21,19 @@ describe("ExplainerPage", () => {
     ]);
   });
 
+  it("emphasizes that a wide range makes Benford-like behavior plausible, not certain", () => {
+    render(<ExplainerPage />);
+
+    const caveat = screen.getByRole("heading", {
+      name: "Wide is an approximation, not a guarantee"
+    }).closest("article");
+    expect(caveat).not.toBeNull();
+    const takeaway = within(caveat!).getByText(
+      /If the log-transformed values span a wide range.*Benford-like behavior becomes plausible\./i
+    );
+    expect(takeaway.tagName).toBe("STRONG");
+  });
+
   it("includes the wrapped-density explanation and real-data caveat", () => {
     render(<ExplainerPage />);
 
@@ -149,6 +162,14 @@ describe("ExplainerPage", () => {
     expect(
       within(mechanismPhase).getByRole("heading", { name: /step 5/i })
     ).toBeInTheDocument();
+  });
+
+  it("presents the Normal model as an illustration, not a Benford requirement", () => {
+    render(<ExplainerPage />);
+
+    expect(screen.getByText(/Normality is not required for Benford's Law/i)).toBeInTheDocument();
+    expect(screen.getByText(/use a Normal model here to illustrate how fractional logs can approach uniformity/i)).toBeInTheDocument();
+    expect(screen.getByText(/Step 4 introduced a roughly Normal model for log₁₀\(X\)/i)).toBeInTheDocument();
   });
 
   it("keeps Step 5 concise until the reader opens the detailed math", () => {
