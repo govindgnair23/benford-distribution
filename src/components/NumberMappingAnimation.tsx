@@ -1,5 +1,15 @@
-import { useEffect, useState } from "react";
-import { describeNumber, digitLogIntervals } from "../lib/numberMapping";
+import { useEffect, useMemo, useState } from "react";
+import { benfordProbability } from "../lib/benford";
+import {
+  describeNumber,
+  digitLogIntervals,
+  sampleNumbers,
+  spreadPresets,
+  tallyFirstDigits,
+  tallyFractionalLogs,
+  type NumberDescription,
+  type SpreadPreset
+} from "../lib/numberMapping";
 
 const examples = [3147, 125, 245, 0.0456, 56700, 6.25, 72000, 850, 9.5];
 const stages = ["Number arrives", "Separate digits and scale", "Take a base-10 log", "Keep the fractional part", "Find the first digit"];
@@ -9,7 +19,6 @@ export function NumberMappingAnimation() {
   const [example, setExample] = useState(0);
   const [step, setStep] = useState(0);
   const [playing, setPlaying] = useState(false);
-  const [uniform, setUniform] = useState(false);
   const reducedMotion = typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const number = describeNumber(examples[example]);
   const interval = digitLogIntervals[number.digit - 1];
@@ -67,14 +76,10 @@ export function NumberMappingAnimation() {
           `The fractional log lands in digit ${number.digit}’s interval. The left boundary is included; the right boundary is excluded.`
         ][step]}</p>
       </div>
-      <div className="mapping-uniform-control">
-        <button className="secondary-action" aria-pressed={uniform} onClick={() => setUniform(!uniform)}>{uniform ? "Hide uniform illustration" : "Show uniform illustration"}</button>
-      </div>
       <div className="mapping-track" role="img" aria-label={`First digit intervals on the fractional log scale from 0 to 1.${step === 4 ? ` ${number.value} lands at ${format(number.fractionalLog)} in digit ${number.digit}'s interval.` : ""}`}>
         <div className="mapping-axis"><span>0 = log₁₀(1)</span><span>Fractional log</span><span>1 = log₁₀(10)</span></div>
         <div className="mapping-runway">
           {step >= 3 && <span className={`mapping-marker ${step === 4 ? "has-landed" : ""}`} style={{ left: `${number.fractionalLog * 100}%` }}><span>{format(number.fractionalLog)}</span>▼</span>}
-          {uniform && <div className="mapping-uniform" aria-hidden="true">{Array.from({ length: 100 }, (_, index) => <i key={index} style={{ left: `${index + 0.5}%` }} />)}</div>}
         </div>
         <div className="mapping-segments">{digitLogIntervals.map((item) => <div key={item.digit} className={step === 4 && item.digit === number.digit ? "is-selected" : ""} style={{ width: `${item.probability * 100}%` }}><strong>{item.digit}</strong></div>)}</div>
       </div>
@@ -83,8 +88,205 @@ export function NumberMappingAnimation() {
       </p>
       <div className="mapping-conclusion">
         <p><strong>What if fractional logs are uniformly distributed?</strong> Equal-length portions of [0, 1) then receive equal probability. Digit 1 occupies 30.1% of the scale, so it receives 30.1% of values; digit 9 occupies only 4.6%.</p>
-        <p>{uniform ? "The evenly spaced marks illustrate uniform coverage, not a random sample. Each digit’s probability is its interval length: log₁₀(d + 1) − log₁₀(d)." : "The example numbers show how mapping works. Landing somewhere in [0, 1) alone does not establish uniformity or Benford’s Law."}</p>
+        <p>One example number shows how the mapping works, but a single landing spot says nothing about uniformity. Drop in many numbers below to see both distributions at once.</p>
       </div>
+      <NumberCrowd />
     </div>
+  );
+}
+
+const CROWD_TOTAL = 2000;
+const CROWD_BATCH = 10;
+const CROWD_TICK_MS = 50;
+const FRACTION_BINS = 10;
+const RECENT_COUNT = 8;
+const DOT_COUNT = 60;
+
+function formatCrowdValue({ value, significand, exponent }: NumberDescription) {
+  if (value >= 1e7 || value < 1e-3) {
+    return <>{significand.toFixed(1)} × 10<sup>{exponent}</sup></>;
+  }
+  return Number(value.toPrecision(3)).toLocaleString("en-US", { maximumFractionDigits: 6 });
+}
+
+function formatPlainValue(value: number) {
+  return Number(value.toPrecision(2)).toLocaleString("en-US", { maximumFractionDigits: 6 });
+}
+
+const spreadOptions: Array<{ key: SpreadPreset; label: string }> = [
+  { key: "wide", label: "Many orders of magnitude" },
+  { key: "narrow", label: "Within one order of magnitude" }
+];
+
+function NumberCrowd() {
+  const [spread, setSpread] = useState<SpreadPreset>("wide");
+  const numbers = useMemo(
+    () => sampleNumbers({ count: CROWD_TOTAL, seed: 11, ...spreadPresets[spread] }),
+    [spread]
+  );
+  // Scales come from the full set so bars grow during the drop instead of rescaling.
+  const full = useMemo(() => {
+    const logs = numbers.map((number) => number.logValue).sort((a, b) => a - b);
+    const low = logs[Math.floor(0.025 * logs.length)];
+    const high = logs[Math.floor(0.975 * logs.length)];
+    return {
+      low,
+      high,
+      maxBin: Math.max(...tallyFractionalLogs(numbers, FRACTION_BINS)),
+      maxShare: Math.max(...tallyFirstDigits(numbers)) / numbers.length
+    };
+  }, [numbers]);
+  const [shown, setShown] = useState(0);
+  const [running, setRunning] = useState(false);
+  const reducedMotion = typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  useEffect(() => {
+    if (!running) return;
+    const timer = window.setTimeout(() => {
+      const next = Math.min(CROWD_TOTAL, shown + CROWD_BATCH);
+      setShown(next);
+      if (next >= CROWD_TOTAL) setRunning(false);
+    }, CROWD_TICK_MS);
+    return () => window.clearTimeout(timer);
+  }, [running, shown]);
+
+  function drop() {
+    if (reducedMotion) {
+      setShown(CROWD_TOTAL);
+      return;
+    }
+    if (running) {
+      setRunning(false);
+      return;
+    }
+    if (shown >= CROWD_TOTAL) setShown(0);
+    setRunning(true);
+  }
+
+  const visible = numbers.slice(0, shown);
+  const bins = tallyFractionalLogs(visible, FRACTION_BINS);
+  const digits = tallyFirstDigits(visible);
+  const expectedPerBin = CROWD_TOTAL / FRACTION_BINS;
+  const binScale = Math.max(expectedPerBin * 1.5, full.maxBin * 1.05);
+  const uniformLevel = shown / FRACTION_BINS;
+  const recent = visible.slice(-RECENT_COUNT).reverse();
+  const dots = visible.slice(-DOT_COUNT);
+  const share = (count: number) => (shown ? count / shown : 0);
+  const digitScale = Math.max(0.36, full.maxShare * 1.08);
+  const orders = full.high - full.low;
+  const digitOneShare = share(digits[0]) * 100;
+  const buttonLabel = reducedMotion ? "Drop numbers" : running ? "Pause" : shown >= CROWD_TOTAL ? "Drop again" : "Drop numbers";
+
+  return (
+    <section className="crowd" aria-labelledby="crowd-title">
+      <header className="crowd-header">
+        <h4 id="crowd-title">Many numbers at once</h4>
+        <p>
+          The middle 95% of these {CROWD_TOTAL.toLocaleString("en-US")} numbers run from
+          about {formatPlainValue(10 ** full.low)} to {formatPlainValue(10 ** full.high)}:
+          about {orders < 1 ? orders.toFixed(1) : Math.round(orders)} orders of magnitude.
+          Each one lands at its fractional log on the same 0-to-1 scale.
+        </p>
+      </header>
+      <div className="wrap-animation-switch" role="group" aria-label="How spread out the numbers are">
+        {spreadOptions.map((option) => (
+          <button
+            key={option.key}
+            type="button"
+            aria-pressed={spread === option.key}
+            onClick={() => setSpread(option.key)}
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
+      <div className="mapping-controls">
+        <button className="secondary-action" type="button" onClick={drop}>{buttonLabel}</button>
+        {!reducedMotion && (
+          <button className="stack-quiet-action" type="button" onClick={() => { setRunning(false); setShown(CROWD_TOTAL); }}>
+            Show all
+          </button>
+        )}
+        <span data-testid="crowd-count">{shown.toLocaleString("en-US")} of {CROWD_TOTAL.toLocaleString("en-US")} numbers</span>
+      </div>
+      <ol className="crowd-recent" data-testid="crowd-recent" aria-label="Most recent numbers and their fractional logs">
+        {recent.map((number, index) => (
+          <li key={`${shown}-${index}`}>
+            <span>{formatCrowdValue(number)}</span> → <strong>{number.fractionalLog.toFixed(2)}</strong>
+          </li>
+        ))}
+      </ol>
+
+      <div className="crowd-panels">
+        <div>
+          <p className="crowd-label">Log scale: fractional part of log₁₀(X)</p>
+          <div
+            className="crowd-bins"
+            role="img"
+            aria-label={`Fractional logs of ${shown} numbers, count in each tenth of [0, 1): ${bins.join(", ")}`}
+          >
+            {bins.map((count, index) => (
+              <div key={index} className="crowd-bin" style={{ height: `${Math.min(100, (count / binScale) * 100)}%` }} />
+            ))}
+            {shown > 0 && (
+              <div className="crowd-uniform" style={{ bottom: `${Math.min(100, (uniformLevel / binScale) * 100)}%` }}>
+                <span>uniform</span>
+              </div>
+            )}
+          </div>
+          <div className="mapping-segments crowd-segments" aria-hidden="true">
+            {digitLogIntervals.map((item) => (
+              <div key={item.digit} style={{ width: `${item.probability * 100}%` }}><strong>{item.digit}</strong></div>
+            ))}
+            {dots.map((number, index) => (
+              <i key={`${shown}-${index}`} className="crowd-dot" style={{ left: `${number.fractionalLog * 100}%` }} />
+            ))}
+          </div>
+          <div className="mapping-axis"><span>0</span><span>1</span></div>
+          <p className="crowd-segment-note">
+            Digit d’s segment runs from log₁₀(d) to log₁₀(d + 1).{" "}
+            {spread === "wide"
+              ? "Landings are even, so each digit’s share ≈ its segment’s width."
+              : "Landings bunch up, so shares don’t match the widths."}
+          </p>
+        </div>
+
+        <div>
+          <p className="crowd-label">Original scale: first digit of X</p>
+          <div
+            className="crowd-digits"
+            role="img"
+            aria-label={`First digits of ${shown} numbers compared with Benford: ${digits
+              .map((count, index) => `${index + 1}: ${(share(count) * 100).toFixed(1)}% vs Benford ${(benfordProbability(index + 1) * 100).toFixed(1)}%`)
+              .join("; ")}`}
+          >
+            {digits.map((count, index) => (
+              <div className="crowd-digit" key={index} aria-hidden="true">
+                <span className="crowd-digit-value">{shown ? (share(count) * 100).toFixed(1) : "–"}</span>
+                <div className="crowd-digit-column">
+                  <div className="crowd-digit-bar" style={{ height: `${Math.min(100, (share(count) / digitScale) * 100)}%` }} />
+                  <div className="crowd-digit-benford" style={{ bottom: `${(benfordProbability(index + 1) / digitScale) * 100}%` }} />
+                </div>
+                <span className="crowd-digit-label">{index + 1}</span>
+              </div>
+            ))}
+          </div>
+          <div className="crowd-legend">
+            <span><i className="crowd-swatch-share" />These numbers (%)</span>
+            <span><i className="crowd-swatch-benford" />Benford</span>
+          </div>
+        </div>
+      </div>
+
+      <p className="crowd-conclusion" aria-live="polite">
+        {spread === "wide"
+          ? shown >= CROWD_TOTAL / 2
+            ? "The fractional logs are roughly uniform: each tenth of [0, 1) gets about the same count. But the first digits follow Benford, because each digit collects the numbers that land in its segment, and digit 1’s segment covers 30.1% of the scale while digit 9’s covers only 4.6%."
+            : "Watch the two charts fill in. On the log scale the bars rise evenly; on the original scale digit 1 pulls ahead."
+          : shown >= CROWD_TOTAL / 2
+            ? `These numbers stay inside one order of magnitude, so their fractional logs pile up in a few tenths of [0, 1) and are not uniform. The first digits are not Benford either: digit 1 gets ${digitOneShare.toFixed(1)}% instead of 30.1%, because few numbers land in its segment.`
+            : "Watch the two charts fill in. On the log scale the bars pile up in the middle instead of rising evenly."}
+      </p>
+    </section>
   );
 }

@@ -1,6 +1,14 @@
 import { describe, expect, it } from "vitest";
 
-import { describeNumber, digitLogIntervals } from "./numberMapping";
+import { benfordProbability } from "./benford";
+import {
+  describeNumber,
+  digitLogIntervals,
+  sampleNumbers,
+  spreadPresets,
+  tallyFirstDigits,
+  tallyFractionalLogs
+} from "./numberMapping";
 
 describe("describeNumber", () => {
   it.each([
@@ -69,5 +77,66 @@ describe("digitLogIntervals", () => {
     expect(
       digitLogIntervals.reduce((sum, interval) => sum + interval.probability, 0)
     ).toBeCloseTo(1, 14);
+  });
+});
+
+describe("many numbers of varying magnitude", () => {
+  const numbers = sampleNumbers({ count: 4000, seed: 11, ...spreadPresets.wide });
+
+  it("is reproducible for the same seed", () => {
+    expect(sampleNumbers({ count: 5, seed: 11, ...spreadPresets.wide }).map((n) => n.value)).toEqual(
+      numbers.slice(0, 5).map((n) => n.value)
+    );
+  });
+
+  it("spans many orders of magnitude", () => {
+    const exponents = numbers.map((n) => n.exponent);
+    expect(Math.max(...exponents) - Math.min(...exponents)).toBeGreaterThanOrEqual(6);
+  });
+
+  it("lands roughly uniformly on the fractional-log scale", () => {
+    const bins = tallyFractionalLogs(numbers, 10);
+    expect(bins).toHaveLength(10);
+    expect(bins.reduce((sum, count) => sum + count, 0)).toBe(4000);
+    for (const count of bins) expect(Math.abs(count - 400)).toBeLessThan(80);
+  });
+
+  it("gives Benford first digits on the original scale", () => {
+    const counts = tallyFirstDigits(numbers);
+    expect(counts).toHaveLength(9);
+    counts.forEach((count, index) => {
+      expect(count / 4000).toBeCloseTo(benfordProbability(index + 1), 1);
+    });
+    expect(counts[0]).toBeGreaterThan(5 * counts[8]);
+  });
+
+  it("counts a digit exactly when the fractional log falls in that digit's interval", () => {
+    const counts = tallyFirstDigits(numbers);
+    digitLogIntervals.forEach((interval, index) => {
+      const inside = numbers.filter(
+        (n) => n.fractionalLog >= interval.start && n.fractionalLog < interval.end
+      ).length;
+      expect(inside).toBe(counts[index]);
+    });
+  });
+});
+
+describe("numbers within one order of magnitude", () => {
+  const numbers = sampleNumbers({ count: 4000, seed: 11, ...spreadPresets.narrow });
+
+  it("stays within about one order of magnitude", () => {
+    const logs = numbers.map((n) => n.logValue).sort((a, b) => a - b);
+    expect(logs[Math.floor(0.975 * 4000)] - logs[Math.floor(0.025 * 4000)]).toBeLessThan(1);
+  });
+
+  it("bunches up on the fractional-log scale instead of spreading evenly", () => {
+    const bins = tallyFractionalLogs(numbers, 10);
+    expect(Math.max(...bins)).toBeGreaterThan(2 * 400);
+    expect(Math.min(...bins)).toBeLessThan(400 / 4);
+  });
+
+  it("does not give Benford first digits", () => {
+    const counts = tallyFirstDigits(numbers);
+    expect(counts[0] / 4000).toBeLessThan(0.1);
   });
 });

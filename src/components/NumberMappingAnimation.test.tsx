@@ -55,4 +55,54 @@ describe("NumberMappingAnimation", () => {
     fireEvent.click(screen.getByRole("button", { name: "Show mapping" }));
     expect(screen.getByTestId("mapping-stage")).toHaveTextContent("First digit: 3");
   });
+
+  it("drops many numbers of varying size onto the fractional-log scale over time", () => {
+    vi.useFakeTimers();
+    render(<NumberMappingAnimation />);
+    const crowd = screen.getByRole("region", { name: /many numbers at once/i });
+    expect(within(crowd).getByText(/0 of 2,000 numbers/)).toBeInTheDocument();
+
+    fireEvent.click(within(crowd).getByRole("button", { name: "Drop numbers" }));
+    act(() => { vi.advanceTimersByTime(1000); });
+    const progress = within(crowd).getByTestId("crowd-count").textContent ?? "";
+    const shown = Number(progress.replace(/,/g, "").match(/\d+/)?.[0]);
+    expect(shown).toBeGreaterThan(0);
+    expect(shown).toBeLessThan(2000);
+    expect(within(crowd).getByTestId("crowd-recent").textContent).not.toBe("");
+  });
+
+  it("ends with a flat fractional-log histogram and Benford first digits", () => {
+    vi.stubGlobal("matchMedia", () => ({ matches: true }));
+    render(<NumberMappingAnimation />);
+    const crowd = screen.getByRole("region", { name: /many numbers at once/i });
+    fireEvent.click(within(crowd).getByRole("button", { name: "Drop numbers" }));
+
+    expect(within(crowd).getByText(/2,000 of 2,000 numbers/)).toBeInTheDocument();
+    expect(within(crowd).getByRole("img", { name: /fractional logs.*each tenth/i })).toBeInTheDocument();
+    expect(within(crowd).getByRole("img", { name: /first digits.*benford/i })).toBeInTheDocument();
+    expect(within(crowd).getByText(/roughly uniform.*but.*first digits follow benford/i)).toBeInTheDocument();
+    expect(within(crowd).getByText(/landings are even, so each digit’s share ≈ its segment’s width/i)).toBeInTheDocument();
+  });
+
+  it("replaces the fixed uniform marks with real numbers", () => {
+    render(<NumberMappingAnimation />);
+    expect(screen.queryByRole("button", { name: /uniform illustration/i })).not.toBeInTheDocument();
+  });
+
+  it("contrasts numbers that stay within one order of magnitude", () => {
+    vi.stubGlobal("matchMedia", () => ({ matches: true }));
+    render(<NumberMappingAnimation />);
+    const crowd = screen.getByRole("region", { name: /many numbers at once/i });
+    const narrow = within(crowd).getByRole("button", { name: /within one order of magnitude/i });
+    expect(narrow).toHaveAttribute("aria-pressed", "false");
+
+    fireEvent.click(narrow);
+    fireEvent.click(within(crowd).getByRole("button", { name: "Drop numbers" }));
+
+    expect(narrow).toHaveAttribute("aria-pressed", "true");
+    expect(within(crowd).getByText(/about 0\.\d orders of magnitude/)).toBeInTheDocument();
+    expect(within(crowd).getByText(/not uniform.*first digits are not benford/i)).toBeInTheDocument();
+    expect(within(crowd).getByText(/landings bunch up, so shares don’t match the widths/i)).toBeInTheDocument();
+    expect(within(crowd).queryByText(/share ≈ its segment’s width/i)).not.toBeInTheDocument();
+  });
 });

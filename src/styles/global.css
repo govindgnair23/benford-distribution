@@ -2171,19 +2171,47 @@ select:focus-visible {
 .mapping-segments > div.is-selected { background: var(--accent-deep); color: var(--ink-on-accent); }
 .mapping-result { min-height: 6em; font-variant-numeric: tabular-nums; }
 .mapping-conclusion { margin-top: var(--space-section); border-top: 1px solid var(--border-hairline); padding-top: var(--space-panel); }
-.mapping-uniform { position: absolute; inset: 0; }
-.mapping-uniform i { position: absolute; bottom: 0; height: 22px; border-left: 2px solid var(--accent-deep); animation: mapping-arrive 650ms ease-out; }
 @keyframes mapping-arrive { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: translateY(0); } }
 @media (max-width: 600px) {
   .number-mapping { padding: var(--space-control); }
   .mapping-stage { min-height: 260px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .mapping-equation, .mapping-uniform i { animation: none; }
-  .mapping-marker { transition: none; }
+  .mapping-equation, .crowd-dot { animation: none; }
+  .mapping-marker, .crowd-bin, .crowd-uniform, .crowd-digit-bar { transition: none; }
 }
 
-.mapping-uniform-control { margin-bottom: var(--space-panel); }
+/* Many numbers at once (NumberMappingAnimation's NumberCrowd) */
+.crowd { display: grid; gap: var(--space-control); margin-top: var(--space-section); padding-top: var(--space-panel); border-top: 1px solid var(--border-hairline); }
+.crowd-header h4 { margin: 0; font-family: var(--font-serif); font-size: 1.15rem; }
+.crowd-header p { margin: 4px 0 0; max-width: 65ch; color: var(--ink-body); }
+.crowd-recent { display: flex; flex-wrap: wrap; gap: 6px; min-height: 2.2em; margin: 0; padding: 0; list-style: none; }
+.crowd-recent li { padding: 3px 8px; border: 1px solid var(--border-card); background: var(--surface-sunken); color: var(--ink-body); font-family: var(--font-mono); font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+.crowd-recent li strong { color: var(--accent-deep); }
+.crowd-recent li:first-child { border-color: var(--accent-deep); }
+.crowd-panels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-card); align-items: start; }
+.crowd-label { margin: 0 0 6px; color: var(--ink-muted); font-size: 0.76rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.crowd-bins { position: relative; display: flex; align-items: flex-end; gap: 3px; height: 150px; padding: 0 2px; background: var(--surface-sunken); border-bottom: 1px solid var(--chart-axis); }
+.crowd-bin { flex: 1; min-width: 0; background: var(--chart-series-1); transition: height 120ms linear; }
+.crowd-uniform { position: absolute; right: 0; left: 0; border-top: 1.5px dashed var(--chart-label); transition: bottom 120ms linear; }
+.crowd-uniform span { position: absolute; right: 4px; bottom: 2px; color: var(--chart-label); font-size: 0.72rem; }
+.crowd-segments { position: relative; margin-top: 6px; }
+.crowd-segments > div { padding: 10px 0; }
+.crowd-dot { position: absolute; top: 3px; bottom: 3px; width: 0; border-left: 2px solid var(--accent-deep); opacity: 0.55; animation: mapping-arrive 300ms ease-out; }
+.crowd-segment-note { margin: 4px 0 0; color: var(--ink-body); font-size: 0.84rem; }
+.crowd-digits { display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 5px; align-items: end; padding: 8px 8px 0; background: var(--surface-sunken); }
+.crowd-digit { display: grid; gap: 3px; text-align: center; }
+.crowd-digit-value { color: var(--ink-muted); font-family: var(--font-mono); font-size: 0.66rem; font-variant-numeric: tabular-nums; }
+.crowd-digit-column { position: relative; height: 150px; border-bottom: 1px solid var(--chart-axis); }
+.crowd-digit-bar { position: absolute; right: 14%; bottom: 0; left: 14%; background: var(--chart-series-1); transition: height 120ms linear; }
+.crowd-digit-benford { position: absolute; right: 0; left: 0; height: 3px; margin-bottom: -1.5px; background: var(--accent-warm); }
+.crowd-digit-label { padding-bottom: 6px; font-family: var(--font-serif); font-weight: 700; }
+.crowd-legend { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 6px; color: var(--ink-muted); font-size: 0.78rem; }
+.crowd-legend i { display: inline-block; margin-right: 6px; vertical-align: middle; }
+.crowd-swatch-share { width: 11px; height: 11px; background: var(--chart-series-1); }
+.crowd-swatch-benford { width: 15px; height: 3px; background: var(--accent-warm); }
+.crowd-conclusion { margin: 0; padding: var(--space-control) var(--space-panel); border-left: 4px solid var(--accent-deep); background: var(--surface-sunken); font-family: var(--font-serif); font-size: 1.05rem; }
+@media (max-width: 760px) { .crowd-panels { grid-template-columns: 1fr; } }
 
 .mapping-log-chain { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 0.3em; }
 .mapping-log-chain > span { white-space: nowrap; }
