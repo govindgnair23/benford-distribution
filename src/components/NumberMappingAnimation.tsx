@@ -8,7 +8,6 @@ import {
   spreadPresets,
   tallyFirstDigits,
   tallyFractionalLogs,
-  type NumberDescription,
   type SpreadPreset
 } from "../lib/numberMapping";
 
@@ -110,15 +109,7 @@ const CROWD_TOTAL = 2000;
 const CROWD_BATCH = 10;
 const CROWD_TICK_MS = 50;
 const FRACTION_BINS = 10;
-const RECENT_COUNT = 8;
 const DOT_COUNT = 60;
-
-function formatCrowdValue({ value, significand, exponent }: NumberDescription) {
-  if (value >= 1e7 || value < 1e-3) {
-    return <>{significand.toFixed(1)} × 10<sup>{exponent}</sup></>;
-  }
-  return Number(value.toPrecision(3)).toLocaleString("en-US", { maximumFractionDigits: 6 });
-}
 
 function formatPlainValue(value: number) {
   return Number(value.toPrecision(2)).toLocaleString("en-US", { maximumFractionDigits: 6 });
@@ -180,7 +171,6 @@ function NumberCrowd() {
   const expectedPerBin = CROWD_TOTAL / FRACTION_BINS;
   const binScale = Math.max(expectedPerBin * 1.5, full.maxBin * 1.05);
   const uniformLevel = shown / FRACTION_BINS;
-  const recent = visible.slice(-RECENT_COUNT).reverse();
   const dots = visible.slice(-DOT_COUNT);
   const share = (count: number) => (shown ? count / shown : 0);
   const digitScale = Math.max(0.36, full.maxShare * 1.08);
@@ -220,14 +210,6 @@ function NumberCrowd() {
         )}
         <span data-testid="crowd-count">{shown.toLocaleString("en-US")} of {CROWD_TOTAL.toLocaleString("en-US")} numbers</span>
       </div>
-      <ol className="crowd-recent" data-testid="crowd-recent" aria-label="Most recent numbers and their fractional logs">
-        {recent.map((number, index) => (
-          <li key={`${shown}-${index}`}>
-            <span>{formatCrowdValue(number)}</span> → <strong>{number.fractionalLog.toFixed(2)}</strong>
-          </li>
-        ))}
-      </ol>
-
       <div className="crowd-panels">
         <div>
           <p className="crowd-label">Log scale: fractional part of log₁₀(X)</p>
@@ -254,12 +236,7 @@ function NumberCrowd() {
             ))}
           </div>
           <div className="mapping-axis"><span>0</span><span>1</span></div>
-          <p className="crowd-segment-note">
-            Digit d’s segment runs from log₁₀(d) to log₁₀(d + 1).{" "}
-            {spread === "wide"
-              ? "Landings are even, so each digit’s share ≈ its segment’s width."
-              : "Landings bunch up, so shares don’t match the widths."}
-          </p>
+
         </div>
 
         <div>
@@ -292,10 +269,10 @@ function NumberCrowd() {
       <p className="crowd-conclusion" aria-live="polite">
         {spread === "wide"
           ? shown >= CROWD_TOTAL / 2
-            ? "The fractional logs are roughly uniform: each tenth of [0, 1) gets about the same count. But the first digits follow Benford, because each digit collects the numbers that land in its segment, and digit 1’s segment covers 30.1% of the scale while digit 9’s covers only 4.6%."
+            ? "The fractional logs are roughly uniform, but the first digits follow Benford: each digit receives a share proportional to its interval’s length."
             : "Watch the two charts fill in. On the log scale the bars rise evenly; on the original scale digit 1 pulls ahead."
           : shown >= CROWD_TOTAL / 2
-            ? `These numbers stay inside one order of magnitude, so their fractional logs pile up in a few tenths of [0, 1) and are not uniform. The first digits are not Benford either: digit 1 gets ${digitOneShare.toFixed(1)}% instead of 30.1%, because few numbers land in its segment.`
+            ? `In this example, fractional logs cluster and are not uniform. The first digits are not Benford: digit 1 gets ${digitOneShare.toFixed(1)}% instead of 30.1%.`
             : "Watch the two charts fill in. On the log scale the bars pile up in the middle instead of rising evenly."}
       </p>
     </section>

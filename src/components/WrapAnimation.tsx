@@ -50,7 +50,6 @@ export function WrapAnimation() {
   const [progress, setProgress] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [hover, setHover] = useState<number | null>(null);
-  const [showSmooth, setShowSmooth] = useState(true);
   const [figureRef, width] = useElementWidth(720);
   const frame = useRef<number | null>(null);
   const progressRef = useRef(0);
@@ -271,13 +270,9 @@ export function WrapAnimation() {
       </p>
 
       <p className="stack-note">
-        Density is height; probability is area over an interval. A uniform density on [0, 1)
-        has height 1 everywhere.
+        Uniform on [0, 1) has density 1, marked by the dashed reference line.
       </p>
-      <label className="stack-smooth-toggle">
-        <input type="checkbox" checked={showSmooth} onChange={(event) => setShowSmooth(event.target.checked)} />
-        Show the continuous density curve
-      </label>
+
 
       <div className="stack-figure" ref={figureRef}>
         <svg
@@ -334,7 +329,7 @@ export function WrapAnimation() {
             </text>
           ))}
           <text className="stack-tick" x={xBottom(1)} y={bottomBase + 16} textAnchor="middle" fontSize={fontSize}>1</text>
-          {showSmooth && <polyline className="stack-smooth" points={smoothPoints} />}
+          <polyline className="stack-smooth" points={smoothPoints} />
 
           {model.stacks.map((stack, index) => {
             const local = progress - index;
@@ -378,19 +373,6 @@ export function WrapAnimation() {
         </svg>
       </div>
 
-      <p className="stack-note">
-        Both charts use the same density scale. The dashed horizontal line marks uniform
-        density at height 1. The continuous curve shows the totals between the ten illustrated
-        positions. Hover over a bar or its lines to inspect its sum.
-      </p>
-      <div className="stack-readout">
-        <div className="stack-readout-lead">
-          Selected fractional position <b>{focusStack.fractionalValue.toFixed(1)}</b>: add the density at {firstPoints}, …
-        </div>
-        <div className="stack-readout-terms">
-          total = {termParts.join(" + ")} = <b>{focusStack.total.toFixed(3)}</b>
-        </div>
-      </div>
       <p className="stack-caption" aria-live="polite">{caption}</p>
 
       <div className="stack-results">
@@ -422,6 +404,14 @@ export function WrapAnimation() {
         </div>
         <details className="wrap-details">
           <summary>Show diagnostic details</summary>
+          <div className="stack-readout">
+            <div className="stack-readout-lead">
+              Selected fractional position <b>{focusStack.fractionalValue.toFixed(1)}</b>: add the density at {firstPoints}, …
+            </div>
+            <div className="stack-readout-terms">
+              total = {termParts.join(" + ")} = <b>{focusStack.total.toFixed(3)}</b>
+            </div>
+          </div>
           <dl className="stack-stats">
             <div>
               <dt>The ten illustrated totals</dt>

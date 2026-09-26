@@ -79,7 +79,7 @@ describe("NumberMappingAnimation", () => {
     const shown = Number(progress.replace(/,/g, "").match(/\d+/)?.[0]);
     expect(shown).toBeGreaterThan(0);
     expect(shown).toBeLessThan(2000);
-    expect(within(crowd).getByTestId("crowd-recent").textContent).not.toBe("");
+    expect(within(crowd).queryByTestId("crowd-recent")).not.toBeInTheDocument();
   });
 
   it("ends with a flat fractional-log histogram and Benford first digits", () => {
@@ -92,7 +92,7 @@ describe("NumberMappingAnimation", () => {
     expect(within(crowd).getByRole("img", { name: /fractional logs.*each tenth/i })).toBeInTheDocument();
     expect(within(crowd).getByRole("img", { name: /first digits.*benford/i })).toBeInTheDocument();
     expect(within(crowd).getByText(/roughly uniform.*but.*first digits follow benford/i)).toBeInTheDocument();
-    expect(within(crowd).getByText(/landings are even, so each digit’s share ≈ its segment’s width/i)).toBeInTheDocument();
+
   });
 
   it("replaces the fixed uniform marks with real numbers", () => {
@@ -113,7 +113,7 @@ describe("NumberMappingAnimation", () => {
     expect(narrow).toHaveAttribute("aria-pressed", "true");
     expect(within(crowd).getByText(/about 0\.\d orders of magnitude/)).toBeInTheDocument();
     expect(within(crowd).getByText(/not uniform.*first digits are not benford/i)).toBeInTheDocument();
-    expect(within(crowd).getByText(/landings bunch up, so shares don’t match the widths/i)).toBeInTheDocument();
+
     expect(within(crowd).queryByText(/share ≈ its segment’s width/i)).not.toBeInTheDocument();
   });
 });

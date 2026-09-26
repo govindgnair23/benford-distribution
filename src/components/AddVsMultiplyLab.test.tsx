@@ -58,6 +58,10 @@ describe("AddVsMultiplyLab", () => {
   it("states the takeaway", () => {
     render(<AddVsMultiplyLab />);
 
-    expect(screen.getByText(/growth in proportion to size spreads towns across many orders of magnitude/i)).toBeInTheDocument();
+    expect(screen.getByTestId("growth-takeaway")).toHaveTextContent("After 200 decades");
+    expect(screen.getByTestId("growth-takeaway")).toHaveTextContent("close to Benford");
+    fireEvent.click(screen.getByRole("button", { name: "1 decade" }));
+    expect(screen.getByTestId("growth-takeaway")).toHaveTextContent("After 1 decade");
+    expect(screen.getByTestId("growth-takeaway")).toHaveTextContent("still far from Benford");
   });
 });

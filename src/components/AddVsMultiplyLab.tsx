@@ -138,10 +138,14 @@ export function AddVsMultiplyLab() {
         />
       </div>
 
-      <p className="avm-takeaway">
-        Growth in proportion to size spreads towns across many orders of magnitude,
-        and their first digits approach Benford. Adding a similar number of people
-        to every town keeps them bunched together.
+      <p className="avm-takeaway" data-testid="growth-takeaway" aria-live="polite">
+        After {decades} {decades === 1 ? "decade" : "decades"} in this simulation, percentage-growth digits are{" "}
+        {benfordVerdict(run.multiply.steps[decades].benfordRmse, TOWN_COUNT) === "close"
+          ? "close to Benford."
+          : benfordVerdict(run.multiply.steps[decades].benfordRmse, TOWN_COUNT) === "closer"
+            ? "getting closer to Benford."
+            : "still far from Benford."}
+        {" "}Adding similar numbers of newcomers keeps populations clustered.
       </p>
     </section>
   );

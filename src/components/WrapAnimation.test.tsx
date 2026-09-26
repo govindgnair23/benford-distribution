@@ -27,9 +27,10 @@ describe("WrapAnimation", () => {
     expect(screen.getByRole("button", { name: /^play$/i })).toBeInTheDocument();
     expect(screen.getByRole("img", { name: /0 of 10 fractional values stacked/i })).toBeInTheDocument();
     expect(screen.getByText(/press play/i)).toBeInTheDocument();
-    expect(screen.getByRole("checkbox", { name: /show the continuous density curve/i })).toBeChecked();
-    expect(screen.getByText(/density is height.*probability is area/i)).toBeInTheDocument();
-    expect(screen.getByText(/on \[0, 1\).*height 1 everywhere/i)).toBeInTheDocument();
+    expect(screen.queryByRole("checkbox", { name: /show the continuous density curve/i })).not.toBeInTheDocument();
+    expect(document.querySelector(".stack-smooth")).toBeInTheDocument();
+    expect(screen.queryByText(/density is height.*probability is area/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/uniform on \[0, 1\).*density 1/i)).toBeInTheDocument();
   });
 
   it("stacks one fractional value at a time with Next value", () => {
@@ -46,6 +47,7 @@ describe("WrapAnimation", () => {
     render(<WrapAnimation />);
 
     expect(screen.getByText(/selected fractional position/i, { selector: ".stack-readout-lead" })).toHaveTextContent("0.2");
+    expect(screen.getByText(/total =/i).closest("details")).not.toHaveAttribute("open");
     expect(screen.getByText(/total =/i)).toHaveTextContent(/f\(3\.2\) 3\.989.*= 3\.989/);
   });
 

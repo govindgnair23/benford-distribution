@@ -1,6 +1,5 @@
 import { FormulaBlock } from "./FormulaBlock";
 import { WrapAnimation } from "./WrapAnimation";
-import { WrappedNormalVisual } from "./WrappedNormalVisual";
 
 export function MultiplicativeMechanism() {
   return (
@@ -9,9 +8,7 @@ export function MultiplicativeMechanism() {
         <h3 id="multiplicative-mechanism-title">When fractional logs become nearly uniform</h3>
         <p>
           Here we use a Normal distribution of log values to illustrate one route
-          to nearly uniform fractional logs. Multiplicative processes can produce
-          approximately Normal logs under suitable conditions, but neither
-          multiplication nor Normality is required for Benford’s Law.
+          to nearly uniform fractional logs.
         </p>
       </header>
 
@@ -61,7 +58,7 @@ export function MultiplicativeMechanism() {
         </div>
         <WrapAnimation />
         <details className="wrap-details">
-          <summary>See the math and density comparison</summary>
+          <summary>See the math</summary>
           <p>
             For Z = log₁₀(X), the wrapped density at fractional position r
             adds the Normal density at k + r for every integer k.
@@ -78,32 +75,21 @@ export function MultiplicativeMechanism() {
             fractional part means x − ⌊x⌋, so the fractional part of -2.8 is
             -2.8 - (-3) = 0.2.
           </p>
-          <WrappedNormalVisual />
-          <p className="wrap-conclusion">
-            For the narrow Normal, the wrapped density at 0.2 and 0.7 looks very
-            different, while for the wide Normal, the wrapped densities look much
-            closer. In the former case, {"{log₁₀(X)}"}, the fractional part of
-            log₁₀(X), does not appear uniform; in the latter case, it approaches a
-            uniform distribution.
-          </p>
         </details>
       </article>
 
       <article className="math-step">
         <h3 id="wide-range-title">A wide range alone is not enough</h3>
         <p>
-          <strong>
-            If the log-transformed values span a wide range, meaning the original
-            values cover multiple orders of magnitude, Benford-like behavior
-            becomes plausible.
-          </strong>{" "}
-          The direct diagnostic is whether the fractional-log histogram is
-          approaching uniform. Simulated Benford emergence is not a
-          fraud detector or a universal test for real datasets; real data can be
-          shaped by truncation, rounding, assignment, selection effects, and
-          reporting thresholds. For example, powers of 10 span many orders of
-          magnitude, yet every one has first digit 1.
+          Check the fractional-log distribution rather than the range alone.
+          For example, powers of 10 span many orders of magnitude, yet every one has first digit 1.
         </p>
+        <details className="wrap-details">
+          <summary>Applying this to real data</summary>
+          <p>Rounding, assigned values, selection, and reporting thresholds can change
+            digit patterns. These simulations are not a fraud detector or a universal
+            test for real datasets.</p>
+        </details>
       </article>
     </section>
   );

@@ -33,7 +33,7 @@ describe("MultiplicativeMechanism", () => {
 
     expect(screen.getByRole("button", { name: /^play$/i }).closest("details")).toBeNull();
     expect(screen.getByText(/ten fractional positions.*entire interval/i)).toBeInTheDocument();
-    const math = screen.getByText("See the math and density comparison").closest("details");
+    const math = screen.getByText("See the math").closest("details");
     expect(math).not.toHaveAttribute("open");
     expect(screen.getByLabelText("Wrapped density formula")).toBeInTheDocument();
     expect(screen.getByText(/fractional part of -2.8 is -2.8 - \(-3\) = 0.2/i)).toBeInTheDocument();

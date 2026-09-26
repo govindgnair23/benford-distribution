@@ -7,35 +7,17 @@ export function ExplainerPage() {
       <div className="intro-band">
         <h2 id="explainer-title">How it works</h2>
         <p>
-          Follow one number onto the fractional-log scale, then see how a
-          nearly uniform distribution on that scale produces Benford probabilities.
+          Follow a number onto the fractional-log scale, then see how nearly
+          uniform fractional logs give Benford probabilities.
         </p>
       </div>
 
-      <section className="explainer-phase" aria-labelledby="benford-condition-title">
-        <header className="explainer-phase-header">
-          <h3 id="benford-condition-title">From a number to its first digit</h3>
-          <p>
-            Taking a base-10 log separates scale from the digits. Keeping its
-            fractional part puts values from different scales onto the same interval.
-          </p>
-        </header>
-
+      <section id="benford-condition-title" className="explainer-phase" aria-labelledby="explainer-title">
         <NumberMappingAnimation />
         <details className="wrap-details derivation-details">
           <summary>Show the derivation</summary>
           <article className="math-step">
-            <h3>Separate a number’s digits from its scale</h3>
-            <p>
-              This argument only uses positive values. Start with scientific
-              notation: 3140 = 3.14 × 10³. The factor 10³ sets the scale. The 3.14 is the significand, and its first digit is 3.
-              Since log₁₀(10³) = 3, base-10 logs turn powers of ten into ordinary
-              exponents.
-            </p>
-            <FormulaBlock
-              formula={String.raw`3140=3.14\times10^3`}
-              accessibilityLabel="Scientific notation example, 3140 equals 3.14 times ten cubed"
-            />
+            <h3>Define the fractional part</h3>
             <p>
               One piece of notation recurs below: curly braces denote the fractional
               part of a number, {"{x}"} = x − ⌊x⌋, the part left after subtracting
@@ -52,7 +34,7 @@ export function ExplainerPage() {
             <h3>Write the general form</h3>
             <p>
               For any positive number, separate its scale exponent (K) from its
-              significand (M). For X = 3140, K = 3 and M = 3.14.
+              significand (M).
             </p>
             <div className="formula-stack">
               <FormulaBlock
@@ -60,22 +42,12 @@ export function ExplainerPage() {
                 formula={String.raw`X=10^K M,\quad 1\le M<10`}
                 accessibilityLabel="Positive number decomposition formula"
               />
-              <FormulaBlock
-                label="Example"
-                formula={String.raw`3140=10^3\times3.14`}
-                accessibilityLabel="3140 equals ten cubed times 3.14"
-              />
             </div>
             <div className="formula-stack">
               <FormulaBlock
                 label="Take base-10 logs"
                 formula={String.raw`\log_{10}(X)=K+\log_{10}(M)`}
                 accessibilityLabel="Base ten log split into integer order and significand log"
-              />
-              <FormulaBlock
-                label="Example"
-                formula={String.raw`\log_{10}(3140)=3+\log_{10}(3.14)`}
-                accessibilityLabel="Log base ten of 3140 equals 3 plus log base ten of 3.14"
               />
             </div>
             <p>
@@ -101,9 +73,7 @@ export function ExplainerPage() {
               <div>
                 <p>
                   In other words, the first digit D is d when the significand M
-                  is between d and d + 1. For example, 3.14 × 10³ has
-                  significand M = 3.14. Because 3 ≤ 3.14 &lt; 4, its first digit
-                  is 3.
+                  is between d and d + 1.
                 </p>
                 <p className="digit-shift-note">
                   <strong>Note:</strong> Multiplying M by 10ᴷ shifts its decimal

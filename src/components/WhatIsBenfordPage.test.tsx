@@ -30,24 +30,34 @@ describe("WhatIsBenfordPage", () => {
     expect(screen.queryByText(/negative values/i)).not.toBeInTheDocument();
   });
 
-  it("contrasts Benford with a uniform digit expectation", () => {
+  it("keeps the PMF chart comparison without a separate comparison band", () => {
     render(<WhatIsBenfordPage />);
 
-    expect(screen.getByText(/uniform first-digit intuition/i)).toBeInTheDocument();
-    expect(screen.getByText(/benford shape/i)).toBeInTheDocument();
-    expect(screen.getByText(/not uniform over digits/i)).toBeInTheDocument();
+    expect(
+      screen.getByLabelText(/benford probability mass function for first digits/i)
+    ).toBeInTheDocument();
+    expect(screen.getByText(/11\.1% uniform expectation/i)).toBeInTheDocument();
+    expect(screen.queryByText(/uniform first-digit intuition/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/^benford shape$/i)).not.toBeInTheDocument();
   });
 
-  it("lists real-world candidates without the technical caveat", () => {
+  it("shows three representative candidates with one shared caveat", () => {
     render(<WhatIsBenfordPage />);
 
     expect(screen.getByText(/populations and city sizes/i)).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /river lengths/i })).toBeInTheDocument();
     expect(screen.getByText(/transaction and accounting amounts/i)).toBeInTheDocument();
     expect(screen.getByText(/scientific measurements/i)).toBeInTheDocument();
     expect(screen.getByText(/not guaranteed/i)).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: /river lengths/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: /market and economic quantities/i })).not.toBeInTheDocument();
     expect(screen.queryByText(/assigned identifiers/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/fractional logs are spread roughly evenly/i)).not.toBeInTheDocument();
-    expect(screen.getByText(/river lengths.*can be candidates/i)).toBeInTheDocument();
+  });
+
+  it("does not repeat the leading-digit ordering or digit-one callout", () => {
+    render(<WhatIsBenfordPage />);
+
+    expect(screen.queryByText(/digit 1 is most common and digit 9 is least/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/about 30\.1% of benford values begin with 1/i)).not.toBeInTheDocument();
   });
 });

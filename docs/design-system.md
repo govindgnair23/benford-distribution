@@ -337,3 +337,11 @@ Drift happens when literals slip into chart components or one-off CSS rules. The
 - Quiz distribution sketches reuse ChartFrame and the chart palette. Contrast exact uniform X on [1, 10) with exact uniform log₁₀(X) on [0, 1) to test scale interpretation. Uniform charts show their density height; other silhouettes remain schematic. Label the curves as schematic, not exact probability models; do not infer Benford conformity from a silhouette alone. Use accessible shape/axis descriptions and feedback directing learners to fractional logs.
 
 - WrapAnimation places a live StatCallout below its spread controls: the middle 95% range of X, computed as 10^(μ ± 1.96σ), and its width in orders of magnitude. Label this as a central interval, not the full support of the model.
+
+## Streamlined teaching flow
+
+- The What page uses the PMF chart for the uniform comparison, with three example contexts and one shared caveat.
+- The individual mapping animation provides worked examples; the optional derivation retains general formulas without repeating the numerical walkthrough.
+- NumberCrowd keeps moving points and paired histograms, with one state-dependent conclusion and no recent-number list.
+- WrapAnimation always shows the continuous wrapped-density curve. Its arithmetic readout lives in diagnostic details; the separate static comparison is omitted from the page. Keep the middle-95% X range visible.
+- City-growth conclusions reflect the selected duration and computed verdict.
