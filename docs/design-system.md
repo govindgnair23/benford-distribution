@@ -320,7 +320,7 @@ Drift happens when literals slip into chart components or one-off CSS rules. The
 ## Teaching flow and comparison updates
 
 - Page introductions use content-height padding (`--space-section`), one title, and one instruction; avoid fixed-height empty bands and repeated eyebrows.
-- `.worked-example` is a four-step ordered list inside a DefinitionPanel, with `--space-control` between steps. Show the digit interval strip immediately after it. `.derivation-details` uses the existing WrapDetails disclosure for the full symbolic derivation.
+- `.number-mapping` animates the worked transformation and its proportional interval strip. `.derivation-details` uses the existing WrapDetails disclosure for the full symbolic derivation.
 - Fractional density illustrations use positions in [0, 1), with ten sample positions from 0.0 to 0.9 and a continuous density curve enabled by default. Explain density before the chart. Secondary metrics belong in an optional diagnostic disclosure.
 - Label sampled digit results as frequencies and analytic results as model probabilities. Digit RMSE uses percentage points throughout; a largest-single-digit difference is a separate diagnostic. Fractional histograms use density with a uniform reference of 1; retain counts in accessible summaries.
 - AddVsMultiply uses paired result rows: digit frequencies, spread, then optional fractional density diagnostics. Its compact playback summary stays visible on narrow screens; all spacing and surfaces reuse existing tokens. Refer to processes by name, not physical position.
@@ -329,3 +329,7 @@ Drift happens when literals slip into chart components or one-off CSS rules. The
 - Interval-strip labels show digits without redundant notation; segment widths are exact probabilities and never grow to fit text. Hide inline percentages on phones while retaining the full accessible chart description.
 
 - `--type-chart-value` (`0.75rem`) is the minimum for compact HTML digit-bar values. Use the visible “Share of values (%)” caption instead of repeating a percent sign in every narrow column.
+
+### NumberMappingAnimation
+
+`.number-mapping` replaces the static worked example before the derivation. A user-started, five-stage sequence shows value → scientific notation → logarithm → fractional log → digit interval. Play pauses between stages; Next step and example selection provide a manual path. Reduced motion uses a still final mapping. The proportional strip stays on [0, 1], with a single live boundary-and-length readout below it when a number lands. Nine examples cover all nine first digits; the full interval table is omitted. An optional uniform-coverage illustration explains interval probabilities without presenting the chosen examples as a random sample. Reuse existing surface, spacing, ink, and accent tokens.

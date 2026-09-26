@@ -30,8 +30,9 @@ export function WhatIsBenfordPage() {
       <div className="intro-band">
         <h2 id="what-title">What is Benford's Law?</h2>
         <p>
-          Benford's Law assigns different probabilities to the first digits 1 through 9.
-          Compare its predictions with equally likely digits below.
+          Benford's Law describes a pattern seen in some datasets: smaller first
+          nonzero digits occur more often than larger ones. About 30% of values
+          begin with 1, while fewer than 5% begin with 9.
         </p>
       </div>
 

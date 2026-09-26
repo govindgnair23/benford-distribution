@@ -1,5 +1,5 @@
 import { FormulaBlock } from "./FormulaBlock";
-import { LogIntervalStrip } from "./LogIntervalStrip";
+import { NumberMappingAnimation } from "./NumberMappingAnimation";
 import { WrapAnimation } from "./WrapAnimation";
 import { WrappedNormalVisual } from "./WrappedNormalVisual";
 
@@ -7,7 +7,7 @@ export function ExplainerPage() {
   return (
     <section className="explainer-page" aria-labelledby="explainer-title">
       <div className="intro-band">
-        <h2 id="explainer-title">Why Benford Happens</h2>
+        <h2 id="explainer-title">How it works</h2>
         <p>
           Follow one number onto the fractional-log scale, then see how a
           nearly uniform distribution on that scale produces Benford probabilities.
@@ -23,20 +23,7 @@ export function ExplainerPage() {
           </p>
         </header>
 
-        <article className="definition-panel" aria-label="Worked example from 3140 to first digit 3">
-          <h3>Follow 3140</h3>
-          <ol className="worked-example">
-            <li><strong>Original value: 3140.</strong> Write it as 3.14 × 10³.</li>
-            <li><strong>Base-10 log: approximately 3.497.</strong> The integer 3 records the scale.</li>
-            <li><strong>Fractional part: approximately 0.497.</strong> Subtract the floor of the log value.</li>
-            <li><strong>First digit: 3.</strong> The position 0.497 lies between log₁₀(3) ≈ 0.477 and log₁₀(4) ≈ 0.602.</li>
-          </ol>
-          <p>
-            Each digit occupies an interval below. If fractional logs are uniform on [0, 1),
-            a digit's probability equals its interval's length. Digit 3 occupies about 12.5% of that interval.
-          </p>
-        </article>
-        <LogIntervalStrip />
+        <NumberMappingAnimation />
         <details className="wrap-details derivation-details">
           <summary>Show the derivation</summary>
           <article className="math-step">

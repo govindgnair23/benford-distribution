@@ -10,7 +10,7 @@ type BenfordPage = "what" | "why" | "simulations" | "quiz";
 
 const tabs: { id: BenfordPage; label: string }[] = [
   { id: "what", label: "What it is" },
-  { id: "why", label: "Why it happens" },
+  { id: "why", label: "How it works" },
   { id: "simulations", label: "Simulations" },
   { id: "quiz", label: "Quiz" }
 ];
@@ -46,7 +46,7 @@ export function BenfordApplet() {
       <div className="applet-heading">
         <div>
           <p className="eyebrow">Interactive probability applet</p>
-          <h2 id="benford-applet-title">Benford Emergence Lab</h2>
+          <h1 id="benford-applet-title">Benford Emergence Lab</h1>
         </div>
         <nav
           className="page-tabs"

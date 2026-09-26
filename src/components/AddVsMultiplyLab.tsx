@@ -554,7 +554,7 @@ export function AddVsMultiplyLab() {
             <p>
               Percentage changes add to log₁₀(X), so repeated changes can spread the log
               values. Here their fractional parts are becoming more even (see “Combine
-              matching fractional positions” on the “Why it happens” tab), and the
+              matching fractional positions” on the “How it works” tab), and the
               first-digit shares move closer to Benford’s probabilities.
             </p>
           )}

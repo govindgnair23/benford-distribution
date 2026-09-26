@@ -7,7 +7,7 @@ describe("ExplainerPage", () => {
   it("shows a worked example and digit intervals before the optional derivation", async () => {
     const user = userEvent.setup();
     render(<ExplainerPage />);
-    const example = screen.getByLabelText("Worked example from 3140 to first digit 3");
+    const example = screen.getByTestId("mapping-stage");
     const strip = screen.getByRole("img", { name: /first digit intervals/i });
     const toggle = screen.getByText("Show the derivation");
     const details = toggle.closest("details")!;

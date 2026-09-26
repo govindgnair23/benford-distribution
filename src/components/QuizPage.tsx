@@ -87,7 +87,7 @@ const questions: QuizQuestion[] = [
     correctOptionId: "point-four",
     reviewPage: "why",
     reviewTarget: "benford-condition-title",
-    reviewLabel: "Why it happens"
+    reviewLabel: "How it works"
   },
   {
     id: "log-intervals",
@@ -118,7 +118,7 @@ const questions: QuizQuestion[] = [
     correctOptionId: "longer",
     reviewPage: "why",
     reviewTarget: "benford-condition-title",
-    reviewLabel: "Why it happens"
+    reviewLabel: "How it works"
   },
   {
     id: "sample-size-model",
@@ -180,7 +180,7 @@ const questions: QuizQuestion[] = [
     correctOptionId: "same",
     reviewPage: "why",
     reviewTarget: "benford-condition-title",
-    reviewLabel: "Why it happens"
+    reviewLabel: "How it works"
   },
   {
     id: "expected-count",
@@ -243,7 +243,7 @@ const questions: QuizQuestion[] = [
     correctOptionId: "no-powers",
     reviewPage: "why",
     reviewTarget: "wide-range-title",
-    reviewLabel: "Why it happens"
+    reviewLabel: "How it works"
   },
   {
     id: "multiplicative-process",
