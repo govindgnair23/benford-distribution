@@ -30,9 +30,10 @@ export function WhatIsBenfordPage() {
       <div className="intro-band">
         <h2 id="what-title">What is Benford's Law?</h2>
         <p>
-          Benford's Law describes a pattern in some datasets: 1 appears as the
-          first digit about 30% of the time, while 9 appears less than 5% of
-          the time.
+          Benford's Law describes the distribution of leading digits in some
+          datasets, whether we examine the first digit alone or the first two
+          together. This applet focuses on the first digit: about 30% of values
+          begin with 1, while fewer than 5% begin with 9.
         </p>
       </div>
 
