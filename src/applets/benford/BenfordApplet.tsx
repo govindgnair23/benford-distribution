@@ -11,7 +11,7 @@ type BenfordPage = "what" | "why" | "simulations" | "quiz";
 const tabs: { id: BenfordPage; label: string }[] = [
   { id: "what", label: "What it is" },
   { id: "why", label: "How it works" },
-  { id: "simulations", label: "Simulations" },
+  { id: "simulations", label: "Why it happens" },
   { id: "quiz", label: "Quiz" }
 ];
 

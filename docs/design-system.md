@@ -265,10 +265,10 @@ Each pattern is described by the CSS class hook it ships with. Use the existing 
 
 ### AddVsMultiplyLab
 
-`.avm-lab` and its `.avm-*` parts — the Simulations tab's comparison. The same uniform draws feed an adding process and a multiplying process (`src/lib/addVsMultiply.ts`); a step slider and Play button move through time, and each side shows the 95% band on a log scale, the fractional-log histogram, first digits vs Benford, and a verdict pill. A shared chart tracks the gap to Benford per step against a sampling-noise band.
-- **Colors:** each process sets `--avm-process` (add: `--chart-series-3`, multiply: `--chart-series-1`), which drives its band, paths, bins, digit bars and gap line; Benford markers use `--accent-warm`; the noise band uses `--chart-region-cool`. Verdict pills use `--accent-deep` (close), `--ink-muted` (getting closer) and `--accent-warm-text` (not Benford).
-- **Do:** open on the final step so the result is visible at rest, and jump straight to the end under `prefers-reduced-motion`.
-- **Don't:** give the two processes different random draws; the comparison depends on them sharing one source of randomness.
+`.avm-lab` and its `.avm-*` parts — the town-growth exercise at the end of the "Why it happens" tab. 4,000 towns start at 100,000 residents; the same random draws feed "Adding newcomers" and "Percentage growth" (`src/lib/addVsMultiply.ts`). A row of duration presets (1, 10, 50, 200 decades) is the only control. Each side shows first digits vs Benford, a verdict pill, and the middle-95% population range.
+- **Colors:** each process sets `--avm-process` (add: `--chart-series-3`, multiply: `--chart-series-1`), which drives its top border and digit bars; Benford markers use `--accent-warm`. Verdict pills use `--accent-deep` (close), `--ink-muted` (getting closer) and `--accent-warm-text` (not Benford).
+- **Do:** open on the longest preset so the result is visible at rest, and keep the exercise to digit charts and plain-language labels.
+- **Don't:** reintroduce sliders or statistical diagnostics such as RMSE here, or give the two processes different random draws; the comparison depends on them sharing one source of randomness.
 
 ### SrSummary
 

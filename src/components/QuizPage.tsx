@@ -149,7 +149,7 @@ const questions: QuizQuestion[] = [
     correctOptionId: "no-model",
     reviewPage: "simulations",
     reviewTarget: "lab-title",
-    reviewLabel: "Simulations"
+    reviewLabel: "Why it happens"
   },
   {
     id: "multiply-by-ten",
@@ -241,9 +241,9 @@ const questions: QuizQuestion[] = [
       }
     ],
     correctOptionId: "no-powers",
-    reviewPage: "why",
+    reviewPage: "simulations",
     reviewTarget: "wide-range-title",
-    reviewLabel: "How it works"
+    reviewLabel: "Why it happens"
   },
   {
     id: "multiplicative-process",
@@ -274,7 +274,7 @@ const questions: QuizQuestion[] = [
     correctOptionId: "can-spread",
     reviewPage: "simulations",
     reviewTarget: "avm-title",
-    reviewLabel: "Simulations"
+    reviewLabel: "Why it happens"
   }
 ];
 

@@ -1,7 +1,5 @@
 import { FormulaBlock } from "./FormulaBlock";
 import { NumberMappingAnimation } from "./NumberMappingAnimation";
-import { WrapAnimation } from "./WrapAnimation";
-import { WrappedNormalVisual } from "./WrappedNormalVisual";
 
 export function ExplainerPage() {
   return (
@@ -165,93 +163,6 @@ export function ExplainerPage() {
             </p>
           </article>
         </details>
-      </section>
-
-      <section className="explainer-phase" aria-labelledby="multiplicative-mechanism-title">
-        <header className="explainer-phase-header">
-          <h3 id="multiplicative-mechanism-title">
-            How Multiplicative Processes Can Produce It
-          </h3>
-          <p>
-            These steps explain one way products of many factors can make the
-            required fractional-log distribution nearly uniform.
-          </p>
-        </header>
-
-        <article className="math-step">
-          <h3>Products become sums</h3>
-          <p>
-            Multiplicative growth moves into additive log space. With many
-            independent factors and suitable conditions on their logs, the
-            central limit theorem can make log₁₀(X) approximately Normal.
-            Normality is not required for Benford's Law; we use a Normal model
-            here to illustrate how fractional logs can approach uniformity.
-          </p>
-          <FormulaBlock
-            formula={String.raw`X=A_1A_2\cdots A_n`}
-            accessibilityLabel="Multiplicative process formula"
-          />
-          <FormulaBlock
-            formula={String.raw`\log_{10}(X)=\log_{10}(A_1)+\cdots+\log_{10}(A_n)`}
-            accessibilityLabel="Product becomes sum of logs formula"
-          />
-        </article>
-
-        <article className="math-step">
-          <h3>Combine matching fractional positions</h3>
-          <p>
-            We show the density at ten fractional positions: 0.0, 0.1, …, 0.9.
-            Similar heights illustrate a nearly flat distribution; uniformity means
-            the density is constant across the entire interval. The animation adds
-            density at matching positions—for example, …, 1.2, 2.2, 3.2, … all
-            contribute at fractional position 0.2.
-          </p>
-          <WrapAnimation />
-          <details className="wrap-details">
-            <summary>See the math and density comparison</summary>
-            <p>
-              For Z = log₁₀(X), the wrapped density at fractional position r
-              adds the Normal density at k + r for every integer k.
-            </p>
-            <FormulaBlock
-              label="Wrapped density"
-              formula={String.raw`f_{\{Z\}}(r)=\sum_{k\in\mathbb{Z}} f_Z(k+r)`}
-              accessibilityLabel="Wrapped density formula"
-            />
-            <p>
-              The sum is over all integer values of k. To calculate the wrapped
-              density at 0.2, sum the densities at ..., -2.8, -1.8, -0.8, 0.2,
-              1.2, 2.2, 3.2, ... . These all have fractional part 0.2, where
-              fractional part means x − ⌊x⌋, so the fractional part of -2.8 is
-              -2.8 - (-3) = 0.2.
-            </p>
-            <WrappedNormalVisual />
-            <p className="wrap-conclusion">
-              For the narrow Normal, the wrapped density at 0.2 and 0.7 looks very
-              different, while for the wide Normal, the wrapped densities look much
-              closer. In the former case, {"{log₁₀(X)}"}, the fractional part of
-              log₁₀(X), does not appear uniform; in the latter case, it approaches a
-              uniform distribution.
-            </p>
-          </details>
-        </article>
-
-        <article className="math-step">
-          <h3 id="wide-range-title">A wide range alone is not enough</h3>
-          <p>
-            <strong>
-              If the log-transformed values span a wide range, meaning the original
-              values cover multiple orders of magnitude, Benford-like behavior
-              becomes plausible.
-            </strong>{" "}
-            The direct diagnostic is whether the fractional-log histogram is
-            approaching uniform. Simulated Benford emergence is not a
-            fraud detector or a universal test for real datasets; real data can be
-            shaped by truncation, rounding, assignment, selection effects, and
-            reporting thresholds. For example, powers of 10 span many orders of
-            magnitude, yet every one has first digit 1.
-          </p>
-        </article>
       </section>
     </section>
   );

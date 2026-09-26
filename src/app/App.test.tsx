@@ -16,16 +16,16 @@ describe("App", () => {
     expect(screen.queryByRole("button", { name: /open benford|back to applet library/i })).not.toBeInTheDocument();
   });
 
-  it("switches among the definition, explainer, simulations, and quiz", async () => {
+  it("switches among the definition, explainer, why it happens, and quiz", async () => {
     const user = userEvent.setup();
     render(<App />);
 
     await user.click(screen.getByRole("tab", { name: /how it works/i }));
     expect(screen.getByRole("heading", { name: /^how it works$/i })).toBeInTheDocument();
 
-    await user.click(screen.getByRole("tab", { name: /simulations/i }));
-    expect(screen.getByRole("heading", { name: /simulations/i })).toBeInTheDocument();
-    expect(screen.getByText(/compare additive and multiplicative processes/i)).toBeInTheDocument();
+    await user.click(screen.getByRole("tab", { name: /why it happens/i }));
+    expect(screen.getByRole("heading", { name: /^why it happens$/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /why fractional logs become uniform/i })).toBeInTheDocument();
 
     await user.click(screen.getByRole("tab", { name: /^quiz$/i }));
     expect(screen.getByRole("heading", { name: /benford quiz/i })).toBeInTheDocument();
@@ -40,7 +40,7 @@ describe("App", () => {
     await user.keyboard("{ArrowRight}");
     expect(screen.getByRole("tab", { name: /how it works/i })).toHaveFocus();
     await user.keyboard("{ArrowRight}");
-    expect(screen.getByRole("tab", { name: /simulations/i })).toHaveFocus();
+    expect(screen.getByRole("tab", { name: /why it happens/i })).toHaveFocus();
     await user.keyboard("{ArrowRight}");
     expect(screen.getByRole("tab", { name: /^quiz$/i })).toHaveFocus();
     await user.keyboard("{ArrowRight}");
@@ -66,10 +66,11 @@ describe("App", () => {
     expect(screen.getByRole("heading", { name: /quiz complete/i })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /retry missed questions/i })).toBeInTheDocument();
 
-    const wideRangeLink = screen.getAllByRole("link", { name: /review how it works/i })
+    const wideRangeLink = screen.getAllByRole("link", { name: /review why it happens/i })
       .find((link) => link.getAttribute("href") === "#wide-range-title");
     expect(wideRangeLink).toBeDefined();
     await user.click(wideRangeLink!);
     expect(screen.getByRole("heading", { name: /a wide range alone is not enough/i })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: /why it happens/i })).toHaveAttribute("aria-selected", "true");
   });
 });

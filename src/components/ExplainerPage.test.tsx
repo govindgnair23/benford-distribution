@@ -27,22 +27,9 @@ describe("ExplainerPage", () => {
     expect(screen.queryByText(/first digit D is k/i)).not.toBeInTheDocument();
   });
 
-  it("distinguishes ten illustration points from uniformity over the full interval", () => {
+  it("leaves the multiplicative mechanism to the Why it happens tab", () => {
     render(<ExplainerPage />);
-    expect(screen.getByText(/ten fractional positions.*entire interval/i)).toBeInTheDocument();
-    expect(screen.queryByText(/If the ten totals are equal/i)).not.toBeInTheDocument();
-    expect(screen.getByText(/powers of 10.*first digit 1/i)).toBeInTheDocument();
-  });
-
-  it("keeps density math optional and preserves the negative-log example", async () => {
-    const user = userEvent.setup();
-    render(<ExplainerPage />);
-    const toggle = screen.getByText("See the math and density comparison");
-    expect(toggle.closest("details")).not.toHaveAttribute("open");
-    await user.click(toggle);
-    expect(toggle.closest("details")).toHaveAttribute("open");
-    expect(screen.getByLabelText("Wrapped density formula")).toBeInTheDocument();
-    expect(screen.getByText(/fractional part of -2.8 is -2.8 - \(-3\) = 0.2/i)).toBeInTheDocument();
-    expect(screen.getByText(/Normality is not required/i)).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: /how multiplicative processes can produce it/i })).not.toBeInTheDocument();
+    expect(screen.queryByText("See the math and density comparison")).not.toBeInTheDocument();
   });
 });
