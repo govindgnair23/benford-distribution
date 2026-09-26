@@ -249,28 +249,28 @@ const questions: QuizQuestion[] = [
   },
   {
     id: "multiplicative-process",
-    concept: "Multiplication as a possible mechanism",
-    prompt: "What does the add-versus-multiply simulation illustrate?",
+    concept: "Percentage growth and first digits",
+    prompt: "What does the city-growth simulation illustrate when comparing adding newcomers with percentage growth?",
     options: [
       {
         id: "can-spread",
-        label: "Multiplication can spread values in log space; Benford-like digits may emerge",
-        feedback: "Correct. Products become sums in log space. Sufficient mixing can make fractional logs nearly uniform, but multiplication alone does not guarantee that outcome."
+        label: "Varying percentage growth can spread populations across scales, allowing Benford-like digits to emerge",
+        feedback: "Correct. Percentage growth multiplies each population by a factor. In this model, different growth histories can spread populations across scales and make fractional logs nearly uniform. Adding similar numbers of newcomers keeps populations more clustered. Percentage growth alone is not a guarantee of Benford digits."
       },
       {
         id: "always",
-        label: "Any multiplicative process must produce Benford digits",
-        feedback: "Multiplication is a possible mechanism, not a guarantee. The resulting log-scale distribution still matters."
+        label: "Any percentage-growth rule must produce Benford population digits",
+        feedback: "Percentage growth is a possible mechanism, not a guarantee. For example, if every city starts at the same size and follows the same growth history, their populations stay identical."
       },
       {
         id: "normal-required",
-        label: "The product must have a perfectly Normal log distribution",
-        feedback: "A Normal log distribution is one teaching model, not a requirement for Benford-like first digits."
+        label: "City populations must have perfectly Normal logarithms to show Benford digits",
+        feedback: "A Normal log distribution is one teaching model, not a requirement. Check the fractional logs of the simulated populations rather than requiring perfectly Normal logarithms."
       },
       {
         id: "addition-impossible",
-        label: "An additive process can never produce Benford-like digits",
-        feedback: "The simulation compares two particular processes. It does not prove that every additive dataset fails Benford."
+        label: "Adding newcomers can never produce Benford-like population digits",
+        feedback: "The simulation compares two specific growth rules. Adding newcomers keeps populations clustered in this model; it does not establish that every additive growth process must fail to produce Benford-like digits."
       }
     ],
     correctOptionId: "can-spread",
@@ -280,72 +280,72 @@ const questions: QuizQuestion[] = [
   },
 {
   "id": "raw-range",
-  "concept": "One decade can be enough",
-  "prompt": "This sketch shows X between 1 and 10. Could values in this range have Benford first digits?",
+  "concept": "Uniform values versus Benford",
+  "prompt": "X is uniformly distributed from 1 to 10. Does this model have Benford first-digit probabilities?",
   "sketch": {
     "scale": "X",
-    "shape": "decreasing"
+    "shape": "uniform"
   },
   "options": [
     {
       "id": "wrong-0",
-      "label": "Impossible; Benford requires several orders of magnitude",
-      "feedback": "A single decade is enough with the right distribution. Range alone cannot rule out Benford."
+      "label": "Yes; covering all nine first digits is sufficient",
+      "feedback": "Seeing all nine digits does not determine their probabilities. Benford gives unequal probabilities."
     },
     {
-      "id": "possible",
-      "label": "Possible; a single decade can contain Benford-distributed first digits",
-      "feedback": "A wide range is not required. For example, a density proportional to 1/X on [1, 10) gives uniform fractional logs and exact Benford probabilities. This sketch does not specify that exact density."
-    },
-    {
-      "id": "wrong-1",
-      "label": "Certain; every decreasing density gives Benford probabilities",
-      "feedback": "Decreasing is not a sufficient condition. The probabilities within each digit interval matter."
+      "id": "correct",
+      "label": "No; each first digit is equally likely, with probability 1/9",
+      "feedback": "Each digit corresponds to an interval of length 1: [1, 2), [2, 3), …, [9, 10). A uniform X assigns each interval probability 1/9, about 11.1%, rather than Benford probabilities."
     },
     {
       "id": "wrong-2",
-      "label": "Impossible; values from 1 to 10 must give equally likely digits",
-      "feedback": "A range does not imply a uniform distribution within it. Different parts of the range can have different probabilities."
+      "label": "No; values confined to one decade can never follow Benford",
+      "feedback": "This model is not Benford because X is uniform, not because its range is one decade. A different distribution within 1 to 10 can follow Benford."
+    },
+    {
+      "id": "wrong-3",
+      "label": "Yes; a flat distribution always gives Benford probabilities",
+      "feedback": "The scale matters. Uniform X is different from uniform fractional logs."
     }
   ],
-  "correctOptionId": "possible",
-  "followUp": "Inspect the fractional logs on [0, 1). Approximately uniform fractional logs support Benford-like probabilities; compare the first-digit frequencies as well.",
+  "correctOptionId": "correct",
+  "followUp": "Uniform X does not give uniform fractional logs. The next question changes which quantity is uniform.",
   "reviewPage": "why",
   "reviewTarget": "benford-condition-title",
   "reviewLabel": "How it works"
 },
 {
   "id": "log-range",
-  "concept": "Reading the axis before the shape",
-  "prompt": "The same decreasing sketch now spans log₁₀(X) from 1 to 10. What can you conclude about first digits?",
+  "concept": "Uniform log values give Benford",
+  "prompt": "Now log₁₀(X) is uniformly distributed from 0 to 1, so X still lies between 1 and 10. Does this model have Benford first-digit probabilities?",
   "sketch": {
     "scale": "log₁₀(X)",
-    "shape": "decreasing"
+    "shape": "uniform"
   },
   "options": [
     {
       "id": "wrong-0",
-      "label": "Certain; nine decades of X guarantee Benford frequencies",
-      "feedback": "A wide range permits many contributions to fractional positions, but it does not guarantee that those contributions balance."
+      "label": "No; X still spans only one decade",
+      "feedback": "One decade is sufficient. Here the fractional logs are uniform, which gives Benford probabilities."
     },
     {
       "id": "wrong-1",
-      "label": "Impossible; log₁₀(X) must be uniform across its whole range",
-      "feedback": "Uniformity of the full log distribution is not required. Values from different integer intervals can combine into nearly uniform fractional logs."
+      "label": "No; the flat curve makes all first digits equally likely",
+      "feedback": "The flat curve is on the log scale. Digit intervals have unequal log lengths, so their probabilities are unequal."
     },
     {
-      "id": "possible",
-      "label": "Possible; the log scale changes the interpretation, but the sketch is not enough",
-      "feedback": "X now spans 10 to 10¹⁰, rather than 1 to 10. Combine contributions from log values sharing the same fractional part; the full log distribution need not be flat."
+      "id": "correct",
+      "label": "Yes; uniform fractional logs give Benford probabilities",
+      "feedback": "On [0, 1), the log values are their own fractional parts. These uniform fractional logs assign each digit probability log₁₀((1+d)/d): about 30.1% for digit 1, down to 4.6% for digit 9."
     },
     {
-      "id": "wrong-2",
-      "label": "The conclusion is identical because the drawn shape did not change",
-      "feedback": "The axis matters. The same shape for X and log₁₀(X) describes different distributions of the original values."
+      "id": "wrong-3",
+      "label": "The exact model is insufficient; a larger sample is needed to decide",
+      "feedback": "The specified uniform log distribution determines the theoretical probabilities. A finite sample can fluctuate around them."
     }
   ],
-  "correctOptionId": "possible",
-  "followUp": "Inspect the fractional logs on [0, 1). Approximately uniform fractional logs support Benford-like probabilities; compare the first-digit frequencies as well.",
+  "correctOptionId": "correct",
+  "followUp": "This is an exact distributional result, not a guarantee that every finite sample matches the PMF exactly.",
   "reviewPage": "why",
   "reviewTarget": "benford-condition-title",
   "reviewLabel": "How it works"
@@ -548,7 +548,7 @@ export function QuizPage({ onReview }: QuizPageProps) {
         <h2 id="quiz-title">Benford Quiz: Check Your Intuition</h2>
         <p>
           {activeQuestionIds.length === questions.length
-            ? `Answer ${questions.length} questions about the app's central ideas, including five distribution sketches.`
+            ? `Answer ${questions.length} questions about the app's central ideas, including five distribution charts.`
             : `Revisit ${activeQuestionIds.length} missed ${activeQuestionIds.length === 1 ? "question" : "questions"}.`}
         </p>
       </div>

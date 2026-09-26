@@ -12,9 +12,9 @@ const correctAnswers = [
   /the first digit stays the same/i,
   /no; about 301 is expected/i,
   /no; powers of ten span widely but always begin with 1/i,
-  /multiplication can spread values in log space/i,
-  /^possible; a single decade/i,
-  /^possible; the log scale/i,
+  /varying percentage growth can spread populations across scales/i,
+  /^no; each first digit is equally likely/i,
+  /^yes; uniform fractional logs give Benford probabilities/i,
   /^possible; a bell shape/i,
   /^possible; skewness/i,
   /^possible; two peaks/i
@@ -92,11 +92,12 @@ describe("QuizPage", () => {
     const user = userEvent.setup();
     render(<QuizPage />);
     for (const answer of correctAnswers.slice(0, 8)) await answerAndAdvance(user, answer);
-    const shapes = ["decreasing", "decreasing", "bell-shaped", "right-skewed", "two-peaked"];
+    const shapes = ["uniform", "uniform", "bell-shaped", "right-skewed", "two-peaked"];
     for (let index = 0; index < 5; index++) {
       const axis = index === 0 ? "X" : "log₁₀(X)";
-      expect(screen.getByRole("img", { name: `${shapes[index]} distribution sketch on ${axis}, from 1 to 10` })).toBeInTheDocument();
-      expect(screen.getByText(/schematic shape, not an exact density/i)).toBeInTheDocument();
+      expect(screen.getByRole("img", { name: `${shapes[index]} distribution sketch on ${axis}, from ${index === 1 ? "0 to 1" : "1 to 10"}` })).toBeInTheDocument();
+      if (index < 2) expect(screen.getByText(/exact uniform model/i)).toBeInTheDocument();
+      else expect(screen.getByText(/schematic shape, not an exact density/i)).toBeInTheDocument();
       await user.click(screen.getByRole("radio", { name: correctAnswers[8 + index] }));
       await user.click(screen.getByRole("button", { name: /check answer/i }));
       expect(screen.getByRole("status")).toHaveTextContent(/fractional logs/i);
