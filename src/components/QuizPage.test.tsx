@@ -12,7 +12,12 @@ const correctAnswers = [
   /the first digit stays the same/i,
   /no; about 301 is expected/i,
   /no; powers of ten span widely but always begin with 1/i,
-  /multiplication can spread values in log space/i
+  /multiplication can spread values in log space/i,
+  /^possible; a single decade/i,
+  /^possible; the log scale/i,
+  /^possible; a bell shape/i,
+  /^possible; skewness/i,
+  /^possible; two peaks/i
 ];
 
 async function answerAndAdvance(user: ReturnType<typeof userEvent.setup>, answer: RegExp, last = false) {
@@ -27,7 +32,7 @@ describe("QuizPage", () => {
     render(<QuizPage />);
 
     expect(screen.getByRole("heading", { name: /benford quiz/i })).toBeInTheDocument();
-    expect(screen.getByText(/question 1 of 8/i)).toBeInTheDocument();
+    expect(screen.getByText(/question 1 of 13/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /check answer/i })).toBeDisabled();
 
     const wrongAnswer = screen.getByRole("radio", { name: /0, because it appears first/i });
@@ -83,7 +88,23 @@ describe("QuizPage", () => {
     expect(screen.getByRole("status")).toHaveTextContent(/finite.sample digit bars can differ from the Benford probabilities/i);
   });
 
-  it("scores all eight core questions and can restart the full quiz", async () => {
+  it("contrasts X and log X sketches, then qualifies three log-distribution shapes", async () => {
+    const user = userEvent.setup();
+    render(<QuizPage />);
+    for (const answer of correctAnswers.slice(0, 8)) await answerAndAdvance(user, answer);
+    const shapes = ["decreasing", "decreasing", "bell-shaped", "right-skewed", "two-peaked"];
+    for (let index = 0; index < 5; index++) {
+      const axis = index === 0 ? "X" : "log₁₀(X)";
+      expect(screen.getByRole("img", { name: `${shapes[index]} distribution sketch on ${axis}, from 1 to 10` })).toBeInTheDocument();
+      expect(screen.getByText(/schematic shape, not an exact density/i)).toBeInTheDocument();
+      await user.click(screen.getByRole("radio", { name: correctAnswers[8 + index] }));
+      await user.click(screen.getByRole("button", { name: /check answer/i }));
+      expect(screen.getByRole("status")).toHaveTextContent(/fractional logs/i);
+      if (index < 4) await user.click(screen.getByRole("button", { name: /next question/i }));
+    }
+  });
+
+  it("scores all thirteen questions and can restart the full quiz", async () => {
     const user = userEvent.setup();
     render(<QuizPage />);
 
@@ -96,13 +117,13 @@ describe("QuizPage", () => {
       await answerAndAdvance(user, answer, index === correctAnswers.length - 1);
     }
 
-    expect(correctPositions).toEqual([2, 2, 2, 2]);
+    expect(correctPositions).toEqual([3, 4, 3, 3]);
     expect(screen.getByRole("heading", { name: /quiz complete/i })).toBeInTheDocument();
-    expect(screen.getByText(/8 out of 8/i)).toBeInTheDocument();
+    expect(screen.getByText(/13 out of 13/i)).toBeInTheDocument();
     expect(screen.queryByText(/missed concepts/i)).not.toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: /try again/i }));
-    expect(screen.getByText(/question 1 of 8/i)).toBeInTheDocument();
+    expect(screen.getByText(/question 1 of 13/i)).toBeInTheDocument();
   });
 
   it("links missed concepts to explanations and retries only misses", async () => {
@@ -115,7 +136,7 @@ describe("QuizPage", () => {
       await answerAndAdvance(user, answer, index === correctAnswers.length - 2);
     }
 
-    expect(screen.getByText(/7 out of 8/i)).toBeInTheDocument();
+    expect(screen.getByText(/12 out of 13/i)).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /missed concepts/i })).toBeInTheDocument();
     expect(screen.getByText(/first nonzero digit/i)).toBeInTheDocument();
     const reviewLink = screen.getByRole("link", { name: /review what it is/i });

@@ -1992,3 +1992,6 @@ select:focus-visible {
 
 .mapping-log-chain { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 0.3em; }
 .mapping-log-chain > span { white-space: nowrap; }
+
+.quiz-distribution-sketch { display: block; width: 100%; max-width: 550px; height: auto; margin-inline: auto; font-size: 20px; }
+.quiz-question .chart-frame { margin-block: var(--space-panel); }

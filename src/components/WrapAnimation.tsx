@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import { lognormalMiddle95 } from "../lib/lognormalRange";
 import { benfordProbability } from "../lib/benford";
 import {
   firstDigitShares,
@@ -21,9 +22,9 @@ const SLIDER_MAX = 1000;
 const RESTING_FOCUS = 2; // fractional position 0.2
 
 const presets = [
-  { label: "Narrow", sigma: 0.1 },
-  { label: "In between", sigma: 0.25 },
-  { label: "Nearly uniform", sigma: 0.5 },
+  { label: "Very narrow", sigma: 0.1 },
+  { label: "Narrow", sigma: 0.25 },
+  { label: "Wide", sigma: 0.5 },
   { label: "Very wide", sigma: 1.5 }
 ];
 
@@ -206,7 +207,8 @@ export function WrapAnimation() {
   else if (hiddenTerms > 0) termParts.push(`${hiddenTerms} more term${hiddenTerms === 1 ? "" : "s"} near 0`);
   const firstPoints = focusStack.contributions.slice(0, 4).map((point) => point.x.toFixed(1)).join(", ");
 
-  const spread = 3.92 * sigma;
+  const originalRange = lognormalMiddle95(MEAN, sigma);
+  const formatOriginal = (value: number) => value.toLocaleString("en-US", { maximumSignificantDigits: 3 });
   const shareTop = Math.max(0.35, ...model.shares) * 1.08;
   const benfordGap = Math.max(...model.shares.map((share, index) => Math.abs(share - benfordProbability(index + 1))));
   const fontSize = compact ? 10 : 11;
@@ -261,6 +263,12 @@ export function WrapAnimation() {
           />
         </div>
       </div>
+
+      <p className="stat-callout" role="status" aria-label="Range of original values">
+        <strong>X: approximately {formatOriginal(originalRange.lower)} to {formatOriginal(originalRange.upper)}</strong>
+        {" "}for the middle 95% of values—a span of {originalRange.ordersOfMagnitude.toFixed(2)} orders of magnitude.
+        {" "}The model also allows values outside this range.
+      </p>
 
       <p className="stack-note">
         Density is height; probability is area over an interval. A uniform density on [0, 1)
@@ -415,10 +423,6 @@ export function WrapAnimation() {
         <details className="wrap-details">
           <summary>Show diagnostic details</summary>
           <dl className="stack-stats">
-            <div>
-              <dt>How spread out X is</dt>
-              <dd>about {spread < 1 ? spread.toFixed(2) : spread.toFixed(1)} orders of magnitude (middle 95%)</dd>
-            </div>
             <div>
               <dt>The ten illustrated totals</dt>
               <dd>{low.toFixed(2)} to {high.toFixed(2)}</dd>

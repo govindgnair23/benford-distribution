@@ -7,8 +7,7 @@ describe("WhatIsBenfordPage", () => {
   it("opens with the first-digit pattern without a comparison instruction", () => {
     render(<WhatIsBenfordPage />);
 
-    expect(screen.getByText(/Benford's Law describes a pattern seen in some datasets: smaller first nonzero digits occur more often than larger ones\./i)).toBeInTheDocument();
-    expect(screen.getByText(/About 30% of values begin with 1, while fewer than 5% begin with 9\./i)).toBeInTheDocument();
+    expect(screen.getByText(/Benford's Law describes a pattern in some datasets: 1 appears as the first digit about 30% of the time, while 9 appears less than 5% of the time\./i)).toBeInTheDocument();
     expect(screen.queryByText(/Compare its predictions with equally likely digits below\./i)).not.toBeInTheDocument();
   });
 

@@ -6,21 +6,27 @@ afterEach(() => { vi.useRealTimers(); vi.unstubAllGlobals(); });
 describe("NumberMappingAnimation", () => {
   it("steps through a number, lands in its interval, and moves to another example", () => {
     render(<NumberMappingAnimation />);
-    expect(screen.getByTestId("mapping-stage")).toHaveTextContent("3147");
-    for (let i = 0; i < 4; i++) fireEvent.click(screen.getByRole("button", { name: "Next step" }));
-    expect(screen.getByTestId("mapping-stage")).toHaveTextContent("First digit: 3");
-    expect(screen.getByTestId("mapping-result")).toHaveTextContent("0.477 ≤ 0.498 < 0.602");
-    fireEvent.click(screen.getByRole("button", { name: "Next step" }));
-    expect(screen.getByTestId("mapping-stage")).toHaveTextContent("125");
-    fireEvent.change(screen.getByLabelText("Example number"), { target: { value: "125" } });
+    expect(screen.getByTestId("mapping-stage")).toHaveTextContent("1990");
     for (let i = 0; i < 4; i++) fireEvent.click(screen.getByRole("button", { name: "Next step" }));
     expect(screen.getByTestId("mapping-stage")).toHaveTextContent("First digit: 1");
+    expect(screen.getByTestId("mapping-result")).toHaveTextContent("0.0000 ≤ 0.2989 < 0.3010");
+    fireEvent.click(screen.getByRole("button", { name: "Next step" }));
+    expect(screen.getByTestId("mapping-stage")).toHaveTextContent("2010");
+    fireEvent.change(screen.getByLabelText("Example number"), { target: { value: "2010" } });
+    for (let i = 0; i < 4; i++) fireEvent.click(screen.getByRole("button", { name: "Next step" }));
+    expect(screen.getByTestId("mapping-stage")).toHaveTextContent("First digit: 2");
   });
   it("covers all nine digits with one changing interval readout", () => {
     render(<NumberMappingAnimation />);
     const select = screen.getByLabelText("Example number");
     const options = within(select).getAllByRole("option");
-    expect(options).toHaveLength(9);
+    expect(options).toHaveLength(16);
+    for (let boundary = 2; boundary <= 9; boundary++) {
+      const below = Number((options[(boundary - 2) * 2] as HTMLOptionElement).value);
+      const above = Number((options[(boundary - 2) * 2 + 1] as HTMLOptionElement).value);
+      expect(below).toBe(boundary * 1000 - 10);
+      expect(above).toBe(boundary * 1000 + 10);
+    }
     const digits = new Set<number>();
     for (const option of options) {
       const value = Number((option as HTMLOptionElement).value);
@@ -32,6 +38,11 @@ describe("NumberMappingAnimation", () => {
       expect(screen.getByTestId("mapping-result")).toHaveTextContent(`Digit ${digit}:`);
       expect(screen.getByTestId("mapping-result")).toHaveTextContent(`Interval length: log₁₀(${digit + 1}) − log₁₀(${digit})`);
       expect(screen.getByTestId("mapping-result")).toHaveTextContent("% of the scale");
+      const readout = screen.getByTestId("mapping-result").textContent ?? "";
+      const match = readout.match(/(\d\.\d{4}) ≤ (\d\.\d{4}) < (\d\.\d{4})/)!;
+      expect(match).not.toBeNull();
+      expect(Number(match[1])).toBeLessThan(Number(match[2]));
+      expect(Number(match[2])).toBeLessThan(Number(match[3]));
     }
     expect([...digits].sort()).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
     expect(screen.queryByLabelText("Interval boundaries and lengths")).not.toBeInTheDocument();
@@ -53,7 +64,7 @@ describe("NumberMappingAnimation", () => {
     vi.stubGlobal("matchMedia", () => ({ matches: true }));
     render(<NumberMappingAnimation />);
     fireEvent.click(screen.getByRole("button", { name: "Show mapping" }));
-    expect(screen.getByTestId("mapping-stage")).toHaveTextContent("First digit: 3");
+    expect(screen.getByTestId("mapping-stage")).toHaveTextContent("First digit: 1");
   });
 
   it("drops many numbers of varying size onto the fractional-log scale over time", () => {

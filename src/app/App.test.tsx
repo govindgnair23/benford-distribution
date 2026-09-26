@@ -25,7 +25,7 @@ describe("App", () => {
 
     await user.click(screen.getByRole("tab", { name: /why it happens/i }));
     expect(screen.getByRole("heading", { name: /^why it happens$/i })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /why fractional logs become uniform/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /when fractional logs become nearly uniform/i })).toBeInTheDocument();
 
     await user.click(screen.getByRole("tab", { name: /^quiz$/i }));
     expect(screen.getByRole("heading", { name: /benford quiz/i })).toBeInTheDocument();
@@ -52,10 +52,10 @@ describe("App", () => {
     render(<App />);
     await user.click(screen.getByRole("tab", { name: /^quiz$/i }));
 
-    for (let index = 0; index < 8; index += 1) {
+    for (let index = 0; index < 13; index += 1) {
       await user.click(screen.getAllByRole("radio")[0]);
       await user.click(screen.getByRole("button", { name: /check answer/i }));
-      await user.click(screen.getByRole("button", { name: index === 7 ? /see results/i : /next question/i }));
+      await user.click(screen.getByRole("button", { name: index === 12 ? /see results/i : /next question/i }));
     }
 
     expect(screen.getByRole("heading", { name: /quiz complete/i })).toBeInTheDocument();

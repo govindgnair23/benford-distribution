@@ -8,7 +8,7 @@ describe("SimulationLab", () => {
     render(<SimulationLab />);
 
     expect(screen.getByRole("heading", { level: 2, name: /^why it happens$/i })).toBeInTheDocument();
-    const mechanism = screen.getByRole("heading", { name: /why fractional logs become uniform/i });
+    const mechanism = screen.getByRole("heading", { name: /when fractional logs become nearly uniform/i });
     const exercise = screen.getByRole("heading", { name: /exercise: which kind of town growth spreads populations across many orders of magnitude/i });
     expect(mechanism.compareDocumentPosition(exercise) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });

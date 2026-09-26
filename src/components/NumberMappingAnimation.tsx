@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { FormulaBlock } from "./FormulaBlock";
 import { benfordProbability } from "../lib/benford";
 import {
   describeNumber,
@@ -11,9 +12,10 @@ import {
   type SpreadPreset
 } from "../lib/numberMapping";
 
-const examples = [3147, 125, 245, 0.0456, 56700, 6.25, 72000, 850, 9.5];
+// Consecutive pairs straddle each internal digit boundary, log₁₀(2) … log₁₀(9).
+const examples = [1990, 2010, 2990, 3010, 3990, 4010, 4990, 5010, 5990, 6010, 6990, 7010, 7990, 8010, 8990, 9010];
 const stages = ["Number arrives", "Separate digits and scale", "Take a base-10 log", "Keep the fractional part", "Find the first digit"];
-const format = (value: number) => value.toFixed(3);
+const format = (value: number) => value.toFixed(4);
 
 export function NumberMappingAnimation() {
   const [example, setExample] = useState(0);
@@ -22,6 +24,8 @@ export function NumberMappingAnimation() {
   const reducedMotion = typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const number = describeNumber(examples[example]);
   const interval = digitLogIntervals[number.digit - 1];
+  const boundaryDigit = Math.floor(example / 2) + 2;
+  const boundarySide = example % 2 === 0 ? "below" : "above";
   const significandLabel = number.significand.toPrecision(4).replace(/0+$/, "").replace(/\.$/, "");
 
   useEffect(() => {
@@ -73,7 +77,7 @@ export function NumberMappingAnimation() {
           "Significand: the factor between 1 and 10. Exponent: the power of ten that sets the scale.",
           "The log of a product becomes a sum. The scale contributes an integer; the significand contributes a fraction.",
           "Subtract the floor of the log, including for numbers below 1. The result always lies in [0, 1).",
-          `The fractional log lands in digit ${number.digit}’s interval. The left boundary is included; the right boundary is excluded.`
+          `The fractional log is just ${boundarySide} log₁₀(${boundaryDigit}), so it lands in digit ${number.digit}’s interval. The left boundary is included; the right boundary is excluded.`
         ][step]}</p>
       </div>
       <div className="mapping-track" role="img" aria-label={`First digit intervals on the fractional log scale from 0 to 1.${step === 4 ? ` ${number.value} lands at ${format(number.fractionalLog)} in digit ${number.digit}'s interval.` : ""}`}>
@@ -84,10 +88,17 @@ export function NumberMappingAnimation() {
         <div className="mapping-segments">{digitLogIntervals.map((item) => <div key={item.digit} className={step === 4 && item.digit === number.digit ? "is-selected" : ""} style={{ width: `${item.probability * 100}%` }}><strong>{item.digit}</strong></div>)}</div>
       </div>
       <p className="mapping-result" data-testid="mapping-result" aria-live="polite" aria-atomic="true">
-        {step === 4 ? <><strong>Digit {number.digit}:</strong> log₁₀({number.digit}) ≤ {format(number.fractionalLog)} &lt; log₁₀({number.digit + 1})<br />{format(interval.start)} ≤ {format(number.fractionalLog)} &lt; {format(interval.end)}<br /><strong>Interval length: log₁₀({number.digit + 1}) − log₁₀({number.digit}) ≈ {format(interval.probability)} = {(interval.probability * 100).toFixed(1)}% of the scale</strong></> : "The nine regions label first digits. Their positions and widths are measured on the fractional-log scale, from 0 to 1."}
+        {step === 4 ? <><strong>Digit {number.digit}:</strong> log₁₀({number.digit}) ≤ {format(number.fractionalLog)} &lt; log₁₀({number.digit + 1})<br />{format(interval.start)} ≤ {format(number.fractionalLog)} &lt; {format(interval.end)}<br /><strong>Interval length: log₁₀({number.digit + 1}) − log₁₀({number.digit}) ≈ {interval.probability.toFixed(3)} ≈ {(interval.probability * 100).toFixed(1)}% of the scale</strong></> : "The nine regions label first digits. Their positions and widths are measured on the fractional-log scale, from 0 to 1."}
       </p>
       <div className="mapping-conclusion">
-        <p><strong>What if fractional logs are uniformly distributed?</strong> Equal-length portions of [0, 1) then receive equal probability. Digit 1 occupies 30.1% of the scale, so it receives 30.1% of values; digit 9 occupies only 4.6%.</p>
+        <p><strong>What if fractional logs are uniformly distributed?</strong> Each digit then has a probability proportional to the length of its interval on the fractional-log scale. Digit 1 occupies 30.1% of the scale, so it receives 30.1% of values; digit 9 occupies only 4.6%.</p>
+        <p>Because the whole scale has length 1, each interval’s length is its probability. This gives Benford’s probability mass function (PMF), where D is the first digit:</p>
+        <FormulaBlock
+          label="From interval length to Benford’s PMF"
+          accessibilityLabel="Uniform fractional logs give Benford first-digit probabilities"
+          formula={String.raw`\begin{aligned}P(D=d)&=\log_{10}(d+1)-\log_{10}(d)\\&=\log_{10}\!\left(\frac{1+d}{d}\right),\quad d=1,\ldots,9.\end{aligned}`}
+        />
+        <p className="key-requirement"><strong>Uniform fractional logs are the key condition behind this derivation.</strong> Uniformity on [0, 1) gives Benford’s PMF exactly; approximate uniformity gives approximately Benford probabilities. Simply landing in [0, 1) is not enough.</p>
         <p>One example number shows how the mapping works, but a single landing spot says nothing about uniformity. Drop in many numbers below to see both distributions at once.</p>
       </div>
       <NumberCrowd />

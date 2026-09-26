@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { QuizDistributionSketch, type DistributionSketch } from "./charts/QuizDistributionSketch";
 import { LogIntervalStrip } from "./LogIntervalStrip";
 
 type ReviewPage = "what" | "why" | "simulations";
@@ -17,6 +18,7 @@ type QuizQuestion = {
   options: QuizOption[];
   correctOptionId: string;
   followUp?: string;
+  sketch?: DistributionSketch;
   reviewPage: ReviewPage;
   reviewTarget: string;
   reviewLabel: string;
@@ -275,7 +277,187 @@ const questions: QuizQuestion[] = [
     reviewPage: "simulations",
     reviewTarget: "avm-title",
     reviewLabel: "Why it happens"
-  }
+  },
+{
+  "id": "raw-range",
+  "concept": "One decade can be enough",
+  "prompt": "This sketch shows X between 1 and 10. Could values in this range have Benford first digits?",
+  "sketch": {
+    "scale": "X",
+    "shape": "decreasing"
+  },
+  "options": [
+    {
+      "id": "wrong-0",
+      "label": "Impossible; Benford requires several orders of magnitude",
+      "feedback": "A single decade is enough with the right distribution. Range alone cannot rule out Benford."
+    },
+    {
+      "id": "possible",
+      "label": "Possible; a single decade can contain Benford-distributed first digits",
+      "feedback": "A wide range is not required. For example, a density proportional to 1/X on [1, 10) gives uniform fractional logs and exact Benford probabilities. This sketch does not specify that exact density."
+    },
+    {
+      "id": "wrong-1",
+      "label": "Certain; every decreasing density gives Benford probabilities",
+      "feedback": "Decreasing is not a sufficient condition. The probabilities within each digit interval matter."
+    },
+    {
+      "id": "wrong-2",
+      "label": "Impossible; values from 1 to 10 must give equally likely digits",
+      "feedback": "A range does not imply a uniform distribution within it. Different parts of the range can have different probabilities."
+    }
+  ],
+  "correctOptionId": "possible",
+  "followUp": "Inspect the fractional logs on [0, 1). Approximately uniform fractional logs support Benford-like probabilities; compare the first-digit frequencies as well.",
+  "reviewPage": "why",
+  "reviewTarget": "benford-condition-title",
+  "reviewLabel": "How it works"
+},
+{
+  "id": "log-range",
+  "concept": "Reading the axis before the shape",
+  "prompt": "The same decreasing sketch now spans log₁₀(X) from 1 to 10. What can you conclude about first digits?",
+  "sketch": {
+    "scale": "log₁₀(X)",
+    "shape": "decreasing"
+  },
+  "options": [
+    {
+      "id": "wrong-0",
+      "label": "Certain; nine decades of X guarantee Benford frequencies",
+      "feedback": "A wide range permits many contributions to fractional positions, but it does not guarantee that those contributions balance."
+    },
+    {
+      "id": "wrong-1",
+      "label": "Impossible; log₁₀(X) must be uniform across its whole range",
+      "feedback": "Uniformity of the full log distribution is not required. Values from different integer intervals can combine into nearly uniform fractional logs."
+    },
+    {
+      "id": "possible",
+      "label": "Possible; the log scale changes the interpretation, but the sketch is not enough",
+      "feedback": "X now spans 10 to 10¹⁰, rather than 1 to 10. Combine contributions from log values sharing the same fractional part; the full log distribution need not be flat."
+    },
+    {
+      "id": "wrong-2",
+      "label": "The conclusion is identical because the drawn shape did not change",
+      "feedback": "The axis matters. The same shape for X and log₁₀(X) describes different distributions of the original values."
+    }
+  ],
+  "correctOptionId": "possible",
+  "followUp": "Inspect the fractional logs on [0, 1). Approximately uniform fractional logs support Benford-like probabilities; compare the first-digit frequencies as well.",
+  "reviewPage": "why",
+  "reviewTarget": "benford-condition-title",
+  "reviewLabel": "How it works"
+},
+{
+  "id": "bell-log",
+  "concept": "Bell-shaped logs are not a guarantee",
+  "prompt": "This log₁₀(X) distribution is bell-shaped. Could its first digits be approximately Benford?",
+  "sketch": {
+    "scale": "log₁₀(X)",
+    "shape": "bell-shaped"
+  },
+  "options": [
+    {
+      "id": "wrong-0",
+      "label": "Certain; any bell-shaped log distribution is Benford",
+      "feedback": "A narrow bell-shaped log distribution can concentrate fractional positions. Shape alone is not enough."
+    },
+    {
+      "id": "wrong-1",
+      "label": "Impossible; Benford requires the original values to be bell-shaped",
+      "feedback": "Benford does not require a bell shape for the original values or their logarithms."
+    },
+    {
+      "id": "wrong-2",
+      "label": "Certain; having values at both ends of the axis is sufficient",
+      "feedback": "Tails or endpoints do not establish how probability is distributed across fractional positions."
+    },
+    {
+      "id": "possible",
+      "label": "Possible; a bell shape can be compatible, but fractional logs need checking",
+      "feedback": "A sufficiently broad, smooth bell-shaped log distribution can give nearly uniform fractional logs. A bell shape alone does not establish enough spread or mixing."
+    }
+  ],
+  "correctOptionId": "possible",
+  "followUp": "Inspect the fractional logs on [0, 1). Approximately uniform fractional logs support Benford-like probabilities; compare the first-digit frequencies as well.",
+  "reviewPage": "why",
+  "reviewTarget": "benford-condition-title",
+  "reviewLabel": "How it works"
+},
+{
+  "id": "skew-log",
+  "concept": "Skewed logs can be compatible",
+  "prompt": "This log₁₀(X) distribution is right-skewed. Does that rule out Benford-like first digits?",
+  "sketch": {
+    "scale": "log₁₀(X)",
+    "shape": "right-skewed"
+  },
+  "options": [
+    {
+      "id": "possible",
+      "label": "Possible; skewness does not rule it out, so inspect fractional logs",
+      "feedback": "Symmetry is not required. Contributions from different integer parts of the logs may still combine into a nearly uniform fractional-log distribution."
+    },
+    {
+      "id": "wrong-0",
+      "label": "Impossible; log₁₀(X) must be symmetric",
+      "feedback": "Symmetry is not a requirement for Benford-like digits."
+    },
+    {
+      "id": "wrong-1",
+      "label": "Certain; a long right tail guarantees Benford",
+      "feedback": "A tail may extend the range without spreading fractional logs evenly."
+    },
+    {
+      "id": "wrong-2",
+      "label": "Impossible; every non-Normal log distribution fails Benford",
+      "feedback": "Normality is one model, not a requirement. Non-Normal log distributions can have uniform fractional logs."
+    }
+  ],
+  "correctOptionId": "possible",
+  "followUp": "Inspect the fractional logs on [0, 1). Approximately uniform fractional logs support Benford-like probabilities; compare the first-digit frequencies as well.",
+  "reviewPage": "why",
+  "reviewTarget": "benford-condition-title",
+  "reviewLabel": "How it works"
+},
+{
+  "id": "two-peaks-log",
+  "concept": "Multiple log peaks are not decisive",
+  "prompt": "This log₁₀(X) distribution has two peaks. Could its first digits still be approximately Benford?",
+  "sketch": {
+    "scale": "log₁₀(X)",
+    "shape": "two-peaked"
+  },
+  "options": [
+    {
+      "id": "wrong-0",
+      "label": "Impossible; two peaks necessarily produce two dominant first digits",
+      "feedback": "Peaks on the full log scale do not map one-to-one to digits. Their fractional positions and widths matter."
+    },
+    {
+      "id": "possible",
+      "label": "Possible; two peaks do not decide the result—check fractional logs",
+      "feedback": "When integer parts are removed, peaks may reinforce the same fractional positions or their contributions may overlap more evenly. Their widths and positions matter."
+    },
+    {
+      "id": "wrong-1",
+      "label": "Certain; two peaks automatically balance each other",
+      "feedback": "Two peaks may reinforce the same fractional region rather than balance it."
+    },
+    {
+      "id": "wrong-2",
+      "label": "Certain; a mixture of distributions is always Benford",
+      "feedback": "Combining distributions can help in some cases, but a mixture alone provides no guarantee."
+    }
+  ],
+  "correctOptionId": "possible",
+  "followUp": "Inspect the fractional logs on [0, 1). Approximately uniform fractional logs support Benford-like probabilities; compare the first-digit frequencies as well.",
+  "reviewPage": "why",
+  "reviewTarget": "benford-condition-title",
+  "reviewLabel": "How it works"
+}
 ];
 
 const allQuestionIds = questions.map((question) => question.id);
@@ -366,7 +548,7 @@ export function QuizPage({ onReview }: QuizPageProps) {
         <h2 id="quiz-title">Benford Quiz: Check Your Intuition</h2>
         <p>
           {activeQuestionIds.length === questions.length
-            ? "Answer eight short questions about the app's central ideas."
+            ? `Answer ${questions.length} questions about the app's central ideas, including five distribution sketches.`
             : `Revisit ${activeQuestionIds.length} missed ${activeQuestionIds.length === 1 ? "question" : "questions"}.`}
         </p>
       </div>
@@ -379,6 +561,7 @@ export function QuizPage({ onReview }: QuizPageProps) {
 
         <fieldset className="quiz-question">
           <legend>{currentQuestion.prompt}</legend>
+          {currentQuestion.sketch && <QuizDistributionSketch {...currentQuestion.sketch} />}
           <div className="quiz-options">
             {currentQuestion.options.map((option) => (
               <label

@@ -68,6 +68,18 @@ describe("WrapAnimation", () => {
     expect(screen.getByText(/nearly uniform in this example/i)).toBeInTheDocument();
   });
 
+  it("shows the middle 95% range of X beside the spread controls", () => {
+    render(<WrapAnimation />);
+    const range = screen.getByRole("status", { name: "Range of original values" });
+    expect(range.closest("details")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: /^narrow$/i }));
+    expect(range).toHaveTextContent("513 to 4,900");
+    expect(range).toHaveTextContent("0.98 orders of magnitude");
+    fireEvent.change(screen.getByLabelText(/spread of log₁₀\(X\)/i), { target: { value: "1000" } });
+    expect(range).toHaveTextContent("7.84 orders of magnitude");
+    expect(range).toHaveTextContent("middle 95%");
+  });
+
   it("lets readers set the spread with a slider", () => {
     render(<WrapAnimation />);
 

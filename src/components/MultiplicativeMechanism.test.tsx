@@ -4,25 +4,27 @@ import { describe, expect, it } from "vitest";
 import { MultiplicativeMechanism } from "./MultiplicativeMechanism";
 
 describe("MultiplicativeMechanism", () => {
-  it("explains why fractional logs become uniform in two visible steps", () => {
+  it("explains when fractional logs become nearly uniform in two visible steps", () => {
     render(<MultiplicativeMechanism />);
 
     expect(
-      screen.getByRole("heading", { name: /why fractional logs become uniform/i })
+      screen.getByRole("heading", { name: /when fractional logs become nearly uniform/i })
     ).toBeInTheDocument();
     const products = screen.getByRole("heading", { name: /products become sums/i });
-    const spread = screen.getByRole("heading", { name: /a wide spread makes fractional logs nearly uniform/i });
+    const spread = screen.getByRole("heading", { name: /a wider Normal log distribution gives nearly uniform fractional logs/i });
     expect(products.closest("details")).toBeNull();
     expect(spread.closest("details")).toBeNull();
     expect(products.compareDocumentPosition(spread) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
-  it("ties products becoming sums to city growth", () => {
+  it("uses independent multipliers and distinguishes the CLT from uniformity", () => {
     render(<MultiplicativeMechanism />);
 
-    expect(screen.getByText(/city.*grows by a percentage/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/population as a product of growth factors/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/log population as a sum/i)).toBeInTheDocument();
+    expect(screen.getByText(/factor drawn uniformly.*independently of all previous draws/i)).toBeInTheDocument();
+    expect(screen.getByText(/central limit theorem explains the Normal approximation.*does not by itself establish uniform fractional logs/i)).toBeInTheDocument();
+    expect(screen.queryByText(/city|census|population counts/i)).not.toBeInTheDocument();
+    expect(screen.getByLabelText(/value as a product of independent factors/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/log value as a sum of log factors/i)).toBeInTheDocument();
     expect(screen.getByText(/Normality is not required/i)).toBeInTheDocument();
   });
 

@@ -6,11 +6,12 @@ export function MultiplicativeMechanism() {
   return (
     <section className="explainer-phase" aria-labelledby="multiplicative-mechanism-title">
       <header className="explainer-phase-header">
-        <h3 id="multiplicative-mechanism-title">Why fractional logs become uniform</h3>
+        <h3 id="multiplicative-mechanism-title">When fractional logs become nearly uniform</h3>
         <p>
-          Two steps explain it. Multiplying many factors turns into adding logs, which
-          spreads log values across many orders of magnitude. A wide spread then makes
-          the fractional parts of those logs nearly uniform.
+          Here we use a Normal distribution of log values to illustrate one route
+          to nearly uniform fractional logs. Multiplicative processes can produce
+          approximately Normal logs under suitable conditions, but neither
+          multiplication nor Normality is required for Benford’s Law.
         </p>
       </header>
 
@@ -18,34 +19,37 @@ export function MultiplicativeMechanism() {
         <h3>1. Products become sums</h3>
         <div>
           <p>
-            Think of a city that grows by a percentage each decade: +12% in one decade,
-            −4% in the next, +20% after that. Its population is its starting size times
-            a string of growth factors, so its log is a sum of many small random
-            amounts. Cities that start at the same size drift apart on the log scale,
-            and the spread keeps growing decade after decade.
+            Start with X₀ = 1. At each step, multiply by a new factor drawn uniformly
+            between 0.9 and 1.1, independently of all previous draws. For example,
+            one run might begin 1 × 1.08 × 0.94 × 1.03. Repeat the process with fresh
+            independent draws to obtain a distribution of final values.
           </p>
           <FormulaBlock
-            formula={String.raw`P_n=P_0\,(1+g_1)(1+g_2)\cdots(1+g_n)`}
-            accessibilityLabel="Population as a product of growth factors"
+            formula={String.raw`X_n=X_0\,A_1A_2\cdots A_n`}
+            accessibilityLabel="Value as a product of independent factors"
           />
           <FormulaBlock
-            formula={String.raw`\log_{10}(P_n)=\log_{10}(P_0)+\log_{10}(1+g_1)+\cdots+\log_{10}(1+g_n)`}
-            accessibilityLabel="Log population as a sum"
+            formula={String.raw`\log_{10}(X_n)=\log_{10}(X_0)+\log_{10}(A_1)+\cdots+\log_{10}(A_n)`}
+            accessibilityLabel="Log value as a sum of log factors"
           />
           <p>
-            With many independent factors and suitable conditions on their logs, the
-            central limit theorem can make the log population approximately Normal,
-            with a spread that grows with the number of factors. Normality is not required
-            for Benford's Law; we use a Normal model here to illustrate how
-            fractional logs can approach uniformity. Census population counts are a
-            classic real-world example: they span from villages to megacities, and
-            their first digits follow Benford's Law closely.
+            Taking logs turns each product into a sum. In this example, the log
+            factors are independent, identically distributed, and have finite,
+            nonzero variance. As the number of factors increases, the spread of the
+            log values across repeated runs grows, and the central limit theorem
+            motivates an approximately Normal model for their distribution.
+          </p>
+          <p>
+            The central limit theorem explains the Normal approximation; it does
+            not by itself establish uniform fractional logs. The next step shows
+            what happens as a Normal log distribution becomes wider. Normality is not required
+            for Benford’s Law—this is one illustrative route.
           </p>
         </div>
       </article>
 
       <article className="math-step">
-        <h3>2. A wide spread makes fractional logs nearly uniform</h3>
+        <h3>2. A wider Normal log distribution gives nearly uniform fractional logs</h3>
         <div>
           <p>
             We show the density at ten fractional positions: 0.0, 0.1, …, 0.9.
